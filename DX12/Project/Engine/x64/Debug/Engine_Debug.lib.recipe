@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <ProjectOutputs />
+  <ContentFiles>
+    <ContentFile>
+      <FullPath>D:\C++\API\Engine\DirectX12\DX12\External\Library\Engine\DefaultPS2D.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\C++\API\Engine\DirectX12\DX12\External\Library\Engine\DefaultPS3D.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\C++\API\Engine\DirectX12\DX12\External\Library\Engine\DefaultVS2D.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\C++\API\Engine\DirectX12\DX12\External\Library\Engine\DefaultVS3D.cso</FullPath>
+    </ContentFile>
+  </ContentFiles>
+  <SatelliteDlls />
+  <NonRecipeFileRefs />
+</Project>
