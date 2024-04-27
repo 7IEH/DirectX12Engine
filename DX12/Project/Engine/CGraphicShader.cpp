@@ -12,6 +12,7 @@ GraphicShader::GraphicShader()
 	, m_BlendType(BLEND_TYPE::DEFAULT)
 	, m_SamplerType(SAMPLER_TYPE::POINT)
 	, m_Domain(SHADER_DOMAIN::DOMAIN_MASKED)
+	, m_pPLDesc{}
 {
 }
 
@@ -22,69 +23,46 @@ GraphicShader::~GraphicShader()
 // FX File Create
 void GraphicShader::Default_Create(const wstring& _shaderPath, const string& _vsEntry, const string& _psEntry)
 {
-	CreateBlobFile(SHADER_TYPE::VERTEX, _shaderPath, _vsEntry);
-	CreateBlobFile(SHADER_TYPE::PIXEL, _shaderPath, _psEntry);
+	CreateShader(SHADER_TYPE::VERTEX, _shaderPath, _vsEntry);
+	CreateShader(SHADER_TYPE::PIXEL, _shaderPath, _psEntry);
 
-	CreateShader(SHADER_TYPE::VERTEX);
-	CreateShader(SHADER_TYPE::PIXEL);
-
-	CreateLayOut();
+	CreatePipeLineState();
 }
 
 // HLSL File Create
 void GraphicShader::Default_Create(const wstring& _pVSShaderPath, const wstring& _pPSShaderPath, const string& _vsEntry, const string& _psEntry)
 {
-	CreateBlobFile(SHADER_TYPE::VERTEX, _pVSShaderPath, _vsEntry);
-	CreateBlobFile(SHADER_TYPE::PIXEL, _pPSShaderPath, _psEntry);
+	CreateShader(SHADER_TYPE::VERTEX, _pVSShaderPath, _vsEntry);
+	CreateShader(SHADER_TYPE::PIXEL, _pPSShaderPath, _psEntry);
 
-	CreateShader(SHADER_TYPE::VERTEX);
-	CreateShader(SHADER_TYPE::PIXEL);
-
-	CreateLayOut();
+	CreatePipeLineState();
 }
 
 void GraphicShader::Custom_Create(const wstring& _shaderPath, const string& _gsEntry, const string& _huEntry, const string& _dmEntry)
 {
 	if ("" == _gsEntry)
 	{
-		CreateBlobFile(SHADER_TYPE::GEOMETRY, _shaderPath, _gsEntry);
-		CreateShader(SHADER_TYPE::GEOMETRY);
+		CreateShader(SHADER_TYPE::GEOMETRY, _shaderPath, _gsEntry);
 	}
 
 	if ("" == _huEntry)
 	{
-		CreateBlobFile(SHADER_TYPE::HULL, _shaderPath, _huEntry);
-		CreateShader(SHADER_TYPE::HULL);
+		CreateShader(SHADER_TYPE::HULL, _shaderPath, _huEntry);
 	}
 
 	if ("" == _dmEntry)
 	{
-		CreateBlobFile(SHADER_TYPE::DOMAlN, _shaderPath, _dmEntry);
-		CreateShader(SHADER_TYPE::DOMAlN);
+		CreateShader(SHADER_TYPE::DOMAlN, _shaderPath, _dmEntry);
 	}
 }
 
 HRESULT GraphicShader::UpdateData()
 {
-	//CONTEXT->IASetPrimitiveTopology(m_Topology);
-	//CONTEXT->IASetInputLayout(m_LayOut.Get());
-
-	SetShader(SHADER_TYPE::VERTEX);
+	CMDLIST->SetPipelineState(m_pPLState.Get());
+	CMDLIST->IASetPrimitiveTopology(m_Topology);
 
 	// Rasterizer Stage
 	//CONTEXT->RSSetState(Device::GetInst()->GetRSState(m_CullType).Get());
-
-	// Pixel Shader Stage
-	SetShader(SHADER_TYPE::PIXEL);
-
-	// DOMAIN Shader Stage
-	SetShader(SHADER_TYPE::DOMAlN);
-
-	// HULL Shader Stage
-	SetShader(SHADER_TYPE::HULL);
-
-	// GeoMetry Shader Stage
-	SetShader(SHADER_TYPE::GEOMETRY);
 
 	// Output-Merger Stage
 	//CONTEXT->OMSetDepthStencilState(Device::GetInst()->GetDSState(m_DSType).Get(), 0);
@@ -93,8 +71,13 @@ HRESULT GraphicShader::UpdateData()
 	return S_OK;
 }
 
-void GraphicShader::CreateBlobFile(SHADER_TYPE _type, const wstring& _path, const string& _entry)
+void GraphicShader::CreateShader(SHADER_TYPE _type, const wstring& _path, const string& _entry)
 {
+	UINT _iCompileFlag = 0;
+#ifdef _DEBUG
+	_iCompileFlag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+#endif
+
 	wstring _shaderPath = PATH + _path;
 
 	switch (_type)
@@ -103,26 +86,26 @@ void GraphicShader::CreateBlobFile(SHADER_TYPE _type, const wstring& _path, cons
 	{
 		D3DCompileFromFile(_shaderPath.c_str()
 			, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE
-			, _entry.c_str(), "vs_5_0", D3DCOMPILE_DEBUG, 0
+			, _entry.c_str(), "vs_5_0", _iCompileFlag, 0
 			, m_VBlob.GetAddressOf(), m_pErrorBlob.GetAddressOf());
 	}
-		break;
+	break;
 	case SHADER_TYPE::PIXEL:
 	{
 		D3DCompileFromFile(_shaderPath.c_str()
 			, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE
-			, _entry.c_str(), "ps_5_0", D3DCOMPILE_DEBUG, 0
+			, _entry.c_str(), "ps_5_0", _iCompileFlag, 0
 			, m_PBlob.GetAddressOf(), m_pErrorBlob.GetAddressOf());
 	}
-		break;
+	break;
 	case SHADER_TYPE::HULL:
 	{
 	}
-		break;
+	break;
 	case SHADER_TYPE::DOMAlN:
 	{
 	}
-		break;
+	break;
 	case SHADER_TYPE::GEOMETRY:
 	{
 		D3DCompileFromFile(_shaderPath.c_str()
@@ -130,7 +113,7 @@ void GraphicShader::CreateBlobFile(SHADER_TYPE _type, const wstring& _path, cons
 			, _entry.c_str(), "gs_5_0", D3DCOMPILE_DEBUG, 0
 			, m_GBlob.GetAddressOf(), m_pErrorBlob.GetAddressOf());
 	}
-		break;
+	break;
 	case SHADER_TYPE::END:
 		break;
 	default:
@@ -142,126 +125,115 @@ void GraphicShader::CreateBlobFile(SHADER_TYPE _type, const wstring& _path, cons
 		char* pErrMsg = (char*)m_pErrorBlob->GetBufferPointer();
 		MessageBoxA(nullptr, pErrMsg, "Shader Compile Failed!!", MB_OK);
 	}
-}
 
-void GraphicShader::CreateShader(SHADER_TYPE _type)
-{
-	/*switch (_type)
-	{
-	case SHADER_TYPE::VERTEX:
-		DEVICE->CreateVertexShader(m_VBlob->GetBufferPointer(),
-			m_VBlob->GetBufferSize(), nullptr, m_VS.GetAddressOf());
-		break;
-	case SHADER_TYPE::PIXEL:
-		DEVICE->CreatePixelShader(m_PBlob->GetBufferPointer(),
-			m_PBlob->GetBufferSize(), nullptr, m_PS.GetAddressOf());
-		break;
-	case SHADER_TYPE::HULL:
-		DEVICE->CreateHullShader(m_HBlob->GetBufferPointer(),
-			m_HBlob->GetBufferSize(), nullptr, m_HS.GetAddressOf());
-		break;
-	case SHADER_TYPE::DOMAlN:
-		DEVICE->CreateDomainShader(m_DBlob->GetBufferPointer(),
-			m_DBlob->GetBufferSize(), nullptr, m_DS.GetAddressOf());
-		break;
-	case SHADER_TYPE::GEOMETRY:
-		DEVICE->CreateGeometryShader(m_GBlob->GetBufferPointer(),
-			m_GBlob->GetBufferSize(), nullptr, m_GS.GetAddressOf());
-		break;
-	case SHADER_TYPE::END:
-		break;
-	default:
-		break;
-	}*/
-}
-
-void GraphicShader::CreateLayOut()
-{
-	//D3D11_INPUT_ELEMENT_DESC arrElement[6] = {};
-
-	//arrElement[0].InputSlot = 0;
-	//arrElement[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-	//arrElement[0].SemanticName = "POSITION";
-	//arrElement[0].SemanticIndex = 0;
-	//arrElement[0].InstanceDataStepRate = 0;
-	//arrElement[0].AlignedByteOffset = 0;
-	//arrElement[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-
-	//arrElement[1].InputSlot = 0;
-	//arrElement[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-	//arrElement[1].SemanticName = "COLOR";
-	//arrElement[1].SemanticIndex = 0;
-	//arrElement[1].InstanceDataStepRate = 0;
-	//arrElement[1].AlignedByteOffset = 12;
-	//arrElement[1].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-
-	//arrElement[2].InputSlot = 0;
-	//arrElement[2].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-	//arrElement[2].SemanticName = "TEXCOORD";
-	//arrElement[2].SemanticIndex = 0;
-	//arrElement[2].InstanceDataStepRate = 0;
-	//arrElement[2].AlignedByteOffset = 28;
-	//arrElement[2].Format = DXGI_FORMAT_R32G32_FLOAT;
-
-	//arrElement[3].InputSlot = 0;
-	//arrElement[3].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-	//arrElement[3].SemanticName = "TANGENT";
-	//arrElement[3].SemanticIndex = 0;
-	//arrElement[3].InstanceDataStepRate = 0;
-	//arrElement[3].AlignedByteOffset = 36;
-	//arrElement[3].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-
-	//arrElement[4].InputSlot = 0;
-	//arrElement[4].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-	//arrElement[4].SemanticName = "NORMAL";
-	//arrElement[4].SemanticIndex = 0;
-	//arrElement[4].InstanceDataStepRate = 0;
-	//arrElement[4].AlignedByteOffset = 48;
-	//arrElement[4].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-
-	//arrElement[5].InputSlot = 0;
-	//arrElement[5].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-	//arrElement[5].SemanticName = "BINORMAL";
-	//arrElement[5].SemanticIndex = 0;
-	//arrElement[5].InstanceDataStepRate = 0;
-	//arrElement[5].AlignedByteOffset = 60;
-	//arrElement[5].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-
-	//DEVICE->CreateInputLayout(arrElement, 6, m_VBlob->GetBufferPointer(), m_VBlob->GetBufferSize(), m_LayOut.GetAddressOf());
+	SetShader(_type);
 }
 
 void GraphicShader::SetShader(SHADER_TYPE _type)
 {
-	/*switch (_type)
+	D3D12_SHADER_BYTECODE _tDesc = {};
+	switch (_type)
 	{
 	case SHADER_TYPE::VERTEX:
 	{
-		CONTEXT->VSSetShader(m_VS.Get(), 0, 0);
+		_tDesc.pShaderBytecode = m_VBlob->GetBufferPointer();
+		_tDesc.BytecodeLength = m_VBlob->GetBufferSize();
+		m_pPLDesc.VS = _tDesc;
 	}
 	break;
 	case SHADER_TYPE::PIXEL:
 	{
-		CONTEXT->PSSetShader(m_PS.Get(), 0, 0);
+		_tDesc.pShaderBytecode = m_PBlob->GetBufferPointer();
+		_tDesc.BytecodeLength = m_PBlob->GetBufferSize();
+		m_pPLDesc.PS = _tDesc;
 	}
 	break;
 	case SHADER_TYPE::HULL:
-	{
-		CONTEXT->HSSetShader(m_HS.Get(), 0, 0);
-	}
-	break;
+		break;
 	case SHADER_TYPE::DOMAlN:
-	{
-		CONTEXT->DSSetShader(m_DS.Get(), 0, 0);
-	}
-	break;
+		break;
 	case SHADER_TYPE::GEOMETRY:
 	{
-		CONTEXT->GSSetShader(m_GS.Get(), 0, 0);
+		_tDesc.pShaderBytecode = m_GBlob->GetBufferPointer();
+		_tDesc.BytecodeLength = m_GBlob->GetBufferSize();
+		m_pPLDesc.GS = _tDesc;
 	}
 	break;
 	case SHADER_TYPE::END:
 		break;
 	default:
 		break;
-	}*/
+	}
+}
+
+void GraphicShader::CreatePipeLineState()
+{
+	D3D12_INPUT_ELEMENT_DESC _arrElement[2] = {};
+
+	_arrElement[0].SemanticName = "POSITION";
+	_arrElement[0].SemanticIndex = 0;
+	_arrElement[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	_arrElement[0].InputSlot = 0;
+	_arrElement[0].InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
+	_arrElement[0].InstanceDataStepRate = 0;
+	_arrElement[0].AlignedByteOffset = 0;
+
+	_arrElement[1].SemanticName = "COLOR";
+	_arrElement[1].SemanticIndex = 0;
+	_arrElement[1].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	_arrElement[1].InputSlot = 0;
+	_arrElement[1].InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
+	_arrElement[1].InstanceDataStepRate = 0;
+	_arrElement[1].AlignedByteOffset = 12;
+
+	/*_arrElement[2].SemanticName = "TEXCOORD";
+	_arrElement[2].SemanticIndex = 0;
+	_arrElement[2].Format = DXGI_FORMAT_R32G32_FLOAT;
+	_arrElement[2].InputSlot = 0;
+	_arrElement[2].InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
+	_arrElement[2].InstanceDataStepRate = 0;
+	_arrElement[2].AlignedByteOffset = 28;
+
+	_arrElement[3].SemanticName = "TANGENT";
+	_arrElement[3].SemanticIndex = 0;
+	_arrElement[3].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	_arrElement[3].InputSlot = 0;
+	_arrElement[3].InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
+	_arrElement[3].InstanceDataStepRate = 0;
+	_arrElement[3].AlignedByteOffset = 36;
+
+	_arrElement[4].SemanticName = "NORMAL";
+	_arrElement[4].SemanticIndex = 0;
+	_arrElement[4].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	_arrElement[4].InputSlot = 0;
+	_arrElement[4].InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
+	_arrElement[4].InstanceDataStepRate = 0;
+	_arrElement[4].AlignedByteOffset = 48;
+
+	_arrElement[5].SemanticName = "BINORMAL";
+	_arrElement[5].SemanticIndex = 0;
+	_arrElement[5].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	_arrElement[5].InputSlot = 0;
+	_arrElement[5].InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
+	_arrElement[5].InstanceDataStepRate = 0;
+	_arrElement[5].AlignedByteOffset = 60;*/
+
+	m_pPLDesc.InputLayout = { _arrElement,_countof(_arrElement) };
+	m_pPLDesc.pRootSignature = Device::GetInst()->GetSignature();
+
+	m_pPLDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+	m_pPLDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
+	m_pPLDesc.DepthStencilState.DepthEnable = FALSE;
+	m_pPLDesc.DepthStencilState.StencilEnable = FALSE;
+	m_pPLDesc.SampleMask = UINT_MAX;
+	m_pPLDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	m_pPLDesc.NumRenderTargets = 1;
+	m_pPLDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+	m_pPLDesc.SampleDesc.Count = 1;
+
+
+	if (FAILED(DEVICE->CreateGraphicsPipelineState(&m_pPLDesc, IID_PPV_ARGS(&m_pPLState))))
+	{
+		HandleError(L"PipeLineState Create Failed", 0);
+	}
 }

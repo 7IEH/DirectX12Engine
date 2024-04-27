@@ -21,10 +21,10 @@ struct VertexInfo
 {
 	Vec3 Position;
 	Vec4 Color;
-	Vec2 UV;
-	Vec3 Tangent;
-	Vec3 Normal;
-	Vec3 Binormal;
+	//Vec2 UV;
+	//Vec3 Tangent;
+	//Vec3 Normal;
+	//Vec3 Binormal;
 };
 
 // SRT Struct

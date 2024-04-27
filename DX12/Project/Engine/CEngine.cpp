@@ -34,7 +34,7 @@ int Engine::Awake(const WindowInfo& _winInfo)
 
 	AwakeManager();
 
-	return S_OK;
+	Device::GetInst()->WaitSync();
 
 	return S_OK;
 }

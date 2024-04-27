@@ -3,12 +3,6 @@
 class TempScene :
     public Scene
 {
-private:
-    GameObject* m_pTestObject;
-    GameObject* m_pTestObject2;
-
-    int         m_iNum;
-
 public:
     virtual void Awake()override;    
 

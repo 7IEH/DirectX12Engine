@@ -4,13 +4,16 @@ class Mesh :
     public Asset
 {
 private:
-	//ComPtr<ID3D11Buffer>		m_VB;
-	//ComPtr<ID3D11Buffer>		m_IB;
+	ComPtr<ID3D12Resource>		m_VB;
+	ComPtr<ID3D12Resource>		m_IB;
 
 	UINT						m_IndexCount;
 
-	void* m_VertexInfo;
-	void* m_IndexInfo;
+	void*						m_VertexInfo;
+	void*						m_IndexInfo;
+
+	D3D12_VERTEX_BUFFER_VIEW    m_VBView;
+	D3D12_INDEX_BUFFER_VIEW		m_IBView;
 
 public:
 	CLONE(Mesh)

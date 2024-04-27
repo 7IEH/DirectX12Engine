@@ -33,8 +33,10 @@ private:
 	// 표준 규격 양식
 	// DX11에 View
 	ComPtr<ID3D12DescriptorHeap>			m_pRTV;
-	UINT									m_iRTVHeapSize;
 	D3D12_CPU_DESCRIPTOR_HANDLE				m_pRTVHandle[SWAP_CHAIN_BUFFER_COUNT];
+
+	// RootSignature
+	ComPtr<ID3D12RootSignature>				m_pSignature;
 
 	WindowInfo								m_WindowInfo;
 	UINT									m_i4MSAAQuality;
@@ -45,7 +47,8 @@ public:
 	ID3D12Device*					GetDevice() { return m_pDevice.Get(); }
 	IDXGIFactory*					GetDXGI() { return m_pDxgi.Get(); }
 	ID3D12CommandQueue*				GetCmdQueue() { return m_pCmdQueue.Get(); }
-	
+	ID3D12GraphicsCommandList*		GetCmdList() { return m_pCmdList.Get(); }
+
 	Vec2							GetRes() { return m_WindowInfo.Res; }
 	HWND							GetHwnd() { return m_WindowInfo.Hwnd; }
 
@@ -60,6 +63,8 @@ public:
 	D3D12_CPU_DESCRIPTOR_HANDLE		GetRTV(int _idx) { return m_pRTVHandle[_idx]; }
 	D3D12_CPU_DESCRIPTOR_HANDLE		GetBufferView() { return GetRTV(m_iBackBufferIndex); }
 	
+	ID3D12RootSignature*			GetSignature() { return m_pSignature.Get(); }
+
 public:
 	// CommandQueue Func
 	void							WaitSync();
@@ -80,10 +85,11 @@ private:
 	HRESULT						CreateDevice();
 	HRESULT						CreateCommandQueue();
 	HRESULT						CreateSwapChain();
-	HRESULT						CreateDecriptionHeap();
+	void						CreateDecriptionHeap();
+	HRESULT						CreateRootSignature();
 
-	HRESULT						CreateRTView();
-	HRESULT						CreateDSView();
+	void						CreateRTView();
+	void						CreateDSView();
 	HRESULT						CreateConstantBuffer();
 	HRESULT						CreateConstantBufferIndividual(CONSTANT_TYPE _type, UINT _elementSize, UINT _elementCount);
 	//HRESULT						CreateRasterizerState();

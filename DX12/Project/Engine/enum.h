@@ -200,7 +200,6 @@ enum class BUFFER_TYPE
 {
 	VERTEX,
 	INDEX,
-	CONSTANT,
 	END
 };
 

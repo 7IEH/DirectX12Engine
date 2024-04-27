@@ -9,7 +9,7 @@
 #include "CStructuredBuffer.h"
 
 RenderMgr::RenderMgr()
-	:m_pCams{}
+	: m_pCams{}
 	, m_vLights2D{}
 	, m_vLights3D{}
 	, m_pLight2DBuffer(nullptr)
@@ -44,7 +44,17 @@ void RenderMgr::UpdateData()
 
 void RenderMgr::Render()
 {
-
+	for (UINT i = 0;i < (UINT)CAMERA_TYPE::END;i++)
+	{
+		if (nullptr != m_pCams[i])
+		{
+			Camera* _pCam = m_pCams[i]->GetComponent<Camera>();
+			if (nullptr != _pCam)
+			{
+				_pCam->Render();
+			}
+		}
+	}
 }
 
 void RenderMgr::Clear()

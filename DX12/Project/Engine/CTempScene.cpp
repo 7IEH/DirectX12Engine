@@ -10,7 +10,6 @@
 #include "CKeyMgr.h"
 
 TempScene::TempScene()
-	:m_iNum(0)
 {
 }
 
@@ -37,24 +36,24 @@ void TempScene::Awake()
 	_pTr->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
 
 	MeshRenderer* _pRenderer = _pCube->AddComponent<MeshRenderer>();
-	_pRenderer->SetMesh(AssetMgr::GetInst()->FindAsset<Mesh>(L"CubeMesh"));
-	_pRenderer->SetMaterial(AssetMgr::GetInst()->FindAsset<Material>(L"Default3DMat"));
-	AssetMgr::GetInst()->FindAsset<Material>(L"Default3DMat")->SetTexParam(TEX_0, AssetMgr::GetInst()->FindAsset<Texture>(L"3DTile_01"));
-	AssetMgr::GetInst()->FindAsset<Material>(L"Default3DMat")->SetTexParam(TEX_1, AssetMgr::GetInst()->FindAsset<Texture>(L"3DTileN_01"));
+	_pRenderer->SetMesh(AssetMgr::GetInst()->FindAsset<Mesh>(L"RectMesh"));
+	_pRenderer->SetMaterial(AssetMgr::GetInst()->FindAsset<Material>(L"Default2DMat"));
+	//AssetMgr::GetInst()->FindAsset<Material>(L"Default3DMat")->SetTexParam(TEX_0, AssetMgr::GetInst()->FindAsset<Texture>(L"3DTile_01"));
+	//AssetMgr::GetInst()->FindAsset<Material>(L"Default3DMat")->SetTexParam(TEX_1, AssetMgr::GetInst()->FindAsset<Texture>(L"3DTileN_01"));
 
 	AddObject(_pCube, LAYER_TYPE::PLAYER);
 
 	// Sphere
-	GameObject* _pSphere = new GameObject;
-	_pTr = _pSphere->AddComponent<Transform>();
-	_pTr->SetRelativePosition(Vec3(-1.f, 0.f, 0.f));
-	_pTr->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
+	//GameObject* _pSphere = new GameObject;
+	//_pTr = _pSphere->AddComponent<Transform>();
+	//_pTr->SetRelativePosition(Vec3(-1.f, 0.f, 0.f));
+	//_pTr->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
 
-	_pRenderer = _pSphere->AddComponent<MeshRenderer>();
-	_pRenderer->SetMesh(AssetMgr::GetInst()->FindAsset<Mesh>(L"SphereMesh"));
-	_pRenderer->SetMaterial(AssetMgr::GetInst()->FindAsset<Material>(L"Default3DMat"));
+	//_pRenderer = _pSphere->AddComponent<MeshRenderer>();
+	//_pRenderer->SetMesh(AssetMgr::GetInst()->FindAsset<Mesh>(L"SphereMesh"));
+	//_pRenderer->SetMaterial(AssetMgr::GetInst()->FindAsset<Material>(L"Default3DMat"));
 
-	AddObject(_pSphere, LAYER_TYPE::PLAYER);
+	//AddObject(_pSphere, LAYER_TYPE::PLAYER);
 }
 
 void TempScene::Update()

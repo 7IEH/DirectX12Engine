@@ -10,13 +10,9 @@ private:
 	ComPtr<ID3DBlob>                        m_DBlob;
 	ComPtr<ID3DBlob>                        m_GBlob;
 
-	//ComPtr<ID3D11VertexShader>              m_VS;
-	//ComPtr<ID3D11PixelShader>               m_PS;
-	//ComPtr<ID3D11HullShader>                m_HS;
-	//ComPtr<ID3D11DomainShader>              m_DS;
-	//ComPtr<ID3D11GeometryShader>            m_GS;
+	ComPtr<ID3D12PipelineState>				m_pPLState;
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC		m_pPLDesc;
 
-	//ComPtr<ID3D11InputLayout>               m_LayOut;
 	D3D_PRIMITIVE_TOPOLOGY                  m_Topology;
 
 	CULL_TYPE                               m_CullType;
@@ -32,6 +28,7 @@ public:
 	virtual ~GraphicShader();
 
 public:
+	ID3D12PipelineState* GetPLState() { return m_pPLState.Get(); }
 	void SetTopology(D3D_PRIMITIVE_TOPOLOGY _Topology) { m_Topology = _Topology; }
 	void SetCullType(CULL_TYPE _type) { m_CullType = _type; }
 	void SetDSType(DS_TYPE _type) { m_DSType = _type; }
@@ -48,9 +45,9 @@ public:
 	virtual HRESULT UpdateData()override;
 
 private:
-	void CreateBlobFile(SHADER_TYPE _type, const wstring& _path, const string& _entry);
-	void CreateShader(SHADER_TYPE _type);
-	void CreateLayOut();
+	void CreateShader(SHADER_TYPE _type, const wstring& _path, const string& _entry);
+	// DX11 IA-> LAYOUT SET + SHADER별로 SET주던거 다 PIPELINESTATE로 정리
+	void CreatePipeLineState();
 	void SetShader(SHADER_TYPE _type);
 };
 

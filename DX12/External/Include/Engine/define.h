@@ -6,7 +6,7 @@
 						  friend class Singleton<classtype>;
 
 #define DEVICE Device::GetInst()->GetDevice()
-#define CONTEXT Device::GetInst()->GetDXGI()
+#define CMDLIST Device::GetInst()->GetCmdList()
 
 #define PATH PathMgr::GetInst()->GetPath()
 

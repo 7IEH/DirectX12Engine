@@ -10,6 +10,7 @@ Device::Device()
 	, m_iFenceVal(0)
 	, m_pFenceEvent(INVALID_HANDLE_VALUE)
 	, m_iBackBufferIndex(0)
+	, m_pRTVHandle{}
 {
 
 }
@@ -24,11 +25,15 @@ int Device::Awake(const WindowInfo& _windowInfo)
 {
 	m_WindowInfo = _windowInfo;
 
-#ifdef _DEBUG
+	#ifdef _DEBUG
 	// IID_PPV_ARGS -> ID와 포인터를 가져옴
 	::D3D12GetDebugInterface(IID_PPV_ARGS(&m_pDebugContoller));
 	m_pDebugContoller->EnableDebugLayer();
-#endif
+	#endif
+
+	/****************
+	| DX12 Initialize
+	****************/
 	CreateDevice();
 
 	CreateCommandQueue();
@@ -37,11 +42,13 @@ int Device::Awake(const WindowInfo& _windowInfo)
 
 	CreateDecriptionHeap();
 
-	CreateRTView();
-
-	CreateDSView();
+	if (FAILED(CreateRootSignature()))
+	{
+		HandleError(L"Failed Create RootSignature", 0);
+	}
 
 	CreateBlendState();
+
 	CreateSamplerState();
 
 	if (FAILED(CreateConstantBuffer()))
@@ -120,11 +127,32 @@ HRESULT Device::CreateSwapChain()
 	return _hr;
 }
 
-HRESULT Device::CreateDecriptionHeap()
+void Device::CreateDecriptionHeap()
 {
 	// View 객체는 해당 texture마다 flag를 다르게 가지고 있었는데
 	// 이를 descriptionheap으로 통일함
-	m_iRTVHeapSize = m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	CreateRTView();
+	CreateDSView();
+}
+
+HRESULT Device::CreateRootSignature()
+{
+	HRESULT _hr = E_FAIL;
+	D3D12_ROOT_SIGNATURE_DESC _tDesc = CD3DX12_ROOT_SIGNATURE_DESC(D3D12_DEFAULT);
+	_tDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+
+	ComPtr<ID3DBlob> _blobSignature;
+	ComPtr<ID3DBlob> _blobError;
+
+	::D3D12SerializeRootSignature(&_tDesc, D3D_ROOT_SIGNATURE_VERSION_1, &_blobSignature, &_blobError);
+	_hr = m_pDevice->CreateRootSignature(0, _blobSignature->GetBufferPointer(), _blobSignature->GetBufferSize(), IID_PPV_ARGS(&m_pSignature));
+
+	return _hr;
+}
+
+void Device::CreateRTView()
+{
+	UINT _iRTVHeapSize = m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
 	D3D12_DESCRIPTOR_HEAP_DESC _tDesc = {};
 	_tDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
@@ -138,21 +166,13 @@ HRESULT Device::CreateDecriptionHeap()
 
 	for (int i = 0;i < SWAP_CHAIN_BUFFER_COUNT;i++)
 	{
-		m_pRTVHandle[i] = CD3DX12_CPU_DESCRIPTOR_HANDLE(_heapBegin, i * m_iRTVHeapSize);
+		m_pRTVHandle[i] = CD3DX12_CPU_DESCRIPTOR_HANDLE(_heapBegin, i * _iRTVHeapSize);
 		m_pDevice->CreateRenderTargetView(m_pRTT[i].Get(), nullptr, m_pRTVHandle[i]);
 	}
-
-	return E_NOTIMPL;
 }
 
-HRESULT Device::CreateRTView()
+void Device::CreateDSView()
 {
-	return S_OK;
-}
-
-HRESULT Device::CreateDSView()
-{
-	return S_OK;
 }
 
 HRESULT Device::CreateConstantBuffer()
@@ -275,7 +295,7 @@ void Device::RenderEnd()
 
 void Device::Present()
 {
-	m_pSwapChain->Present(0, 0);
+	m_pSwapChain->Present(0,0);
 }
 
 void Device::SwapIndex()
