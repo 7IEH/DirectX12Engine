@@ -21,33 +21,33 @@ struct LightInfo
     float3 pad;
 };
 
-Texture2D ST0 : register(t0);
-Texture2D ST1 : register(t1);
-Texture2D ST2 : register(t2);
-Texture2D ST3 : register(t3);
-Texture2D ST4 : register(t4);
-Texture2D ST5 : register(t5);
+//Texture2D ST0 : register(t0);
+//Texture2D ST1 : register(t1);
+//Texture2D ST2 : register(t2);
+//Texture2D ST3 : register(t3);
+//Texture2D ST4 : register(t4);
+//Texture2D ST5 : register(t5);
 
-Texture2D CUBE6 : register(t6);
-Texture2D CUBE7 : register(t7);
+//Texture2D CUBE6 : register(t6);
+//Texture2D CUBE7 : register(t7);
 
-Texture2D STARR8 : register(t8);
-Texture2D STARR9 : register(t9);
+//Texture2D STARR8 : register(t8);
+//Texture2D STARR9 : register(t9);
 
-SamplerState sampler1 : register(s0);
-SamplerState sampler2 : register(s1);
+//SamplerState sampler1 : register(s0);
+//SamplerState sampler2 : register(s1);
 
-// Animation Texture
-Texture2D atlas_texture : register(t10);
+//// Animation Texture
+//Texture2D atlas_texture : register(t10);
 
-// Structed Register
-StructuredBuffer<LightInfo> g_Light : register(t11);
-StructuredBuffer<LightInfo> g_Light3D : register(t12);
+//// Structed Register
+//StructuredBuffer<LightInfo> g_Light : register(t11);
+//StructuredBuffer<LightInfo> g_Light3D : register(t12);
 
-// PostProcess Register
-Texture2D g_postprocess : register(t13);
+//// PostProcess Register
+//Texture2D g_postprocess : register(t13);
 
-Texture2D g_NoiseTex : register(t14);
+//Texture2D g_NoiseTex : register(t14);
 
 // Luna Light Example
 struct DirectionalLight

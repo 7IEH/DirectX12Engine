@@ -21,7 +21,7 @@ public:
 	virtual ~Mesh();
 
 public:
-	void Create(vector<VertexInfo>& _data, UINT _VertexCount, void* _IBData, UINT _IndexCount);
+	void Create(vector<VertexInfo>& _VBdata, UINT _VertexCount, vector<UINT>& _IBData, UINT _IndexCount);
 	void UpdateData();
 
 public:
@@ -29,7 +29,7 @@ public:
 	void Render_Instancing(UINT _particleCount);
 
 private:
-	void CreateBuffer(BUFFER_TYPE _bufferType, UINT _count, vector<VertexInfo>& _data);
+	void CreateBuffer(BUFFER_TYPE _bufferType, UINT _count, vector<VertexInfo>& _vertexData, vector<UINT>& _indexData);
 	void DrawIndexed();
 	void SetBuffer(BUFFER_TYPE _bufferType);
 };

@@ -65,6 +65,8 @@ public:
 	
 	ID3D12RootSignature*			GetSignature() { return m_pSignature.Get(); }
 
+	ConstantBuffer*					GetConstantBuffer(CONSTANT_TYPE _type) { return m_pConstantBuffer[(UINT)_type]; }
+
 public:
 	// CommandQueue Func
 	void							WaitSync();
@@ -97,6 +99,7 @@ private:
 	HRESULT						CreateBlendState();
 	HRESULT						CreateSamplerState();
 	void						SetSamplerState();
+	void						ClearConstantBuffer();
 
 };
 

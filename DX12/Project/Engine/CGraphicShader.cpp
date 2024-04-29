@@ -168,7 +168,7 @@ void GraphicShader::SetShader(SHADER_TYPE _type)
 
 void GraphicShader::CreatePipeLineState()
 {
-	D3D12_INPUT_ELEMENT_DESC _arrElement[2] = {};
+	D3D12_INPUT_ELEMENT_DESC _arrElement[6] = {};
 
 	_arrElement[0].SemanticName = "POSITION";
 	_arrElement[0].SemanticIndex = 0;
@@ -186,7 +186,7 @@ void GraphicShader::CreatePipeLineState()
 	_arrElement[1].InstanceDataStepRate = 0;
 	_arrElement[1].AlignedByteOffset = 12;
 
-	/*_arrElement[2].SemanticName = "TEXCOORD";
+	_arrElement[2].SemanticName = "TEXCOORD";
 	_arrElement[2].SemanticIndex = 0;
 	_arrElement[2].Format = DXGI_FORMAT_R32G32_FLOAT;
 	_arrElement[2].InputSlot = 0;
@@ -216,7 +216,7 @@ void GraphicShader::CreatePipeLineState()
 	_arrElement[5].InputSlot = 0;
 	_arrElement[5].InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
 	_arrElement[5].InstanceDataStepRate = 0;
-	_arrElement[5].AlignedByteOffset = 60;*/
+	_arrElement[5].AlignedByteOffset = 60;
 
 	m_pPLDesc.InputLayout = { _arrElement,_countof(_arrElement) };
 	m_pPLDesc.pRootSignature = Device::GetInst()->GetSignature();

@@ -138,7 +138,14 @@ void Device::CreateDecriptionHeap()
 HRESULT Device::CreateRootSignature()
 {
 	HRESULT _hr = E_FAIL;
-	D3D12_ROOT_SIGNATURE_DESC _tDesc = CD3DX12_ROOT_SIGNATURE_DESC(D3D12_DEFAULT);
+
+	CD3DX12_ROOT_PARAMETER _param[4] = {};
+	_param[0].InitAsConstantBufferView(0);
+	_param[1].InitAsConstantBufferView(1);
+	_param[2].InitAsConstantBufferView(2);
+	_param[3].InitAsConstantBufferView(3);
+
+	D3D12_ROOT_SIGNATURE_DESC _tDesc = CD3DX12_ROOT_SIGNATURE_DESC(4, _param);
 	_tDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 	ComPtr<ID3DBlob> _blobSignature;
@@ -204,7 +211,7 @@ HRESULT Device::CreateConstantBuffer()
 HRESULT Device::CreateConstantBufferIndividual(CONSTANT_TYPE _type, UINT _elementSize, UINT _elementCount)
 {
 	m_pConstantBuffer[(UINT)_type] = new ConstantBuffer();
-	HRESULT _result = m_pConstantBuffer[(UINT)_type]->Create(_elementSize, _elementCount, _type);
+	HRESULT _result = m_pConstantBuffer[(UINT)_type]->Create(_elementSize, 256, _type);
 
 	return _result;
 }
@@ -266,8 +273,10 @@ void Device::RenderBegin()
 		D3D12_RESOURCE_STATE_PRESENT, //before
 		D3D12_RESOURCE_STATE_RENDER_TARGET); // after
 
-	m_pCmdList->ResourceBarrier(1, &_barrier);
+	m_pCmdList->SetGraphicsRootSignature(m_pSignature.Get());
+	ClearConstantBuffer();
 
+	m_pCmdList->ResourceBarrier(1, &_barrier);
 	CreateViewPort(Vec2(0.f, 0.f), m_WindowInfo.Res);
 
 	float _fClear[4] = { 0.f,0.f,0.f,1.f };
@@ -315,4 +324,12 @@ HRESULT Device::CreateSamplerState()
 
 void Device::SetSamplerState()
 {
+}
+
+void Device::ClearConstantBuffer()
+{
+	for (UINT i = 0;i < (UINT)CONSTANT_TYPE::END;i++)
+	{
+		m_pConstantBuffer[i]->Clear();
+	}
 }

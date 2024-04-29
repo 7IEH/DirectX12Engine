@@ -13,7 +13,7 @@ struct VS_OUT
 
 float4 PS_Default2D(VS_OUT _in) : SV_Target
 {
-    float4 Color = float4(1.f, 1.f, 1.f, 1.f);
+    float4 Color = _in.vColor;
     
     return Color;
 }

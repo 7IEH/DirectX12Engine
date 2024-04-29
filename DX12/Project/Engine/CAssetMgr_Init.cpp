@@ -63,20 +63,20 @@ void AssetMgr::CreateDefaultMesh()
 	//_vTemp.UV = Vec2(1.f, 1.f);
 	_vVtx.push_back(_vTemp);
 
-	//_vTemp.Position = Vec3(-0.5f, 0.5f, 0.f);
-	//_vTemp.Color = Vec4(1.f, 0.f, 0.f, 1.f);
+	_vTemp.Position = Vec3(-0.5f, 0.5f, 0.f);
+	_vTemp.Color = Vec4(1.f, 0.f, 0.f, 1.f);
 	////_vTemp.UV = Vec2(0.f, 0.f);
-	//_vVtx.push_back(_vTemp);
+	_vVtx.push_back(_vTemp);
 
-	//_vTemp.Position = Vec3(0.5f, -0.5f, 0.f);
-	//_vTemp.Color = Vec4(1.f, 0.f, 1.f, 1.f);
+	_vTemp.Position = Vec3(0.5f, -0.5f, 0.f);
+	_vTemp.Color = Vec4(1.f, 0.f, 1.f, 1.f);
 	////_vTemp.UV = Vec2(1.f, 1.f);
-	//_vVtx.push_back(_vTemp);
+	_vVtx.push_back(_vTemp);
 
-	//_vTemp.Position = Vec3(-0.5f, -0.5f, 0.f);
-	//_vTemp.Color = Vec4(0.f, 1.f, 0.f, 1.f);
+	_vTemp.Position = Vec3(-0.5f, -0.5f, 0.f);
+	_vTemp.Color = Vec4(0.f, 1.f, 0.f, 1.f);
 	////_vTemp.UV = Vec2(0.f, 1.f);
-	//_vVtx.push_back(_vTemp);
+	_vVtx.push_back(_vTemp);
 
 	// ÀÎµ¦½º
 	_vIdx.push_back(0);
@@ -87,7 +87,7 @@ void AssetMgr::CreateDefaultMesh()
 	_vIdx.push_back(2);
 	_vIdx.push_back(3);
 
-	_pMesh->Create(_vVtx, (UINT)_vVtx.size(), _vIdx.data(), (UINT)_vIdx.size());
+	_pMesh->Create(_vVtx, (UINT)_vVtx.size(), _vIdx, (UINT)_vIdx.size());
 	AddAsset(_pMesh, L"RectMesh");
 
 	//_vTemp = {};
@@ -101,198 +101,198 @@ void AssetMgr::CreateDefaultMesh()
 	///********************
 	//| Cube Mesh
 	//********************/
-	//_pMesh = new Mesh;
+	_pMesh = new Mesh;
 
-	//// Front
-	//_vTemp.Position = Vec3(-0.5f, 0.5f, -0.5f);
-	//_vTemp.Color = Vec4(1.f, 0.f, 0.f, 1.f);
-	//_vTemp.UV = Vec2(0.f, 0.f);
-	//_vTemp.Normal = Vec3(0.f, 0.f, -1.f);
-	//_vTemp.Tangent = Vec3(0.f, 1.f, 0.f);
-	//_vTemp.Binormal = Vec3(1.f, 0.f, 0.f);
-	//_vVtx.push_back(_vTemp);
+	// Front
+	_vTemp.Position = Vec3(-0.5f, 0.5f, -0.5f);
+	_vTemp.Color = Vec4(1.f, 0.f, 0.f, 1.f);
+	_vTemp.UV = Vec2(0.f, 0.f);
+	_vTemp.Normal = Vec3(0.f, 0.f, -1.f);
+	_vTemp.Tangent = Vec3(0.f, 1.f, 0.f);
+	_vTemp.Binormal = Vec3(1.f, 0.f, 0.f);
+	_vVtx.push_back(_vTemp);
 
-	//_vTemp.Position = Vec3(0.5f, 0.5f, -0.5f);
-	//_vTemp.Color = Vec4(1.f, 0.f, 0.f, 1.f);
-	//_vTemp.UV = Vec2(1.f, 0.f);
-	//_vVtx.push_back(_vTemp);
+	_vTemp.Position = Vec3(0.5f, 0.5f, -0.5f);
+	_vTemp.Color = Vec4(1.f, 0.f, 0.f, 1.f);
+	_vTemp.UV = Vec2(1.f, 0.f);
+	_vVtx.push_back(_vTemp);
 
-	//_vTemp.Position = Vec3(0.5f, -0.5f, -0.5f);
-	//_vTemp.Color = Vec4(1.f, 0.f, 0.f, 1.f);
-	//_vTemp.UV = Vec2(1.f, 1.f);
-	//_vVtx.push_back(_vTemp);
+	_vTemp.Position = Vec3(0.5f, -0.5f, -0.5f);
+	_vTemp.Color = Vec4(1.f, 0.f, 0.f, 1.f);
+	_vTemp.UV = Vec2(1.f, 1.f);
+	_vVtx.push_back(_vTemp);
 
-	//_vTemp.Position = Vec3(-0.5f, -0.5f, -0.5f);
-	//_vTemp.Color = Vec4(1.f, 0.f, 0.f, 1.f);
-	//_vTemp.UV = Vec2(0.f, 1.f);
-	//_vVtx.push_back(_vTemp);
+	_vTemp.Position = Vec3(-0.5f, -0.5f, -0.5f);
+	_vTemp.Color = Vec4(1.f, 0.f, 0.f, 1.f);
+	_vTemp.UV = Vec2(0.f, 1.f);
+	_vVtx.push_back(_vTemp);
 
-	//// Back
-	//_vTemp.Position = Vec3(-0.5f, 0.5f, 0.5f);
-	//_vTemp.Color = Vec4(0.f, 1.f, 0.f, 1.f);
-	//_vTemp.UV = Vec2(0.f, 0.f);
-	//_vTemp.Normal = Vec3(0.f, 0.f, 1.f);
-	//_vVtx.push_back(_vTemp);
+	// Back
+	_vTemp.Position = Vec3(-0.5f, 0.5f, 0.5f);
+	_vTemp.Color = Vec4(0.f, 1.f, 0.f, 1.f);
+	_vTemp.UV = Vec2(0.f, 0.f);
+	_vTemp.Normal = Vec3(0.f, 0.f, 1.f);
+	_vVtx.push_back(_vTemp);
 
-	//_vTemp.Position = Vec3(0.5f, 0.5f, 0.5f);
-	//_vTemp.Color = Vec4(0.f, 1.f, 0.f, 1.f);
-	//_vTemp.UV = Vec2(1.f, 0.f);
-	//_vVtx.push_back(_vTemp);
+	_vTemp.Position = Vec3(0.5f, 0.5f, 0.5f);
+	_vTemp.Color = Vec4(0.f, 1.f, 0.f, 1.f);
+	_vTemp.UV = Vec2(1.f, 0.f);
+	_vVtx.push_back(_vTemp);
 
-	//_vTemp.Position = Vec3(0.5f, -0.5f, 0.5f);
-	//_vTemp.Color = Vec4(0.f, 1.f, 0.f, 1.f);
-	//_vTemp.UV = Vec2(1.f, 1.f);
-	//_vVtx.push_back(_vTemp);
+	_vTemp.Position = Vec3(0.5f, -0.5f, 0.5f);
+	_vTemp.Color = Vec4(0.f, 1.f, 0.f, 1.f);
+	_vTemp.UV = Vec2(1.f, 1.f);
+	_vVtx.push_back(_vTemp);
 
-	//_vTemp.Position = Vec3(-0.5f, -0.5f, 0.5f);
-	//_vTemp.Color = Vec4(0.f, 1.f, 0.f, 1.f);
-	//_vTemp.UV = Vec2(0.f, 1.f);
-	//_vVtx.push_back(_vTemp);
+	_vTemp.Position = Vec3(-0.5f, -0.5f, 0.5f);
+	_vTemp.Color = Vec4(0.f, 1.f, 0.f, 1.f);
+	_vTemp.UV = Vec2(0.f, 1.f);
+	_vVtx.push_back(_vTemp);
 
-	//// Right
-	//_vTemp.Position = Vec3(0.5f, 0.5f, 0.5f);
-	//_vTemp.Color = Vec4(1.f, 0.f, 0.f, 1.f);
-	//_vTemp.UV = Vec2(0.f, 0.f);
-	//_vTemp.Normal = Vec3(1.f, 0.f, 0.f);
-	//_vVtx.push_back(_vTemp);
+	// Right
+	_vTemp.Position = Vec3(0.5f, 0.5f, 0.5f);
+	_vTemp.Color = Vec4(1.f, 0.f, 0.f, 1.f);
+	_vTemp.UV = Vec2(0.f, 0.f);
+	_vTemp.Normal = Vec3(1.f, 0.f, 0.f);
+	_vVtx.push_back(_vTemp);
 
-	//_vTemp.Position = Vec3(0.5f, 0.5f, -0.5f);
-	//_vTemp.Color = Vec4(0.f, 0.f, 1.f, 1.f);
-	//_vTemp.UV = Vec2(1.f, 0.f);
-	//_vVtx.push_back(_vTemp);
+	_vTemp.Position = Vec3(0.5f, 0.5f, -0.5f);
+	_vTemp.Color = Vec4(0.f, 0.f, 1.f, 1.f);
+	_vTemp.UV = Vec2(1.f, 0.f);
+	_vVtx.push_back(_vTemp);
 
-	//_vTemp.Position = Vec3(0.5f, -0.5f, -0.5f);
-	//_vTemp.Color = Vec4(1.f, 0.f, 1.f, 1.f);
-	//_vTemp.UV = Vec2(1.f, 1.f);
-	//_vVtx.push_back(_vTemp);
+	_vTemp.Position = Vec3(0.5f, -0.5f, -0.5f);
+	_vTemp.Color = Vec4(1.f, 0.f, 1.f, 1.f);
+	_vTemp.UV = Vec2(1.f, 1.f);
+	_vVtx.push_back(_vTemp);
 
-	//_vTemp.Position = Vec3(0.5f, -0.5f, 0.5f);
-	//_vTemp.Color = Vec4(0.f, 1.f, 0.f, 1.f);
-	//_vTemp.UV = Vec2(0.f, 1.f);
-	//_vVtx.push_back(_vTemp);
+	_vTemp.Position = Vec3(0.5f, -0.5f, 0.5f);
+	_vTemp.Color = Vec4(0.f, 1.f, 0.f, 1.f);
+	_vTemp.UV = Vec2(0.f, 1.f);
+	_vVtx.push_back(_vTemp);
 
-	//// Left
-	//_vTemp.Position = Vec3(-0.5f, 0.5f, 0.5f);
-	//_vTemp.Color = Vec4(1.f, 0.f, 0.f, 1.f);
-	//_vTemp.UV = Vec2(0.f, 0.f);
-	//_vTemp.Normal = Vec3(-1.f, 0.f, 0.f);
-	//_vVtx.push_back(_vTemp);
+	// Left
+	_vTemp.Position = Vec3(-0.5f, 0.5f, 0.5f);
+	_vTemp.Color = Vec4(1.f, 0.f, 0.f, 1.f);
+	_vTemp.UV = Vec2(0.f, 0.f);
+	_vTemp.Normal = Vec3(-1.f, 0.f, 0.f);
+	_vVtx.push_back(_vTemp);
 
-	//_vTemp.Position = Vec3(-0.5f, 0.5f, -0.5f);
-	//_vTemp.Color = Vec4(0.f, 0.f, 1.f, 1.f);
-	//_vTemp.UV = Vec2(1.f, 0.f);
-	//_vVtx.push_back(_vTemp);
+	_vTemp.Position = Vec3(-0.5f, 0.5f, -0.5f);
+	_vTemp.Color = Vec4(0.f, 0.f, 1.f, 1.f);
+	_vTemp.UV = Vec2(1.f, 0.f);
+	_vVtx.push_back(_vTemp);
 
-	//_vTemp.Position = Vec3(-0.5f, -0.5f, -0.5f);
-	//_vTemp.Color = Vec4(1.f, 0.f, 1.f, 1.f);
-	//_vTemp.UV = Vec2(1.f, 1.f);
-	//_vVtx.push_back(_vTemp);
+	_vTemp.Position = Vec3(-0.5f, -0.5f, -0.5f);
+	_vTemp.Color = Vec4(1.f, 0.f, 1.f, 1.f);
+	_vTemp.UV = Vec2(1.f, 1.f);
+	_vVtx.push_back(_vTemp);
 
-	//_vTemp.Position = Vec3(-0.5f, -0.5f, 0.5f);
-	//_vTemp.Color = Vec4(0.f, 1.f, 0.f, 1.f);
-	//_vTemp.UV = Vec2(0.f, 1.f);
-	//_vVtx.push_back(_vTemp);
+	_vTemp.Position = Vec3(-0.5f, -0.5f, 0.5f);
+	_vTemp.Color = Vec4(0.f, 1.f, 0.f, 1.f);
+	_vTemp.UV = Vec2(0.f, 1.f);
+	_vVtx.push_back(_vTemp);
 
-	//// Up
-	//_vTemp.Position = Vec3(0.5f, 0.5f, -0.5f);
-	//_vTemp.Color = Vec4(1.f, 0.f, 0.f, 1.f);
-	//_vTemp.UV = Vec2(0.f, 0.f);
-	//_vTemp.Normal = Vec3(0.f, 1.f, 0.f);
-	//_vVtx.push_back(_vTemp);
+	// Up
+	_vTemp.Position = Vec3(0.5f, 0.5f, -0.5f);
+	_vTemp.Color = Vec4(1.f, 0.f, 0.f, 1.f);
+	_vTemp.UV = Vec2(0.f, 0.f);
+	_vTemp.Normal = Vec3(0.f, 1.f, 0.f);
+	_vVtx.push_back(_vTemp);
 
-	//_vTemp.Position = Vec3(-0.5f, 0.5f, -0.5f);
-	//_vTemp.Color = Vec4(0.f, 0.f, 1.f, 1.f);
-	//_vTemp.UV = Vec2(1.f, 0.f);
-	//_vVtx.push_back(_vTemp);
+	_vTemp.Position = Vec3(-0.5f, 0.5f, -0.5f);
+	_vTemp.Color = Vec4(0.f, 0.f, 1.f, 1.f);
+	_vTemp.UV = Vec2(1.f, 0.f);
+	_vVtx.push_back(_vTemp);
 
-	//_vTemp.Position = Vec3(-0.5f, 0.5f, 0.5f);
-	//_vTemp.Color = Vec4(1.f, 0.f, 1.f, 1.f);
-	//_vTemp.UV = Vec2(1.f, 1.f);
-	//_vVtx.push_back(_vTemp);
+	_vTemp.Position = Vec3(-0.5f, 0.5f, 0.5f);
+	_vTemp.Color = Vec4(1.f, 0.f, 1.f, 1.f);
+	_vTemp.UV = Vec2(1.f, 1.f);
+	_vVtx.push_back(_vTemp);
 
-	//_vTemp.Position = Vec3(0.5f, 0.5f, 0.5f);
-	//_vTemp.Color = Vec4(0.f, 1.f, 0.f, 1.f);
-	//_vTemp.UV = Vec2(0.f, 1.f);
-	//_vVtx.push_back(_vTemp);
+	_vTemp.Position = Vec3(0.5f, 0.5f, 0.5f);
+	_vTemp.Color = Vec4(0.f, 1.f, 0.f, 1.f);
+	_vTemp.UV = Vec2(0.f, 1.f);
+	_vVtx.push_back(_vTemp);
 
-	//// Down
-	//_vTemp.Position = Vec3(0.5f, -0.5f, -0.5f);
-	//_vTemp.Color = Vec4(1.f, 0.f, 0.f, 1.f);
-	//_vTemp.UV = Vec2(0.f, 0.f);
-	//_vTemp.Normal = Vec3(0.f, -1.f, 0.f);
-	//_vVtx.push_back(_vTemp);
+	// Down
+	_vTemp.Position = Vec3(0.5f, -0.5f, -0.5f);
+	_vTemp.Color = Vec4(1.f, 0.f, 0.f, 1.f);
+	_vTemp.UV = Vec2(0.f, 0.f);
+	_vTemp.Normal = Vec3(0.f, -1.f, 0.f);
+	_vVtx.push_back(_vTemp);
 
-	//_vTemp.Position = Vec3(-0.5f, -0.5f, -0.5f);
-	//_vTemp.Color = Vec4(0.f, 0.f, 1.f, 1.f);
-	//_vTemp.UV = Vec2(1.f, 0.f);
-	//_vVtx.push_back(_vTemp);
+	_vTemp.Position = Vec3(-0.5f, -0.5f, -0.5f);
+	_vTemp.Color = Vec4(0.f, 0.f, 1.f, 1.f);
+	_vTemp.UV = Vec2(1.f, 0.f);
+	_vVtx.push_back(_vTemp);
 
-	//_vTemp.Position = Vec3(-0.5f, -0.5f, 0.5f);
-	//_vTemp.Color = Vec4(1.f, 0.f, 1.f, 1.f);
-	//_vTemp.UV = Vec2(1.f, 1.f);
-	//_vVtx.push_back(_vTemp);
+	_vTemp.Position = Vec3(-0.5f, -0.5f, 0.5f);
+	_vTemp.Color = Vec4(1.f, 0.f, 1.f, 1.f);
+	_vTemp.UV = Vec2(1.f, 1.f);
+	_vVtx.push_back(_vTemp);
 
-	//_vTemp.Position = Vec3(0.5f, -0.5f, 0.5f);
-	//_vTemp.Color = Vec4(0.f, 1.f, 0.f, 1.f);
-	//_vTemp.UV = Vec2(0.f, 1.f);
-	//_vVtx.push_back(_vTemp);
+	_vTemp.Position = Vec3(0.5f, -0.5f, 0.5f);
+	_vTemp.Color = Vec4(0.f, 1.f, 0.f, 1.f);
+	_vTemp.UV = Vec2(0.f, 1.f);
+	_vVtx.push_back(_vTemp);
 
-	//// Front
-	//_vIdx.push_back(0);
-	//_vIdx.push_back(1);
-	//_vIdx.push_back(2);
+	// Front
+	_vIdx.push_back(0);
+	_vIdx.push_back(1);
+	_vIdx.push_back(2);
 
-	//_vIdx.push_back(0);
-	//_vIdx.push_back(2);
-	//_vIdx.push_back(3);
+	_vIdx.push_back(0);
+	_vIdx.push_back(2);
+	_vIdx.push_back(3);
 
-	//// Back
-	//_vIdx.push_back(6);
-	//_vIdx.push_back(5);
-	//_vIdx.push_back(4);
+	// Back
+	_vIdx.push_back(6);
+	_vIdx.push_back(5);
+	_vIdx.push_back(4);
 
-	//_vIdx.push_back(7);
-	//_vIdx.push_back(6);
-	//_vIdx.push_back(4);
+	_vIdx.push_back(7);
+	_vIdx.push_back(6);
+	_vIdx.push_back(4);
 
-	//// Right
-	//_vIdx.push_back(10);
-	//_vIdx.push_back(9);
-	//_vIdx.push_back(8);
+	// Right
+	_vIdx.push_back(10);
+	_vIdx.push_back(9);
+	_vIdx.push_back(8);
 
-	//_vIdx.push_back(11);
-	//_vIdx.push_back(10);
-	//_vIdx.push_back(8);
+	_vIdx.push_back(11);
+	_vIdx.push_back(10);
+	_vIdx.push_back(8);
 
-	//// Left
-	//_vIdx.push_back(12);
-	//_vIdx.push_back(13);
-	//_vIdx.push_back(14);
+	// Left
+	_vIdx.push_back(12);
+	_vIdx.push_back(13);
+	_vIdx.push_back(14);
 
-	//_vIdx.push_back(12);
-	//_vIdx.push_back(14);
-	//_vIdx.push_back(15);
+	_vIdx.push_back(12);
+	_vIdx.push_back(14);
+	_vIdx.push_back(15);
 
-	//// Up
-	//_vIdx.push_back(16);
-	//_vIdx.push_back(17);
-	//_vIdx.push_back(18);
+	// Up
+	_vIdx.push_back(16);
+	_vIdx.push_back(17);
+	_vIdx.push_back(18);
 
-	//_vIdx.push_back(16);
-	//_vIdx.push_back(18);
-	//_vIdx.push_back(19);
+	_vIdx.push_back(16);
+	_vIdx.push_back(18);
+	_vIdx.push_back(19);
 
-	//// Down
-	//_vIdx.push_back(22);
-	//_vIdx.push_back(21);
-	//_vIdx.push_back(20);
+	// Down
+	_vIdx.push_back(22);
+	_vIdx.push_back(21);
+	_vIdx.push_back(20);
 
-	//_vIdx.push_back(23);
-	//_vIdx.push_back(22);
-	//_vIdx.push_back(20);
+	_vIdx.push_back(23);
+	_vIdx.push_back(22);
+	_vIdx.push_back(20);
 
-	//_pMesh->Create(_vVtx.data(), (UINT)_vVtx.size(), _vIdx.data(), (UINT)_vIdx.size());
-	//AddAsset(_pMesh, L"CubeMesh");
+	_pMesh->Create(_vVtx, (UINT)_vVtx.size(), _vIdx, (UINT)_vIdx.size());
+	AddAsset(_pMesh, L"CubeMesh");
 
 	//_vTemp = {};
 	//_vVtx.clear();
