@@ -87,7 +87,7 @@ void AssetMgr::CreateDefaultMesh()
 	_vIdx.push_back(2);
 	_vIdx.push_back(3);
 
-	_pMesh->Create(_vVtx.data(), (UINT)_vVtx.size(), _vIdx.data(), (UINT)_vIdx.size());
+	_pMesh->Create(_vVtx, (UINT)_vVtx.size(), _vIdx.data(), (UINT)_vIdx.size());
 	AddAsset(_pMesh, L"RectMesh");
 
 	//_vTemp = {};

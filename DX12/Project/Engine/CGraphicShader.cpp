@@ -6,7 +6,7 @@
 
 GraphicShader::GraphicShader()
 	: Shader(ASSET_TYPE::GRAPHIC_SHADER)
-	, m_Topology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
+	, m_Topology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
 	, m_CullType(CULL_TYPE::BACK)
 	, m_DSType(DS_TYPE::LESS)
 	, m_BlendType(BLEND_TYPE::DEFAULT)

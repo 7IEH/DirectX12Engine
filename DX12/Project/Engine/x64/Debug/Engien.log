@@ -50,5 +50,8 @@
   .\Project\Engine\func.hlsli
   .\Project\Engine\struct.hlsli
   2개 파일이 복사되었습니다.
-  CDevice.cpp
+  CAssetMgr_Init.cpp
+  CCamera.cpp
+  CTransform.cpp
+  코드를 생성하고 있습니다...
   Engien.vcxproj -> D:\C++\API\Engine\DirectX12\DX12\External\Library\Engine\Engine_Debug.lib
