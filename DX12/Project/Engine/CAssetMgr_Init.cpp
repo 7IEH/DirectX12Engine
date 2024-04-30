@@ -63,17 +63,17 @@ void AssetMgr::CreateDefaultMesh()
 	//_vTemp.UV = Vec2(1.f, 1.f);
 	_vVtx.push_back(_vTemp);
 
-	_vTemp.Position = Vec3(-0.5f, 0.5f, 0.f);
+	_vTemp.Position = Vec3(-0.5f, 0.5f, 0.5f);
 	_vTemp.Color = Vec4(1.f, 0.f, 0.f, 1.f);
 	////_vTemp.UV = Vec2(0.f, 0.f);
 	_vVtx.push_back(_vTemp);
 
-	_vTemp.Position = Vec3(0.5f, -0.5f, 0.f);
+	_vTemp.Position = Vec3(0.5f, -0.5f, 0.5f);
 	_vTemp.Color = Vec4(1.f, 0.f, 1.f, 1.f);
 	////_vTemp.UV = Vec2(1.f, 1.f);
 	_vVtx.push_back(_vTemp);
 
-	_vTemp.Position = Vec3(-0.5f, -0.5f, 0.f);
+	_vTemp.Position = Vec3(-0.5f, -0.5f, 0.5f);
 	_vTemp.Color = Vec4(0.f, 1.f, 0.f, 1.f);
 	////_vTemp.UV = Vec2(0.f, 1.f);
 	_vVtx.push_back(_vTemp);

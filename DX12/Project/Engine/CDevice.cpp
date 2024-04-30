@@ -11,6 +11,10 @@ Device::Device()
 	, m_pFenceEvent(INVALID_HANDLE_VALUE)
 	, m_iBackBufferIndex(0)
 	, m_pRTVHandle{}
+	, m_iHandleSize(0)
+	, m_iGroupSize(0)
+	, m_iGroupCount(0)
+	, m_iCurGroupIdx(0)
 {
 
 }
@@ -25,11 +29,11 @@ int Device::Awake(const WindowInfo& _windowInfo)
 {
 	m_WindowInfo = _windowInfo;
 
-	#ifdef _DEBUG
+#ifdef _DEBUG
 	// IID_PPV_ARGS -> ID와 포인터를 가져옴
 	::D3D12GetDebugInterface(IID_PPV_ARGS(&m_pDebugContoller));
 	m_pDebugContoller->EnableDebugLayer();
-	#endif
+#endif
 
 	/****************
 	| DX12 Initialize
@@ -55,6 +59,8 @@ int Device::Awake(const WindowInfo& _windowInfo)
 	{
 		HandleError(L"Failed Create ConstantBuffer", 0);
 	}
+
+	//CreateTableDescriptorHeap(256);
 
 	return 0;
 }
@@ -139,22 +145,44 @@ HRESULT Device::CreateRootSignature()
 {
 	HRESULT _hr = E_FAIL;
 
-	CD3DX12_ROOT_PARAMETER _param[4] = {};
+	//CD3DX12_DESCRIPTOR_RANGE _ranges[] =
+	//{
+	//	// Descriptor heap의 용도, 몇 개 사용할 지, 시작할 값
+	//	CD3DX12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_CBV,(UINT)CONSTANT_TYPE::END,0),
+	//};
+
+	CD3DX12_ROOT_PARAMETER _param[4];
 	_param[0].InitAsConstantBufferView(0);
 	_param[1].InitAsConstantBufferView(1);
 	_param[2].InitAsConstantBufferView(2);
 	_param[3].InitAsConstantBufferView(3);
 
-	D3D12_ROOT_SIGNATURE_DESC _tDesc = CD3DX12_ROOT_SIGNATURE_DESC(4, _param);
+	/*CD3DX12_ROOT_PARAMETER _param[1] = {};
+	_param[0].InitAsDescriptorTable(_countof(_ranges), _ranges);*/
+
+	D3D12_ROOT_SIGNATURE_DESC _tDesc = CD3DX12_ROOT_SIGNATURE_DESC(_countof(_param), _param);
 	_tDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 	ComPtr<ID3DBlob> _blobSignature;
 	ComPtr<ID3DBlob> _blobError;
-
 	::D3D12SerializeRootSignature(&_tDesc, D3D_ROOT_SIGNATURE_VERSION_1, &_blobSignature, &_blobError);
 	_hr = m_pDevice->CreateRootSignature(0, _blobSignature->GetBufferPointer(), _blobSignature->GetBufferSize(), IID_PPV_ARGS(&m_pSignature));
 
 	return _hr;
+}
+
+void Device::CreateTableDescriptorHeap(UINT _count)
+{
+	m_iGroupCount = _count;
+	D3D12_DESCRIPTOR_HEAP_DESC _tDesc = {};
+	_tDesc.NumDescriptors = (UINT64)CONSTANT_TYPE::END * m_iGroupCount;
+	_tDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	_tDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+
+	DEVICE->CreateDescriptorHeap(&_tDesc, IID_PPV_ARGS(&m_pGPUHeap));
+
+	m_iHandleSize = DEVICE->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	m_iGroupSize = m_iHandleSize * (UINT64)CONSTANT_TYPE::END;
 }
 
 void Device::CreateRTView()
@@ -249,6 +277,26 @@ void Device::ClearRenderTarget(float(&Color)[4])
 	m_pCmdList->ClearRenderTargetView(backBufferView, Colors::LightSteelBlue, 0, nullptr);
 }
 
+void Device::SetCBV(D3D12_CPU_DESCRIPTOR_HANDLE _srcHandle, CONSTANT_TYPE _type)
+{
+	D3D12_CPU_DESCRIPTOR_HANDLE _destHandle = m_pGPUHeap->GetCPUDescriptorHandleForHeapStart();
+	_destHandle.ptr += m_iCurGroupIdx * m_iGroupSize;
+	_destHandle.ptr += (UINT)_type * m_iHandleSize;
+
+	UINT _iDestRange = 1;
+	UINT _iSrcRange = 1;
+	DEVICE->CopyDescriptors(1, &_destHandle, &_iDestRange, 1, &_srcHandle, &_iSrcRange, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+}
+
+void Device::CommitTable()
+{
+	D3D12_GPU_DESCRIPTOR_HANDLE	_handle = m_pGPUHeap->GetGPUDescriptorHandleForHeapStart();
+	_handle.ptr += m_iCurGroupIdx * m_iGroupSize;
+	CMDLIST->SetGraphicsRootDescriptorTable(0, _handle);
+
+	m_iCurGroupIdx++;
+}
+
 void Device::WaitSync()
 {
 	m_iFenceVal++;
@@ -275,6 +323,9 @@ void Device::RenderBegin()
 
 	m_pCmdList->SetGraphicsRootSignature(m_pSignature.Get());
 	ClearConstantBuffer();
+	//TableClear();
+
+	//CMDLIST->SetDescriptorHeaps(1, m_pGPUHeap.GetAddressOf());
 
 	m_pCmdList->ResourceBarrier(1, &_barrier);
 	CreateViewPort(Vec2(0.f, 0.f), m_WindowInfo.Res);
@@ -304,7 +355,7 @@ void Device::RenderEnd()
 
 void Device::Present()
 {
-	m_pSwapChain->Present(0,0);
+	m_pSwapChain->Present(0, 0);
 }
 
 void Device::SwapIndex()
@@ -330,6 +381,7 @@ void Device::ClearConstantBuffer()
 {
 	for (UINT i = 0;i < (UINT)CONSTANT_TYPE::END;i++)
 	{
-		m_pConstantBuffer[i]->Clear();
+		if(nullptr != m_pConstantBuffer[i])
+			m_pConstantBuffer[i]->Clear();
 	}
 }

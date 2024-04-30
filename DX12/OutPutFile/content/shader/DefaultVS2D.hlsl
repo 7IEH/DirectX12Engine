@@ -21,10 +21,9 @@ VS_OUT VS_Default2D(VS_IN _in)
 {
     VS_OUT output = (VS_OUT) 0.f;
     
-    output.vPosition = float4(_in.vPos, 1.f);
-    //output.vPosition = mul(float4(_in.vPos, 1.f), WVP);
+    //output.vPosition = float4(_in.vPos, 1.f);
+    output.vPosition = mul(float4(_in.vPos, 1.f), WVP);
     output.vColor = _in.vColor;
-    
     return output;
 }
 

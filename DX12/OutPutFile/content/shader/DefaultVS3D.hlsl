@@ -34,13 +34,13 @@ VS_OUT VS_Default3D(VS_IN _in)
 {
     VS_OUT output = (VS_OUT) 0.f;
     
-    output.vPosition = mul(float4(_in.vPos, 1.f), WVP);
-    output.vUV = _in.vUV;
+    //output.vPosition = mul(float4(_in.vPos, 1.f), WVP);
+    //output.vUV = _in.vUV;
 
-    output.vViewPos = mul(float4(_in.vPos, 1.f), WV).xyz;
-    output.vViewTangent = normalize(mul(float4(_in.vTangent, 0.f), WV).xyz);
-    output.vViewNormal = normalize(mul(float4(_in.vNormal, 0.f), WV).xyz);
-    output.vViewBinormal = normalize(mul(float4(_in.vBinormal, 0.f), WV).xyz);
+    //output.vViewPos = mul(float4(_in.vPos, 1.f), WV).xyz;
+    //output.vViewTangent = normalize(mul(float4(_in.vTangent, 0.f), WV).xyz);
+    //output.vViewNormal = normalize(mul(float4(_in.vNormal, 0.f), WV).xyz);
+    //output.vViewBinormal = normalize(mul(float4(_in.vBinormal, 0.f), WV).xyz);
     
     return output;
 }

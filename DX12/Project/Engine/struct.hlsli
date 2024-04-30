@@ -207,7 +207,7 @@ struct tSpawnCount
 
 cbuffer Worldspcae : register(b0)
 {
-    matrix World;
+    row_major matrix World;
     matrix matWorldInv;
     
     matrix View;

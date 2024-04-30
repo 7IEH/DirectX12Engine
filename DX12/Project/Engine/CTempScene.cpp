@@ -24,7 +24,7 @@ void TempScene::Awake()
 	_pCamera->SetName(L"Camera");
 	Camera* _pMainCam = _pCamera->AddComponent<Camera>();
 	Transform* _pCamTr = _pCamera->AddComponent<Transform>();
-	_pCamTr->SetRelativePosition(Vec3(0.f, 0.f, 0.f));
+	_pCamTr->SetRelativePosition(Vec3(0.f, 0.f, -1.f));
 
 	_pMainCam->AllVisibleSet(TRUE);
 	_pMainCam->SetCameraType(CAMERA_TYPE::MAIN_CAMERA);
@@ -34,7 +34,7 @@ void TempScene::Awake()
 	GameObject* _pCube = new GameObject;
 	_pCube->SetName(L"CUBE");
 	Transform* _pTr = _pCube->AddComponent<Transform>();
-	_pTr->SetRelativePosition(Vec3(1.f, 0.f, 0.f));
+	_pTr->SetRelativePosition(Vec3(0.f, 0.f, 0.f));
 	_pTr->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
 
 	MeshRenderer* _pRenderer = _pCube->AddComponent<MeshRenderer>();

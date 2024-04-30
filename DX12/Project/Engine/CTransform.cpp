@@ -104,7 +104,7 @@ void Transform::UpdateData()
 	// P
 	e_MatrixData.Projection = e_MatrixData.Projection.Transpose();
 
-	Device::GetInst()->GetConstantBuffer(CONSTANT_TYPE::TRANSFORM)->UpdateData(&e_MatrixData, sizeof(TransformInfo), 1);
+	Device::GetInst()->GetConstantBuffer(CONSTANT_TYPE::TRANSFORM)->UpdateData(&e_MatrixData, sizeof(MatrixInfo), 1);
 
 	e_MatrixData.View = e_MatrixData.View.Transpose();
 	e_MatrixData.Projection = e_MatrixData.Projection.Transpose();

@@ -41,6 +41,16 @@ private:
 	WindowInfo								m_WindowInfo;
 	UINT									m_i4MSAAQuality;
 
+	// TableDescriptorHeap
+	ComPtr<ID3D12DescriptorHeap>			m_pGPUHeap;
+	UINT64									m_iHandleSize;
+	UINT64									m_iGroupSize;
+	UINT64									m_iGroupCount;
+
+	UINT64									m_iCurGroupIdx;
+
+
+	// ConstantBuffer
 	ConstantBuffer* m_pConstantBuffer[(UINT)CONSTANT_TYPE::END];
 
 public:
@@ -67,6 +77,12 @@ public:
 
 	ConstantBuffer*					GetConstantBuffer(CONSTANT_TYPE _type) { return m_pConstantBuffer[(UINT)_type]; }
 
+	// TableDescriptorHeap
+	void							TableClear() { m_iCurGroupIdx = 0; }
+	void							SetCBV(D3D12_CPU_DESCRIPTOR_HANDLE _srcHandle, CONSTANT_TYPE _type);
+	void							CommitTable();
+	ID3D12DescriptorHeap*			GetDescHeap() { return m_pGPUHeap.Get(); }
+
 public:
 	// CommandQueue Func
 	void							WaitSync();
@@ -89,6 +105,7 @@ private:
 	HRESULT						CreateSwapChain();
 	void						CreateDecriptionHeap();
 	HRESULT						CreateRootSignature();
+	void						CreateTableDescriptorHeap(UINT _count);
 
 	void						CreateRTView();
 	void						CreateDSView();
