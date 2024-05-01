@@ -19,6 +19,10 @@ private:
 	// Context개념
 	ComPtr<ID3D12GraphicsCommandList>		m_pCmdList;
 
+	// Reosurce 용
+	ComPtr<ID3D12CommandAllocator>			m_pResCmdAlloc;
+	ComPtr<ID3D12GraphicsCommandList>		m_pResCmdList;
+
 	// CPU와 GPU의 동기화를 위한 장치(멀티 스레딩 개념)
 	ComPtr<ID3D12Fence>						m_pFence;
 	UINT									m_iFenceVal;
@@ -47,8 +51,10 @@ private:
 	UINT64									m_iGroupSize;
 	UINT64									m_iGroupCount;
 
-	UINT64									m_iCurGroupIdx;
+	UINT									m_iCurGroupIdx;
 
+	// SamplerState
+	D3D12_STATIC_SAMPLER_DESC				m_Sampler[(UINT)SAMPLER_TYPE::END];
 
 	// ConstantBuffer
 	ConstantBuffer* m_pConstantBuffer[(UINT)CONSTANT_TYPE::END];
@@ -58,6 +64,7 @@ public:
 	IDXGIFactory*					GetDXGI() { return m_pDxgi.Get(); }
 	ID3D12CommandQueue*				GetCmdQueue() { return m_pCmdQueue.Get(); }
 	ID3D12GraphicsCommandList*		GetCmdList() { return m_pCmdList.Get(); }
+	ID3D12GraphicsCommandList*		GetResCmdList() { return m_pResCmdList.Get(); }
 
 	Vec2							GetRes() { return m_WindowInfo.Res; }
 	HWND							GetHwnd() { return m_WindowInfo.Hwnd; }
@@ -80,6 +87,7 @@ public:
 	// TableDescriptorHeap
 	void							TableClear() { m_iCurGroupIdx = 0; }
 	void							SetCBV(D3D12_CPU_DESCRIPTOR_HANDLE _srcHandle, CONSTANT_TYPE _type);
+	void							SetSRV(D3D12_CPU_DESCRIPTOR_HANDLE _srcHandle, TEX_PARAM _type);
 	void							CommitTable();
 	ID3D12DescriptorHeap*			GetDescHeap() { return m_pGPUHeap.Get(); }
 
@@ -99,6 +107,8 @@ public:
 	void						OMSetRT();
 	void						CreateViewPort(Vec2 _pos, Vec2 _scale);
 
+	void						FlushResrouceCommandQueue();
+
 private:
 	HRESULT						CreateDevice();
 	HRESULT						CreateCommandQueue();
@@ -117,6 +127,5 @@ private:
 	HRESULT						CreateSamplerState();
 	void						SetSamplerState();
 	void						ClearConstantBuffer();
-
 };
 

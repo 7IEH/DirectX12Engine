@@ -50,32 +50,22 @@ void AssetMgr::CreateDefaultMesh()
 
 	_vTemp.Position = Vec3(-0.5f, 0.5f, 0.5f);
 	_vTemp.Color = Vec4(1.f, 0.f, 0.f, 1.f);
-	//_vTemp.UV = Vec2(0.f, 0.f);
+	_vTemp.UV = Vec2(0.f, 0.f);
 	_vVtx.push_back(_vTemp);
 
 	_vTemp.Position = Vec3(0.5f, 0.5f, 0.5f);
 	_vTemp.Color = Vec4(0.f, 1.f, 1.f, 1.f);
-	//_vTemp.UV = Vec2(1.f, 0.f);
+	_vTemp.UV = Vec2(1.f, 0.f);
 	_vVtx.push_back(_vTemp);
 
 	_vTemp.Position = Vec3(0.5f, -0.5f, 0.5f);
 	_vTemp.Color = Vec4(0.f, 0.f, 1.f, 1.f);
-	//_vTemp.UV = Vec2(1.f, 1.f);
-	_vVtx.push_back(_vTemp);
-
-	_vTemp.Position = Vec3(-0.5f, 0.5f, 0.5f);
-	_vTemp.Color = Vec4(1.f, 0.f, 0.f, 1.f);
-	////_vTemp.UV = Vec2(0.f, 0.f);
-	_vVtx.push_back(_vTemp);
-
-	_vTemp.Position = Vec3(0.5f, -0.5f, 0.5f);
-	_vTemp.Color = Vec4(1.f, 0.f, 1.f, 1.f);
-	////_vTemp.UV = Vec2(1.f, 1.f);
+	_vTemp.UV = Vec2(1.f, 1.f);
 	_vVtx.push_back(_vTemp);
 
 	_vTemp.Position = Vec3(-0.5f, -0.5f, 0.5f);
-	_vTemp.Color = Vec4(0.f, 1.f, 0.f, 1.f);
-	////_vTemp.UV = Vec2(0.f, 1.f);
+	_vTemp.Color = Vec4(1.f, 0.f, 0.f, 1.f);
+	_vTemp.UV = Vec2(0.f, 0.f);
 	_vVtx.push_back(_vTemp);
 
 	// ÀÎµ¦½º
@@ -90,9 +80,9 @@ void AssetMgr::CreateDefaultMesh()
 	_pMesh->Create(_vVtx, (UINT)_vVtx.size(), _vIdx, (UINT)_vIdx.size());
 	AddAsset(_pMesh, L"RectMesh");
 
-	//_vTemp = {};
-	//_vVtx.clear();
-	//_vIdx.clear();
+	_vTemp = {};
+	_vVtx.clear();
+	_vIdx.clear();
 
 	///********************
 	//| Circle Mesh
@@ -294,119 +284,119 @@ void AssetMgr::CreateDefaultMesh()
 	_pMesh->Create(_vVtx, (UINT)_vVtx.size(), _vIdx, (UINT)_vIdx.size());
 	AddAsset(_pMesh, L"CubeMesh");
 
-	//_vTemp = {};
-	//_vVtx.clear();
-	//_vIdx.clear();
+	_vTemp = {};
+	_vVtx.clear();
+	_vIdx.clear();
 
 	///********************
 	//| Sphere Mesh
 	//********************/
-	//float fRadius = 0.5f;
+	float fRadius = 0.5f;
 
-	//// Top
-	//_vTemp.Position = Vec3(0.f, fRadius, 0.f);
-	//_vTemp.UV = Vec2(0.5f, 0.f);
-	//_vTemp.Color = Vec4(1.f, 1.f, 1.f, 1.f);
-	//_vTemp.Normal = _vTemp.Position;
-	//_vTemp.Normal.Normalize();
-	//_vTemp.Tangent = Vec3(1.f, 0.f, 0.f);
-	//_vTemp.Binormal = Vec3(0.f, 0.f, -1.f);
-	//_vVtx.push_back(_vTemp);
+	// Top
+	_vTemp.Position = Vec3(0.f, fRadius, 0.f);
+	_vTemp.UV = Vec2(0.5f, 0.f);
+	_vTemp.Color = Vec4(1.f, 1.f, 1.f, 1.f);
+	_vTemp.Normal = _vTemp.Position;
+	_vTemp.Normal.Normalize();
+	_vTemp.Tangent = Vec3(1.f, 0.f, 0.f);
+	_vTemp.Binormal = Vec3(0.f, 0.f, -1.f);
+	_vVtx.push_back(_vTemp);
 
-	//// Body
-	//UINT iStackCount = 40; // °¡·Î ºÐÇÒ °³¼ö
-	//UINT iSliceCount = 40; // ¼¼·Î ºÐÇÒ °³¼ö
+	// Body
+	UINT iStackCount = 40; // °¡·Î ºÐÇÒ °³¼ö
+	UINT iSliceCount = 40; // ¼¼·Î ºÐÇÒ °³¼ö
 
-	//float fStackAngle = XM_PI / iStackCount;
-	//float fSliceAngle = XM_2PI / iSliceCount;
+	float fStackAngle = XM_PI / iStackCount;
+	float fSliceAngle = XM_2PI / iSliceCount;
 
-	//float fUVXStep = 1.f / (float)iSliceCount;
-	//float fUVYStep = 1.f / (float)iStackCount;
+	float fUVXStep = 1.f / (float)iSliceCount;
+	float fUVYStep = 1.f / (float)iStackCount;
 
-	//for (UINT i = 1; i < iStackCount; ++i)
-	//{
-	//	float phi = i * fStackAngle;
+	for (UINT i = 1; i < iStackCount; ++i)
+	{
+		float phi = i * fStackAngle;
 
-	//	for (UINT j = 0; j <= iSliceCount; ++j)
-	//	{
-	//		float theta = j * fSliceAngle;
+		for (UINT j = 0; j <= iSliceCount; ++j)
+		{
+			float theta = j * fSliceAngle;
 
-	//		_vTemp.Position = Vec3(fRadius * sinf(i * fStackAngle) * cosf(j * fSliceAngle)
-	//			, fRadius * cosf(i * fStackAngle)
-	//			, fRadius * sinf(i * fStackAngle) * sinf(j * fSliceAngle));
+			_vTemp.Position = Vec3(fRadius * sinf(i * fStackAngle) * cosf(j * fSliceAngle)
+				, fRadius * cosf(i * fStackAngle)
+				, fRadius * sinf(i * fStackAngle) * sinf(j * fSliceAngle));
 
-	//		_vTemp.UV = Vec2(fUVXStep * j, fUVYStep * i);
-	//		_vTemp.Color = Vec4(1.f, 1.f, 1.f, 1.f);
-	//		_vTemp.Normal = _vTemp.Position;
-	//		_vTemp.Normal.Normalize();
+			_vTemp.UV = Vec2(fUVXStep * j, fUVYStep * i);
+			_vTemp.Color = Vec4(1.f, 1.f, 1.f, 1.f);
+			_vTemp.Normal = _vTemp.Position;
+			_vTemp.Normal.Normalize();
 
-	//		_vTemp.Tangent.x = -fRadius * sinf(phi) * sinf(theta);
-	//		_vTemp.Tangent.y = 0.f;
-	//		_vTemp.Tangent.z = fRadius * sinf(phi) * cosf(theta);
-	//		_vTemp.Tangent.Normalize();
+			_vTemp.Tangent.x = -fRadius * sinf(phi) * sinf(theta);
+			_vTemp.Tangent.y = 0.f;
+			_vTemp.Tangent.z = fRadius * sinf(phi) * cosf(theta);
+			_vTemp.Tangent.Normalize();
 
-	//		_vTemp.Normal.Cross(_vTemp.Tangent, _vTemp.Binormal);
-	//		_vTemp.Binormal.Normalize();
+			_vTemp.Normal.Cross(_vTemp.Tangent, _vTemp.Binormal);
+			_vTemp.Binormal.Normalize();
 
-	//		_vVtx.push_back(_vTemp);
-	//	}
-	//}
-	//
-	//// Bottom
-	//_vTemp.Position = Vec3(0.f, -fRadius, 0.f);
-	//_vTemp.UV = Vec2(0.5f, 1.f);
-	//_vTemp.Color = Vec4(1.f, 1.f, 1.f, 1.f);
-	//_vTemp.Normal = _vTemp.Position;
-	//_vTemp.Normal.Normalize();
+			_vVtx.push_back(_vTemp);
+		}
+	}
+	
+	// Bottom
+	_vTemp.Position = Vec3(0.f, -fRadius, 0.f);
+	_vTemp.UV = Vec2(0.5f, 1.f);
+	_vTemp.Color = Vec4(1.f, 1.f, 1.f, 1.f);
+	_vTemp.Normal = _vTemp.Position;
+	_vTemp.Normal.Normalize();
 
-	//_vTemp.Tangent = Vec3(1.f, 0.f, 0.f);
-	//_vTemp.Binormal = Vec3(0.f, 0.f, -1.f);
-	//_vVtx.push_back(_vTemp);
+	_vTemp.Tangent = Vec3(1.f, 0.f, 0.f);
+	_vTemp.Binormal = Vec3(0.f, 0.f, -1.f);
+	_vVtx.push_back(_vTemp);
 
-	//// ÀÎµ¦½º
-	//// ºÏ±ØÁ¡
-	//for (UINT i = 0; i < iSliceCount; ++i)
-	//{
-	//	_vIdx.push_back(0);
-	//	_vIdx.push_back(i + 2);
-	//	_vIdx.push_back(i + 1);
-	//}
+	// ÀÎµ¦½º
+	// ºÏ±ØÁ¡
+	for (UINT i = 0; i < iSliceCount; ++i)
+	{
+		_vIdx.push_back(0);
+		_vIdx.push_back(i + 2);
+		_vIdx.push_back(i + 1);
+	}
 
-	//// ¸öÅë
-	//for (UINT i = 0; i < iStackCount - 2; ++i)
-	//{
-	//	for (UINT j = 0; j < iSliceCount; ++j)
-	//	{
-	//		// + 
-	//		// | \
-	//		// +--+
-	//		_vIdx.push_back((iSliceCount + 1) * (i)+(j)+1);
-	//		_vIdx.push_back((iSliceCount + 1) * (i + 1) + (j + 1) + 1);
-	//		_vIdx.push_back((iSliceCount + 1) * (i + 1) + (j)+1);
+	// ¸öÅë
+	for (UINT i = 0; i < iStackCount - 2; ++i)
+	{
+		for (UINT j = 0; j < iSliceCount; ++j)
+		{
+			// + 
+			// | \
+			// +--+
+			_vIdx.push_back((iSliceCount + 1) * (i)+(j)+1);
+			_vIdx.push_back((iSliceCount + 1) * (i + 1) + (j + 1) + 1);
+			_vIdx.push_back((iSliceCount + 1) * (i + 1) + (j)+1);
 
-	//		// +--+
-	//		//  \ |
-	//		//    +
-	//		_vIdx.push_back((iSliceCount + 1) * (i)+(j)+1);
-	//		_vIdx.push_back((iSliceCount + 1) * (i)+(j + 1) + 1);
-	//		_vIdx.push_back((iSliceCount + 1) * (i + 1) + (j + 1) + 1);
-	//	}
-	//}
+			// +--+
+			//  \ |
+			//    +
+			_vIdx.push_back((iSliceCount + 1) * (i)+(j)+1);
+			_vIdx.push_back((iSliceCount + 1) * (i)+(j + 1) + 1);
+			_vIdx.push_back((iSliceCount + 1) * (i + 1) + (j + 1) + 1);
+		}
+	}
 
-	//// ³²±ØÁ¡
-	//UINT iBottomIdx = (UINT)_vVtx.size() - 1;
-	//for (UINT i = 0; i < iSliceCount; ++i)
-	//{
-	//	_vIdx.push_back(iBottomIdx);
-	//	_vIdx.push_back(iBottomIdx - (i + 2));
-	//	_vIdx.push_back(iBottomIdx - (i + 1));
-	//}
+	// ³²±ØÁ¡
+	UINT iBottomIdx = (UINT)_vVtx.size() - 1;
+	for (UINT i = 0; i < iSliceCount; ++i)
+	{
+		_vIdx.push_back(iBottomIdx);
+		_vIdx.push_back(iBottomIdx - (i + 2));
+		_vIdx.push_back(iBottomIdx - (i + 1));
+	}
 
-	////_pMesh = new Mesh;
-	////_pMesh->Create(_vVtx.data(), (UINT)_vVtx.size(), _vIdx.data(), (UINT)_vIdx.size());
-	////AddAsset(_pMesh,L"SphereMesh");
-	//_vVtx.clear();
-	//_vIdx.clear();
+	_pMesh = new Mesh;
+	_pMesh->Create(_vVtx, (UINT)_vVtx.size(), _vIdx, (UINT)_vIdx.size());
+	AddAsset(_pMesh,L"SphereMesh");
+	_vVtx.clear();
+	_vIdx.clear();
 }
 
 void AssetMgr::CreateDefaultShader()
@@ -437,7 +427,7 @@ void AssetMgr::CreateDefaultShader()
 	/********************
 	| Default 3D Shader
 	********************/
-	/*_pShader = new GraphicShader;
+	_pShader = new GraphicShader;
 
 	_vsPath = L"\\shader\\DefaultVS3D.hlsl";
 	_psPath = L"\\shader\\DefaultPS3D.hlsl";
@@ -449,7 +439,7 @@ void AssetMgr::CreateDefaultShader()
 
 	_pShader->SetBlendType(BLEND_TYPE::DEFAULT);
 
-	AddAsset(_pShader, L"Default3DShader");*/
+	AddAsset(_pShader, L"Default3DShader");
 }
 
 void AssetMgr::CreateDefaultMaterial()
@@ -466,9 +456,9 @@ void AssetMgr::CreateDefaultMaterial()
 	/**********************
 	| Default Shader3D Mat
 	***********************/
-	/*_mat = new Material;
+	_mat = new Material;
 	_mat->SetGraphicShader(AssetMgr::GetInst()->FindAsset<GraphicShader>(L"Default3DShader"));
-	AddAsset<Material>(_mat, L"Default3DMat");*/
+	AddAsset<Material>(_mat, L"Default3DMat");
 }
 
 void AssetMgr::CreateDefaultComputeShader()

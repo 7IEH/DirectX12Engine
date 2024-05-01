@@ -15,6 +15,7 @@ Device::Device()
 	, m_iGroupSize(0)
 	, m_iGroupCount(0)
 	, m_iCurGroupIdx(0)
+	, m_Sampler{}
 {
 
 }
@@ -46,21 +47,21 @@ int Device::Awake(const WindowInfo& _windowInfo)
 
 	CreateDecriptionHeap();
 
+	CreateBlendState();
+
+	CreateSamplerState();
+
 	if (FAILED(CreateRootSignature()))
 	{
 		HandleError(L"Failed Create RootSignature", 0);
 	}
-
-	CreateBlendState();
-
-	CreateSamplerState();
 
 	if (FAILED(CreateConstantBuffer()))
 	{
 		HandleError(L"Failed Create ConstantBuffer", 0);
 	}
 
-	//CreateTableDescriptorHeap(256);
+	CreateTableDescriptorHeap(256);
 
 	return 0;
 }
@@ -92,9 +93,13 @@ HRESULT Device::CreateCommandQueue()
 	// m_pCmdAlloc-> list에서 명령들을 보내면 해당 메모리 자리를 없애는게 아니라 비워두고 관리하는데 이 때 관리자 역할을 함
 	_hr = m_pDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_pCmdAlloc.Get(), nullptr, IID_PPV_ARGS(&m_pCmdList));
 
+
 	// CommandList는 Close/open 상태가 있는데
 	// Open 상태에서 Command를 넣다가 Close한 다음 제출하는 개념
 	_hr = m_pCmdList->Close();
+
+	_hr = m_pDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_pResCmdAlloc));
+	_hr = m_pDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_pResCmdAlloc.Get(), nullptr, IID_PPV_ARGS(&m_pResCmdList));
 
 	_hr = m_pDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_pFence));
 	m_pFenceEvent = ::CreateEvent(nullptr, FALSE, FALSE, nullptr);
@@ -145,22 +150,17 @@ HRESULT Device::CreateRootSignature()
 {
 	HRESULT _hr = E_FAIL;
 
-	//CD3DX12_DESCRIPTOR_RANGE _ranges[] =
-	//{
-	//	// Descriptor heap의 용도, 몇 개 사용할 지, 시작할 값
-	//	CD3DX12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_CBV,(UINT)CONSTANT_TYPE::END,0),
-	//};
+	CD3DX12_DESCRIPTOR_RANGE _ranges[] =
+	{
+		// Descriptor heap의 용도, 몇 개 사용할 지, 시작할 값
+		CD3DX12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_CBV,(UINT)CONSTANT_TYPE::END,0),
+		CD3DX12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_SRV,(UINT)TEX_PARAM::END,0),
+	};
 
-	CD3DX12_ROOT_PARAMETER _param[4];
-	_param[0].InitAsConstantBufferView(0);
-	_param[1].InitAsConstantBufferView(1);
-	_param[2].InitAsConstantBufferView(2);
-	_param[3].InitAsConstantBufferView(3);
+	CD3DX12_ROOT_PARAMETER _param[1] = {};
+	_param[0].InitAsDescriptorTable(_countof(_ranges), _ranges);
 
-	/*CD3DX12_ROOT_PARAMETER _param[1] = {};
-	_param[0].InitAsDescriptorTable(_countof(_ranges), _ranges);*/
-
-	D3D12_ROOT_SIGNATURE_DESC _tDesc = CD3DX12_ROOT_SIGNATURE_DESC(_countof(_param), _param);
+	D3D12_ROOT_SIGNATURE_DESC _tDesc = CD3DX12_ROOT_SIGNATURE_DESC(_countof(_param), _param, 1, &m_Sampler[0]);
 	_tDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 	ComPtr<ID3DBlob> _blobSignature;
@@ -174,15 +174,17 @@ HRESULT Device::CreateRootSignature()
 void Device::CreateTableDescriptorHeap(UINT _count)
 {
 	m_iGroupCount = _count;
+
+	UINT64 _iRegisterNum = (UINT64)CONSTANT_TYPE::END + (UINT64)TEX_PARAM::END;
 	D3D12_DESCRIPTOR_HEAP_DESC _tDesc = {};
-	_tDesc.NumDescriptors = (UINT64)CONSTANT_TYPE::END * m_iGroupCount;
+	_tDesc.NumDescriptors = _iRegisterNum * m_iGroupCount;
 	_tDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	_tDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 
 	DEVICE->CreateDescriptorHeap(&_tDesc, IID_PPV_ARGS(&m_pGPUHeap));
 
 	m_iHandleSize = DEVICE->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	m_iGroupSize = m_iHandleSize * (UINT64)CONSTANT_TYPE::END;
+	m_iGroupSize = m_iHandleSize * _iRegisterNum;
 }
 
 void Device::CreateRTView()
@@ -274,7 +276,7 @@ void Device::OMSetRT()
 void Device::ClearRenderTarget(float(&Color)[4])
 {
 	D3D12_CPU_DESCRIPTOR_HANDLE	backBufferView = m_pRTVHandle[m_iBackBufferIndex];
-	m_pCmdList->ClearRenderTargetView(backBufferView, Colors::LightSteelBlue, 0, nullptr);
+	m_pCmdList->ClearRenderTargetView(backBufferView, Colors::Black, 0, nullptr);
 }
 
 void Device::SetCBV(D3D12_CPU_DESCRIPTOR_HANDLE _srcHandle, CONSTANT_TYPE _type)
@@ -282,6 +284,17 @@ void Device::SetCBV(D3D12_CPU_DESCRIPTOR_HANDLE _srcHandle, CONSTANT_TYPE _type)
 	D3D12_CPU_DESCRIPTOR_HANDLE _destHandle = m_pGPUHeap->GetCPUDescriptorHandleForHeapStart();
 	_destHandle.ptr += m_iCurGroupIdx * m_iGroupSize;
 	_destHandle.ptr += (UINT)_type * m_iHandleSize;
+
+	UINT _iDestRange = 1;
+	UINT _iSrcRange = 1;
+	DEVICE->CopyDescriptors(1, &_destHandle, &_iDestRange, 1, &_srcHandle, &_iSrcRange, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+}
+
+void Device::SetSRV(D3D12_CPU_DESCRIPTOR_HANDLE _srcHandle, TEX_PARAM _type)
+{
+	D3D12_CPU_DESCRIPTOR_HANDLE _destHandle = m_pGPUHeap->GetCPUDescriptorHandleForHeapStart();
+	_destHandle.ptr += m_iCurGroupIdx * m_iGroupSize;
+	_destHandle.ptr += ((UINT)CONSTANT_TYPE::END + (UINT)_type) * m_iHandleSize;
 
 	UINT _iDestRange = 1;
 	UINT _iSrcRange = 1;
@@ -323,9 +336,9 @@ void Device::RenderBegin()
 
 	m_pCmdList->SetGraphicsRootSignature(m_pSignature.Get());
 	ClearConstantBuffer();
-	//TableClear();
+	TableClear();
 
-	//CMDLIST->SetDescriptorHeaps(1, m_pGPUHeap.GetAddressOf());
+	CMDLIST->SetDescriptorHeaps(1, m_pGPUHeap.GetAddressOf());
 
 	m_pCmdList->ResourceBarrier(1, &_barrier);
 	CreateViewPort(Vec2(0.f, 0.f), m_WindowInfo.Res);
@@ -370,18 +383,28 @@ HRESULT Device::CreateBlendState()
 
 HRESULT Device::CreateSamplerState()
 {
+	m_Sampler[(UINT)SAMPLER_TYPE::Default] = CD3DX12_STATIC_SAMPLER_DESC(0);
 	return S_OK;
-}
-
-void Device::SetSamplerState()
-{
 }
 
 void Device::ClearConstantBuffer()
 {
 	for (UINT i = 0;i < (UINT)CONSTANT_TYPE::END;i++)
 	{
-		if(nullptr != m_pConstantBuffer[i])
+		if (nullptr != m_pConstantBuffer[i])
 			m_pConstantBuffer[i]->Clear();
 	}
+}
+
+void Device::FlushResrouceCommandQueue()
+{
+	m_pResCmdList->Close();
+
+	ID3D12CommandList* cmdListArr[] = { m_pResCmdList.Get() };
+	m_pCmdQueue->ExecuteCommandLists(_countof(cmdListArr), cmdListArr);
+
+	WaitSync();
+
+	m_pResCmdAlloc->Reset();
+	m_pResCmdList->Reset(m_pResCmdAlloc.Get(), nullptr);
 }

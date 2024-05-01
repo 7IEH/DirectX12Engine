@@ -4,23 +4,16 @@ class Texture :
     public Asset
 {
 private:
-	/*ScratchImage									m_Image;
-	ComPtr<ID3D11Texture2D>							m_pTexture;
-	D3D11_TEXTURE2D_DESC							m_DESC;
+	ScratchImage									m_Image;
+	ComPtr<ID3D12Resource>							m_pTexture;
 
-	ComPtr<ID3D11RenderTargetView>					m_RenderTargetView;
-	ComPtr<ID3D11DepthStencilView>					m_DepthStencilView;
-	ComPtr<ID3D11ShaderResourceView>				m_ShaderResourceView;
-	ComPtr<ID3D11UnorderedAccessView>				m_UnorderedAccessView;
+	ComPtr<ID3D12DescriptorHeap>					m_pSRV;
+	D3D12_CPU_DESCRIPTOR_HANDLE						m_SRVHandle;
 
-	UINT											m_RecentNum_SRV;
-	UINT											m_RecentNum_UAV;
-
-	Vec2											m_RT;
-	Vec2											m_WH;
+	ComPtr<ID3D12Resource>							m_pTextureUploadHeap;
 
 public:
-	UINT									GetSpriteWidth() { return m_DESC.Width; }
+	/*UINT									GetSpriteWidth() { return m_DESC.Width; }
 	UINT									GetSpriteHeight() { return m_DESC.Height; }
 
 	ComPtr<ID3D11RenderTargetView>			GetRTV() { return m_RenderTargetView; }
@@ -48,6 +41,8 @@ private:
 		D3D11_USAGE _usage = D3D11_USAGE_DEFAULT);
 
 	HRESULT Create(ComPtr<ID3D11Texture2D> _texture2D);*/
+
+	void CreateView();
 
 public:
 	CLONE_DISABLE(Texture)

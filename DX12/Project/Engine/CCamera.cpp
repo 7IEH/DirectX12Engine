@@ -49,7 +49,7 @@ void Camera::Update()
 
 		Vec3 _vPos = _pTr->GetRelativePosition();
 		Vec3 _vRot = _pTr->GetRelativeRotation();
-		float _fCamSpeed = 10.f;
+		float _fCamSpeed = 200.f;
 
 		if (KEY_PRESSED(KEY::A))
 		{

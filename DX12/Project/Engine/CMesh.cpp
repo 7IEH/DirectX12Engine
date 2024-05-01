@@ -9,6 +9,8 @@ Mesh::Mesh()
 	, m_IndexCount(0)
 	, m_VertexInfo(nullptr)
 	, m_IndexInfo(nullptr)
+	, m_VBView{}
+	, m_IBView{}
 {
 }
 
@@ -23,7 +25,7 @@ Mesh::~Mesh()
 
 void Mesh::Create(vector<VertexInfo>& _VBdata, UINT _VertexCount, vector<UINT>& _IBData, UINT _IndexCount)
 {
-	m_IndexCount = _VertexCount;
+	m_IndexCount = _IndexCount;
 
 	CreateBuffer(BUFFER_TYPE::VERTEX, _VertexCount, _VBdata, _IBData);
 	CreateBuffer(BUFFER_TYPE::INDEX, _IndexCount, _VBdata, _IBData);
@@ -78,7 +80,7 @@ void Mesh::CreateBuffer(BUFFER_TYPE _bufferType, UINT _count, vector<VertexInfo>
 	break;
 	case BUFFER_TYPE::INDEX:
 	{
-		/*D3D12_RESOURCE_DESC _tDesc = CD3DX12_RESOURCE_DESC::Buffer(sizeof(UINT) * _count);
+		D3D12_RESOURCE_DESC _tDesc = CD3DX12_RESOURCE_DESC::Buffer(sizeof(UINT) * _count);
 		DEVICE->CreateCommittedResource(
 			&_heapProperty,
 			D3D12_HEAP_FLAG_NONE,
@@ -91,12 +93,12 @@ void Mesh::CreateBuffer(BUFFER_TYPE _bufferType, UINT _count, vector<VertexInfo>
 		void* IndexDataBuffer = nullptr;
 		CD3DX12_RANGE readRange(0, 0);
 		m_IB->Map(0, &readRange, &IndexDataBuffer);
-		::memcpy(IndexDataBuffer, &_indexData, sizeof(UINT) * _count);
+		::memcpy(IndexDataBuffer, &_indexData[0], sizeof(UINT) * _count);
 		m_IB->Unmap(0, nullptr);
 
-		m_VBView.BufferLocation = m_VB->GetGPUVirtualAddress();
-		m_VBView.StrideInBytes = sizeof(UINT);
-		m_VBView.SizeInBytes = sizeof(UINT) * _count;*/
+		m_IBView.BufferLocation = m_IB->GetGPUVirtualAddress();
+		m_IBView.Format = DXGI_FORMAT_R32_UINT;
+		m_IBView.SizeInBytes = sizeof(UINT) * _count;
 	}
 	break;
 	case BUFFER_TYPE::END:
@@ -108,7 +110,7 @@ void Mesh::CreateBuffer(BUFFER_TYPE _bufferType, UINT _count, vector<VertexInfo>
 
 void Mesh::DrawIndexed()
 {
-	CMDLIST->DrawInstanced(m_IndexCount, 1, 0, 0);
+	CMDLIST->DrawIndexedInstanced(m_IndexCount, 1, 0, 0, 0);
 }
 
 void Mesh::Render_Instancing(UINT _particleCount)
@@ -126,7 +128,7 @@ void Mesh::SetBuffer(BUFFER_TYPE _bufferType)
 	break;
 	case BUFFER_TYPE::INDEX:
 	{
-		//CMDLIST->IASetIndexBuffer(&m_IBView);
+		CMDLIST->IASetIndexBuffer(&m_IBView);
 	}
 	break;
 	case BUFFER_TYPE::END:

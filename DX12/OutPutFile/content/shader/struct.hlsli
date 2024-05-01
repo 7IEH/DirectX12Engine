@@ -21,20 +21,20 @@ struct LightInfo
     float3 pad;
 };
 
-//Texture2D ST0 : register(t0);
-//Texture2D ST1 : register(t1);
-//Texture2D ST2 : register(t2);
-//Texture2D ST3 : register(t3);
-//Texture2D ST4 : register(t4);
-//Texture2D ST5 : register(t5);
+Texture2D ST0 : register(t0);
+Texture2D ST1 : register(t1);
+Texture2D ST2 : register(t2);
+Texture2D ST3 : register(t3);
+Texture2D ST4 : register(t4);
+Texture2D ST5 : register(t5);
 
-//Texture2D CUBE6 : register(t6);
-//Texture2D CUBE7 : register(t7);
+Texture2D CUBE6 : register(t6);
+Texture2D CUBE7 : register(t7);
 
-//Texture2D STARR8 : register(t8);
-//Texture2D STARR9 : register(t9);
+Texture2D STARR8 : register(t8);
+Texture2D STARR9 : register(t9);
 
-//SamplerState sampler1 : register(s0);
+SamplerState sampler1 : register(s0);
 //SamplerState sampler2 : register(s1);
 
 //// Animation Texture
@@ -207,7 +207,7 @@ struct tSpawnCount
 
 cbuffer Worldspcae : register(b0)
 {
-    row_major matrix World;
+    matrix World;
     matrix matWorldInv;
     
     matrix View;

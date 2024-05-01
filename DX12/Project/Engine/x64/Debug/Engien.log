@@ -40,8 +40,8 @@
   .\Project\Engine\singleton.h
   .\Project\Engine\struct.h
   41개 파일이 복사되었습니다.
-  0개 파일이 복사되었습니다.
   파일을 찾을 수 없습니다-*.h
+  0개 파일이 복사되었습니다.
   .\Project\Engine\DefaultPS2D.hlsl
   .\Project\Engine\DefaultPS3D.hlsl
   .\Project\Engine\DefaultVS2D.hlsl
@@ -50,5 +50,6 @@
   .\Project\Engine\func.hlsli
   .\Project\Engine\struct.hlsli
   2개 파일이 복사되었습니다.
-  CTempScene.cpp
+  CDevice.cpp
+D:\C++\API\Engine\DirectX12\DX12\Project\Engine\CDevice.cpp(186,40): warning C4244: '=': 'UINT64'에서 'UINT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   Engien.vcxproj -> D:\C++\API\Engine\DirectX12\DX12\External\Library\Engine\Engine_Debug.lib

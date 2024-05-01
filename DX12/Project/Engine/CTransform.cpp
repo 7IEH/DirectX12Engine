@@ -104,6 +104,8 @@ void Transform::UpdateData()
 	// P
 	e_MatrixData.Projection = e_MatrixData.Projection.Transpose();
 
+	GameObject* _test = GetOwner();
+
 	Device::GetInst()->GetConstantBuffer(CONSTANT_TYPE::TRANSFORM)->UpdateData(&e_MatrixData, sizeof(MatrixInfo), 1);
 
 	e_MatrixData.View = e_MatrixData.View.Transpose();
@@ -112,15 +114,7 @@ void Transform::UpdateData()
 
 Vec3 Transform::GetWorldScale()
 {
-	//GameObject* pParent = GetOwner()->GetParent();
 	Vec3 vWorldScale = Vec3(m_RelativeTransform.Scale);
-
-	/*while (pParent)
-	{
-		vWorldScale *= Vec3(pParent->GetComponent<Transform>(COMPONENT_TYPE::TRANSFORM)->GetRelativeScale());
-		pParent = pParent->GetParent();
-	}*/
-
 	return vWorldScale;
 }
 

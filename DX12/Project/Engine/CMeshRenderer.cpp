@@ -7,6 +7,8 @@
 #include "CMaterial.h"
 #include "CMesh.h"
 
+#include "CDevice.h"
+
 MeshRenderer::MeshRenderer()
 	:Renderer(RENDERER_TYPE::MESHRENDERER)
 {
@@ -36,4 +38,6 @@ void MeshRenderer::UpdateData()
 	// 2. Texture Binding
 	GetMaterial().Get()->Render();
 	_pTr->UpdateData();
+	
+	Device::GetInst()->CommitTable();
 }

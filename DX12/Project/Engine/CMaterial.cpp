@@ -46,8 +46,7 @@ void Material::UpdateData()
 		}
 	}
 
-	//Device::GetInst()->GetConstantBuffer(CONSTANT_TYPE::MATERIAL)->SetData(&m_tMaterial, sizeof(MaterialInfo), 1);
-	//Device::GetInst()->GetConstantBuffer(CONSTANT_TYPE::MATERIAL)->UpdateData();
+	Device::GetInst()->GetConstantBuffer(CONSTANT_TYPE::MATERIAL)->UpdateData(&m_tMaterial, sizeof(MaterialInfo), 1);
 }
 
 void Material::Render()

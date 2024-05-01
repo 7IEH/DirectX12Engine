@@ -25,11 +25,14 @@ public:
 	CONSTANT_TYPE	GetCBType() { return m_Type; }
 	void			SetCBType(CONSTANT_TYPE _type) { m_Type = _type; }
 
+private:
+	void			SetData(void* _data, int _size, int _count);
+
 public:
 	HRESULT			Create(UINT _elementSize, UINT _elementCount, CONSTANT_TYPE _type);
 	HRESULT			CreateBuffer();
 	HRESULT			CreateBufferView();
-	void			SetData(void* _data, int _size, int _count);
+	
 	void			UpdateData(void* _data, int _size, int _count);
 	void			UpdateData_CS(void* _data, int _size, int _count);
 
