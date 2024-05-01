@@ -14,6 +14,12 @@
     <ContentFile>
       <FullPath>D:\C++\API\Engine\DirectX12\DX12\External\Library\Engine\DefaultVS3D.cso</FullPath>
     </ContentFile>
+    <ContentFile>
+      <FullPath>D:\C++\API\Engine\DirectX12\DX12\External\Library\Engine\SkyBoxPS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\C++\API\Engine\DirectX12\DX12\External\Library\Engine\SkyBoxVS.cso</FullPath>
+    </ContentFile>
   </ContentFiles>
   <SatelliteDlls />
   <NonRecipeFileRefs />

@@ -34,6 +34,7 @@ public:
 	HRESULT			CreateBufferView();
 	
 	void			UpdateData(void* _data, int _size, int _count);
+	void			UpdateData_Constant(void* _data, int _size, int _count);
 	void			UpdateData_CS(void* _data, int _size, int _count);
 
 	void			Clear();

@@ -384,5 +384,11 @@
     <FxCompile Include="DefaultVS3D.hlsl">
       <Filter>ShaderCode\VS</Filter>
     </FxCompile>
+    <FxCompile Include="SkyBoxPS.hlsl">
+      <Filter>ShaderCode\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="SkyBoxVS.hlsl">
+      <Filter>ShaderCode\VS</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

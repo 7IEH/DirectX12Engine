@@ -40,6 +40,10 @@ void RenderMgr::Update()
 
 void RenderMgr::UpdateData()
 {
+	e_Global.Light2DSize = m_vLights2D.size();
+	e_Global.Light3DSize = m_vLights3D.size();
+	
+	Device::GetInst()->GetConstantBuffer(CONSTANT_TYPE::GLOBAL)->UpdateData_Constant(&e_Global, sizeof(GlobalDataInfo), 1);
 }
 
 void RenderMgr::Render()

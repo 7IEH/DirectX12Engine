@@ -46,26 +46,11 @@
   .\Project\Engine\DefaultPS3D.hlsl
   .\Project\Engine\DefaultVS2D.hlsl
   .\Project\Engine\DefaultVS3D.hlsl
-  4개 파일이 복사되었습니다.
+  .\Project\Engine\SkyBoxPS.hlsl
+  .\Project\Engine\SkyBoxVS.hlsl
+  6개 파일이 복사되었습니다.
   .\Project\Engine\func.hlsli
   .\Project\Engine\struct.hlsli
   2개 파일이 복사되었습니다.
-  CAssetMgr.cpp
   CAssetMgr_Init.cpp
-  CCamera.cpp
-  CEngine.cpp
-  CGameObject.cpp
-  CGraphicShader.cpp
-  CLayer.cpp
-  CLight3D.cpp
-  CMaterial.cpp
-  CMesh.cpp
-  CMeshRenderer.cpp
-  CRenderMgr.cpp
-  CRenderer.cpp
-  CScene.cpp
-  CSceneMgr.cpp
-  CTempScene.cpp
-  CTransform.cpp
-  코드를 생성하고 있습니다...
   Engien.vcxproj -> D:\C++\API\Engine\DirectX12\DX12\External\Library\Engine\Engine_Debug.lib

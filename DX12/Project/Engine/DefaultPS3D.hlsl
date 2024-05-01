@@ -29,7 +29,6 @@ float4 PS_Default3D(VS_OUT _in) : SV_Target
     if (gMatrial.spriteCheck0)
     {
         Color = ST0.Sample(sampler1, _in.vUV);
-
     }
     
     float3 viewNormal = _in.vViewNormal;

@@ -205,7 +205,7 @@ struct tSpawnCount
 };
 
 
-cbuffer Worldspcae : register(b0)
+cbuffer Worldspcae : register(b1)
 {
     matrix World;
     matrix matWorldInv;
@@ -220,12 +220,12 @@ cbuffer Worldspcae : register(b0)
     matrix WVP;
 };
 
-cbuffer Material : register(b1)
+cbuffer Material : register(b2)
 {
     Material gMatrial;
 }
 
-cbuffer tAnimationInfo : register(b2)
+cbuffer tAnimationInfo : register(b3)
 {
     float2 gOffsetSize;
     float2 gLeftTop;
@@ -235,7 +235,7 @@ cbuffer tAnimationInfo : register(b2)
     float3 gPadding;
 }
 
-cbuffer tGlobalData : register(b3)
+cbuffer tGlobalData : register(b0)
 {
     float2 gRenderResolution;
     float gDt;

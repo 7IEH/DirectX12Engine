@@ -418,9 +418,9 @@ void AssetMgr::CreateDefaultShader()
 	_vsEntry = "VS_Default2D";
 	_psEntry = "PS_Default2D";
 
-	_pShader->Default_Create(_vsPath, _psPath, _vsEntry, _psEntry);
-	
 	_pShader->SetBlendType(BLEND_TYPE::ALPHABLENDING);
+
+	_pShader->Default_Create(_vsPath, _psPath, _vsEntry, _psEntry);
 
 	AddAsset(_pShader, L"Default2DShader");
 
@@ -435,11 +435,30 @@ void AssetMgr::CreateDefaultShader()
 	_vsEntry = "VS_Default3D";
 	_psEntry = "PS_Default3D";
 
+	_pShader->SetBlendType(BLEND_TYPE::DEFAULT);
+	_pShader->SetCullType(CULL_TYPE::BACK);
+
 	_pShader->Default_Create(_vsPath, _psPath, _vsEntry, _psEntry);
 
-	_pShader->SetBlendType(BLEND_TYPE::DEFAULT);
-
 	AddAsset(_pShader, L"Default3DShader");
+
+	/********************
+	| SkyBox Shader
+	********************/
+	_pShader = new GraphicShader;
+
+	_vsPath = L"\\shader\\SkyBoxVS.hlsl";
+	_psPath = L"\\shader\\SkyBoxPS.hlsl";
+
+	_vsEntry = "VS_SkyBox";
+	_psEntry = "PS_SkyBox";
+
+	_pShader->SetDSType(DS_TYPE::LESS_EQUAL);
+	_pShader->SetCullType(CULL_TYPE::FRONT);
+
+	_pShader->Default_Create(_vsPath, _psPath, _vsEntry, _psEntry);
+
+	AddAsset(_pShader, L"SkyBoxShader");
 }
 
 void AssetMgr::CreateDefaultMaterial()
@@ -459,6 +478,13 @@ void AssetMgr::CreateDefaultMaterial()
 	_mat = new Material;
 	_mat->SetGraphicShader(AssetMgr::GetInst()->FindAsset<GraphicShader>(L"Default3DShader"));
 	AddAsset<Material>(_mat, L"Default3DMat");
+
+	/**********************
+	| SkyBox Mat
+	***********************/
+	_mat = new Material;
+	_mat->SetGraphicShader(AssetMgr::GetInst()->FindAsset<GraphicShader>(L"SkyBoxShader"));
+	AddAsset<Material>(_mat, L"SkyBoxMat");
 }
 
 void AssetMgr::CreateDefaultComputeShader()

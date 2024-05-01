@@ -231,10 +231,10 @@ enum class SHADER_TYPE
 // Constant Buffer Type
 enum class CONSTANT_TYPE
 {
+	GLOBAL,
 	TRANSFORM,
 	MATERIAL,
 	ANIMATION,
-	GLOBAL,
 	END,
 };
 

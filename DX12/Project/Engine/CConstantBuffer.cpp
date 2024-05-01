@@ -99,6 +99,16 @@ void ConstantBuffer::UpdateData(void* _data, int _size, int _count)
 	m_iCurrentIdx++;
 }
 
+void ConstantBuffer::UpdateData_Constant(void* _data, int _size, int _count)
+{
+	SetData(_data, _size, _count);
+
+	D3D12_GPU_VIRTUAL_ADDRESS _address = m_pCB->GetGPUVirtualAddress();
+	_address += m_iCurrentIdx * m_iElementSize;
+
+	CMDLIST->SetGraphicsRootConstantBufferView(0, _address);
+}
+
 void ConstantBuffer::UpdateData_CS(void* _data, int _size, int _count)
 {
 }

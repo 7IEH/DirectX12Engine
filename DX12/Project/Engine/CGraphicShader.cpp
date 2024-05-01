@@ -220,10 +220,10 @@ void GraphicShader::CreatePipeLineState()
 
 	m_pPLDesc.InputLayout = { _arrElement,_countof(_arrElement) };
 	m_pPLDesc.pRootSignature = Device::GetInst()->GetSignature();
-
-	m_pPLDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+	
 	m_pPLDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 	m_pPLDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
+	m_pPLDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
 	m_pPLDesc.SampleMask = UINT_MAX;
 	m_pPLDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	m_pPLDesc.NumRenderTargets = 1;
@@ -231,6 +231,114 @@ void GraphicShader::CreatePipeLineState()
 	m_pPLDesc.SampleDesc.Count = 1;
 	m_pPLDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
+	switch (m_DSType)
+	{
+	case DS_TYPE::LESS:
+	{
+		m_pPLDesc.DepthStencilState.DepthEnable = TRUE;
+		m_pPLDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+	}
+		break;
+	case DS_TYPE::LESS_EQUAL:
+	{
+		m_pPLDesc.DepthStencilState.DepthEnable = TRUE;
+		m_pPLDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+	}
+		break;
+	case DS_TYPE::GREATER:
+	{
+		m_pPLDesc.DepthStencilState.DepthEnable = TRUE;
+		m_pPLDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_GREATER;
+	}
+		break;
+	case DS_TYPE::GREATER_EQUAL:
+	{
+		m_pPLDesc.DepthStencilState.DepthEnable = TRUE;
+		m_pPLDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_GREATER_EQUAL;
+	}
+		break;
+	case DS_TYPE::NO_TEST:
+	{
+		m_pPLDesc.DepthStencilState.DepthEnable = FALSE;
+		m_pPLDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_NEVER;
+	}
+		break;
+	case DS_TYPE::N0_WRITE:
+	{
+		m_pPLDesc.DepthStencilState.DepthEnable = FALSE;
+		m_pPLDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+		m_pPLDesc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
+	}
+		break;
+	case DS_TYPE::NO_TEST_NO_WRITE:
+	{
+		m_pPLDesc.DepthStencilState.DepthEnable = FALSE;
+		m_pPLDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_NEVER;
+		m_pPLDesc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
+	}
+		break;
+	case DS_TYPE::END:
+		break;
+	default:
+		break;
+	}
+
+	switch (m_BlendType)
+	{
+	case BLEND_TYPE::ALPHABLENDING:
+	{
+		m_pPLDesc.BlendState.RenderTarget[0].BlendEnable = TRUE;
+		m_pPLDesc.BlendState.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+		m_pPLDesc.BlendState.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+		m_pPLDesc.BlendState.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ONE;
+	}
+		break;
+	case BLEND_TYPE::ONE_ONE:
+	{
+		m_pPLDesc.BlendState.RenderTarget[0].BlendEnable = TRUE;
+		m_pPLDesc.BlendState.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
+		m_pPLDesc.BlendState.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ONE;
+	}
+		break;
+	case BLEND_TYPE::END:
+		break;
+	default:
+		break;
+	}
+
+
+	switch (m_CullType)
+	{
+	case CULL_TYPE::BACK:
+	{
+		m_pPLDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
+		m_pPLDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;
+	}
+		break;
+	case CULL_TYPE::FRONT:
+	{
+		m_pPLDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
+		m_pPLDesc.RasterizerState.CullMode = D3D12_CULL_MODE_FRONT;
+	}
+		break;
+	case CULL_TYPE::NONE:
+	{
+		m_pPLDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
+		m_pPLDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+	}
+		break;
+	case CULL_TYPE::WIRE:
+	{
+		m_pPLDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+		m_pPLDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+	}
+		break;
+	case CULL_TYPE::END:
+		break;
+	default:
+		break;
+	}
+	
 	if (FAILED(DEVICE->CreateGraphicsPipelineState(&m_pPLDesc, IID_PPV_ARGS(&m_pPLState))))
 	{
 		HandleError(L"PipeLineState Create Failed", 0);

@@ -153,12 +153,13 @@ HRESULT Device::CreateRootSignature()
 	CD3DX12_DESCRIPTOR_RANGE _ranges[] =
 	{
 		// Descriptor heap의 용도, 몇 개 사용할 지, 시작할 값
-		CD3DX12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_CBV,(UINT)CONSTANT_TYPE::END,0),
+		CD3DX12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_CBV,(UINT)CONSTANT_TYPE::END - 1,1),
 		CD3DX12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_SRV,(UINT)TEX_PARAM::END,0),
 	};
 
-	CD3DX12_ROOT_PARAMETER _param[1] = {};
-	_param[0].InitAsDescriptorTable(_countof(_ranges), _ranges);
+	CD3DX12_ROOT_PARAMETER _param[2] = {};
+	_param[0].InitAsConstantBufferView(0);
+	_param[1].InitAsDescriptorTable(_countof(_ranges), _ranges);
 
 	D3D12_ROOT_SIGNATURE_DESC _tDesc = CD3DX12_ROOT_SIGNATURE_DESC(_countof(_param), _param, 1, &m_Sampler[0]);
 	_tDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
@@ -175,7 +176,7 @@ void Device::CreateTableDescriptorHeap(UINT _count)
 {
 	m_iGroupCount = _count;
 
-	UINT64 _iRegisterNum = (UINT64)CONSTANT_TYPE::END + (UINT64)TEX_PARAM::END;
+	UINT64 _iRegisterNum = ((UINT64)(CONSTANT_TYPE::END)-(UINT64)1) + (UINT64)TEX_PARAM::END;
 	D3D12_DESCRIPTOR_HEAP_DESC _tDesc = {};
 	_tDesc.NumDescriptors = _iRegisterNum * m_iGroupCount;
 	_tDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
@@ -239,22 +240,22 @@ void Device::CreateDSView()
 HRESULT Device::CreateConstantBuffer()
 {
 	HRESULT _result = S_OK;
-	if (FAILED(CreateConstantBufferIndividual(CONSTANT_TYPE::TRANSFORM, sizeof(MatrixInfo), 1)))
-	{
-		_result = E_FAIL;
-	}
-
-	if (FAILED(CreateConstantBufferIndividual(CONSTANT_TYPE::MATERIAL, sizeof(MaterialInfo), 1)))
-	{
-		_result = E_FAIL;
-	}
-
-	if (FAILED(CreateConstantBufferIndividual(CONSTANT_TYPE::ANIMATION, sizeof(AnimationInfo), 1)))
-	{
-		_result = E_FAIL;
-	}
-
 	if (FAILED(CreateConstantBufferIndividual(CONSTANT_TYPE::GLOBAL, sizeof(GlobalDataInfo), 1)))
+	{
+		_result = E_FAIL;
+	}
+
+	if (FAILED(CreateConstantBufferIndividual(CONSTANT_TYPE::TRANSFORM, sizeof(MatrixInfo), 256)))
+	{
+		_result = E_FAIL;
+	}
+
+	if (FAILED(CreateConstantBufferIndividual(CONSTANT_TYPE::MATERIAL, sizeof(MaterialInfo), 256)))
+	{
+		_result = E_FAIL;
+	}
+
+	if (FAILED(CreateConstantBufferIndividual(CONSTANT_TYPE::ANIMATION, sizeof(AnimationInfo), 256)))
 	{
 		_result = E_FAIL;
 	}
@@ -265,7 +266,7 @@ HRESULT Device::CreateConstantBuffer()
 HRESULT Device::CreateConstantBufferIndividual(CONSTANT_TYPE _type, UINT _elementSize, UINT _elementCount)
 {
 	m_pConstantBuffer[(UINT)_type] = new ConstantBuffer();
-	HRESULT _result = m_pConstantBuffer[(UINT)_type]->Create(_elementSize, 256, _type);
+	HRESULT _result = m_pConstantBuffer[(UINT)_type]->Create(_elementSize, _elementCount, _type);
 
 	return _result;
 }
@@ -308,7 +309,7 @@ void Device::SetCBV(D3D12_CPU_DESCRIPTOR_HANDLE _srcHandle, CONSTANT_TYPE _type)
 {
 	D3D12_CPU_DESCRIPTOR_HANDLE _destHandle = m_pGPUHeap->GetCPUDescriptorHandleForHeapStart();
 	_destHandle.ptr += m_iCurGroupIdx * m_iGroupSize;
-	_destHandle.ptr += (UINT)_type * m_iHandleSize;
+	_destHandle.ptr += ((UINT)_type - 1) * m_iHandleSize;
 
 	UINT _iDestRange = 1;
 	UINT _iSrcRange = 1;
@@ -319,7 +320,7 @@ void Device::SetSRV(D3D12_CPU_DESCRIPTOR_HANDLE _srcHandle, TEX_PARAM _type)
 {
 	D3D12_CPU_DESCRIPTOR_HANDLE _destHandle = m_pGPUHeap->GetCPUDescriptorHandleForHeapStart();
 	_destHandle.ptr += m_iCurGroupIdx * m_iGroupSize;
-	_destHandle.ptr += ((UINT)CONSTANT_TYPE::END + (UINT)_type) * m_iHandleSize;
+	_destHandle.ptr += (((UINT)CONSTANT_TYPE::END - 1) + (UINT)_type) * m_iHandleSize;
 
 	UINT _iDestRange = 1;
 	UINT _iSrcRange = 1;
@@ -330,7 +331,7 @@ void Device::CommitTable()
 {
 	D3D12_GPU_DESCRIPTOR_HANDLE	_handle = m_pGPUHeap->GetGPUDescriptorHandleForHeapStart();
 	_handle.ptr += m_iCurGroupIdx * m_iGroupSize;
-	CMDLIST->SetGraphicsRootDescriptorTable(0, _handle);
+	CMDLIST->SetGraphicsRootDescriptorTable(1, _handle);
 
 	m_iCurGroupIdx++;
 }
