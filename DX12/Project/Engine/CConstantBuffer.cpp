@@ -94,11 +94,6 @@ void ConstantBuffer::SetData(void* _data, int _size, int _count)
 void ConstantBuffer::UpdateData(void* _data, int _size, int _count)
 {
 	SetData(_data, _size, _count);
-	
-	/*D3D12_GPU_VIRTUAL_ADDRESS _objAddress = m_pCB->GetGPUVirtualAddress();
-	_objAddress += m_iCurrentIdx * m_iElementSize;
-
-	CMDLIST->SetGraphicsRootConstantBufferView((UINT)m_Type, _objAddress);*/
 
 	Device::GetInst()->SetCBV(CD3DX12_CPU_DESCRIPTOR_HANDLE(m_CpuHandleBegin, m_iHandleIncrementSize * m_iCurrentIdx),m_Type);
 	m_iCurrentIdx++;
@@ -106,12 +101,6 @@ void ConstantBuffer::UpdateData(void* _data, int _size, int _count)
 
 void ConstantBuffer::UpdateData_CS(void* _data, int _size, int _count)
 {
-	SetData(_data, _size, _count);
-	D3D12_GPU_VIRTUAL_ADDRESS _objAddress = m_pCB->GetGPUVirtualAddress();
-	_objAddress += m_iCurrentIdx * m_iElementSize;
-
-	CMDLIST->SetGraphicsRootConstantBufferView((UINT)m_Type, _objAddress);
-	m_iCurrentIdx++;
 }
 
 void ConstantBuffer::Clear()

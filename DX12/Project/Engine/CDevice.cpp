@@ -16,8 +16,8 @@ Device::Device()
 	, m_iGroupCount(0)
 	, m_iCurGroupIdx(0)
 	, m_Sampler{}
+	, m_DSVHandle{}
 {
-
 }
 
 Device::~Device()
@@ -210,6 +210,30 @@ void Device::CreateRTView()
 
 void Device::CreateDSView()
 {
+	D3D12_HEAP_PROPERTIES _property = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
+
+	D3D12_RESOURCE_DESC _tDesc = CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_D24_UNORM_S8_UINT
+		, static_cast<UINT64>(m_WindowInfo.Res.x), static_cast<UINT64>(m_WindowInfo.Res.y));
+	_tDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
+
+	D3D12_CLEAR_VALUE optimizedClearValue = CD3DX12_CLEAR_VALUE(DXGI_FORMAT_D24_UNORM_S8_UINT, 1.f, 0);
+
+	DEVICE->CreateCommittedResource(&_property,
+		D3D12_HEAP_FLAG_NONE,
+		&_tDesc,
+		D3D12_RESOURCE_STATE_DEPTH_WRITE,
+		&optimizedClearValue,
+		IID_PPV_ARGS(&m_pDST));
+
+	D3D12_DESCRIPTOR_HEAP_DESC _tDesc2 = {};
+	_tDesc2.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
+	_tDesc2.NumDescriptors = 1;
+	_tDesc2.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+
+	DEVICE->CreateDescriptorHeap(&_tDesc2, IID_PPV_ARGS(&m_pDSV));
+
+	m_DSVHandle = m_pDSV->GetCPUDescriptorHandleForHeapStart();
+	DEVICE->CreateDepthStencilView(m_pDST.Get(), nullptr, m_DSVHandle);
 }
 
 HRESULT Device::CreateConstantBuffer()
@@ -270,13 +294,14 @@ void Device::CreateViewPort(Vec2 _pos, Vec2 _scale)
 
 void Device::OMSetRT()
 {
-	m_pCmdList->OMSetRenderTargets(1, &m_pRTVHandle[m_iBackBufferIndex], FALSE, nullptr);
+	m_pCmdList->OMSetRenderTargets(1, &m_pRTVHandle[m_iBackBufferIndex], FALSE, &m_DSVHandle);
 }
 
 void Device::ClearRenderTarget(float(&Color)[4])
 {
 	D3D12_CPU_DESCRIPTOR_HANDLE	backBufferView = m_pRTVHandle[m_iBackBufferIndex];
 	m_pCmdList->ClearRenderTargetView(backBufferView, Colors::Black, 0, nullptr);
+	m_pCmdList->ClearDepthStencilView(m_DSVHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.f, 0, 0, nullptr);
 }
 
 void Device::SetCBV(D3D12_CPU_DESCRIPTOR_HANDLE _srcHandle, CONSTANT_TYPE _type)

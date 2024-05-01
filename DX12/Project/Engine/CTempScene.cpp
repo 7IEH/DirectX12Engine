@@ -24,7 +24,7 @@ void TempScene::Awake()
 	_pCamera->SetName(L"Camera");
 	Camera* _pMainCam = _pCamera->AddComponent<Camera>();
 	Transform* _pCamTr = _pCamera->AddComponent<Transform>();
-	_pCamTr->SetRelativePosition(Vec3(0.f, 0.f, -1.f));
+	_pCamTr->SetRelativePosition(Vec3(0.f, 0.f, -500.f));
 
 	_pMainCam->AllVisibleSet(TRUE);
 	_pMainCam->SetCameraType(CAMERA_TYPE::MAIN_CAMERA);

@@ -39,6 +39,11 @@ private:
 	ComPtr<ID3D12DescriptorHeap>			m_pRTV;
 	D3D12_CPU_DESCRIPTOR_HANDLE				m_pRTVHandle[SWAP_CHAIN_BUFFER_COUNT];
 
+	// Depth-Stencil
+	ComPtr<ID3D12Resource>					m_pDST;
+	ComPtr<ID3D12DescriptorHeap>			m_pDSV;
+	D3D12_CPU_DESCRIPTOR_HANDLE				m_DSVHandle;
+
 	// RootSignature
 	ComPtr<ID3D12RootSignature>				m_pSignature;
 
