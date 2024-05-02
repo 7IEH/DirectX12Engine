@@ -365,7 +365,7 @@ void Device::RenderBegin()
 	TableClear();
 
 	CMDLIST->SetDescriptorHeaps(1, m_pGPUHeap.GetAddressOf());
-
+	
 	m_pCmdList->ResourceBarrier(1, &_barrier);
 	CreateViewPort(Vec2(0.f, 0.f), m_WindowInfo.Res);
 

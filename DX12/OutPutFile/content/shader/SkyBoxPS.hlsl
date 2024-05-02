@@ -1,6 +1,8 @@
 #ifndef __SKYBOXPS
 #define __SKYBOXPS
 
+#include "struct.hlsli"
+
 struct VS_OUT
 {
     float4 vPosition : SV_Position;
@@ -17,6 +19,7 @@ float4 PS_SkyBox(VS_OUT _in) : SV_Target
 {
     float4 Color = (float4) 0.f;
 
+    Color = ST0.Sample(sampler1, _in.vUV);
     
     return Color;
 }

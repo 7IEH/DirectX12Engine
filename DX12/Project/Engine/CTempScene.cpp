@@ -59,6 +59,18 @@ void TempScene::Awake()
 	_pRenderer->SetMaterial(AssetMgr::GetInst()->FindAsset<Material>(L"Default3DMat"));
 
 	AddObject(_pSphere, LAYER_TYPE::PLAYER);
+
+	// SkyBox
+	GameObject* _pSkyBox = new GameObject;
+	_pSkyBox->SetName(L"SkyBox");
+	_pTr = _pSkyBox->AddComponent<Transform>();
+
+	SkyBox* _pSkyBoxRender = _pSkyBox->AddComponent<SkyBox>();
+	_pSkyBoxRender->SetType(SkyBoxType::Sphere);
+	_pSkyBoxRender->SetMaterial(AssetMgr::GetInst()->FindAsset<Material>(L"SkyBoxMat"));
+	_pSkyBoxRender->SetSphereTex(AssetMgr::GetInst()->FindAsset<Texture>(L"SkyBox_01"));
+
+	AddObject(_pSkyBox, LAYER_TYPE::PLAYER);
 }
 
 void TempScene::Update()

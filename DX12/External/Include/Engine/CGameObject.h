@@ -51,6 +51,11 @@ public:
 			return dynamic_cast<T*>(m_pRenderer);
 		}
 
+		if constexpr (std::is_same_v<T, SkyBox>)
+		{
+			return dynamic_cast<T*>(m_pRenderer);
+		}
+
 		if constexpr (std::is_same_v<T, Renderer>)
 		{
 			return m_pRenderer;

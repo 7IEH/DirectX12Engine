@@ -121,6 +121,9 @@
     <Filter Include="07. Component\Light3D">
       <UniqueIdentifier>{d34b2884-4702-46fc-98da-c4bc534f8163}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07. Component\Renderer\SkyBox">
+      <UniqueIdentifier>{9cb24885-80a0-47e6-ba7e-3502e4b89b61}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -249,6 +252,9 @@
     <ClInclude Include="CStructuredBuffer.h">
       <Filter>03. Device\StructuredBuffer</Filter>
     </ClInclude>
+    <ClInclude Include="CSkyBox.h">
+      <Filter>07. Component\Renderer\SkyBox</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -358,6 +364,9 @@
     </ClCompile>
     <ClCompile Include="RenderMgr_Init.cpp">
       <Filter>04. Manager\RenderMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CSkyBox.cpp">
+      <Filter>07. Component\Renderer\SkyBox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

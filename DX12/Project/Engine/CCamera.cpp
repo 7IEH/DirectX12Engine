@@ -185,10 +185,10 @@ void Camera::SortObject()
 			Mesh* _mesh = _renderer->GetMesh().Get();
 			Material* _mat = _renderer->GetMaterial().Get();
 
-			if (!(_mesh && _mat))
+		/*	if (!(_mesh && _mat))
 			{
 				continue;
-			}
+			}*/
 
 			GraphicShader* _shader = _mat->GetGraphicShader().Get();
 

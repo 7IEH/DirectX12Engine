@@ -34,6 +34,10 @@ void AssetMgr::CreateTexture()
 	_pTex = new Texture;
 	_pTex->Load(L"\\Asset\\Resource\\3DTile\\TILE_01_N.tga");
 	AddAsset(_pTex, L"3DTileN_01");
+
+	_pTex = new Texture;
+	_pTex->Load(L"\\Asset\\Resource\\SkyBox\\Sky02.jpg");
+	AddAsset(_pTex, L"SkyBox_01");
 }
 
 void AssetMgr::CreateDefaultMesh()
