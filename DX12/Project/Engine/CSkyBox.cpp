@@ -3,6 +3,10 @@
 
 #include "CAssetMgr.h"
 
+#include "CGameObject.h"
+
+#include "CTransform.h"
+
 SkyBox::SkyBox()
 	:Renderer(RENDERER_TYPE::SKYBOX)
 	, m_eType(SkyBoxType::END)
@@ -15,6 +19,11 @@ SkyBox::~SkyBox()
 
 void SkyBox::UpdateData()
 {
+	Transform* _pTr = GetOwner()->GetComponent<Transform>();
+	if (nullptr == _pTr)
+		return;
+	
+
 	if (SkyBoxType::Sphere == m_eType)
 	{
 		SetMesh(AssetMgr::GetInst()->FindAsset<Mesh>(L"SphereMesh"));
@@ -25,6 +34,7 @@ void SkyBox::UpdateData()
 	}
 
 	GetMaterial()->UpdateData();
+	_pTr->UpdateData();
 }
 
 void SkyBox::Render()

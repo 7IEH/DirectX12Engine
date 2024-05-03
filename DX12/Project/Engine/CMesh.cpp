@@ -46,6 +46,7 @@ void Mesh::UpdateData()
 
 void Mesh::Render()
 {
+	Device::GetInst()->CommitTable();
 	UpdateData();
 	DrawIndexed();
 }

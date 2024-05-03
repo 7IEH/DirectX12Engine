@@ -38,6 +38,4 @@ void MeshRenderer::UpdateData()
 	// 2. Texture Binding
 	GetMaterial().Get()->Render();
 	_pTr->UpdateData();
-	
-	Device::GetInst()->CommitTable();
 }
