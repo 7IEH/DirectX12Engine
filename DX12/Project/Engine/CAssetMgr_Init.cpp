@@ -3,7 +3,9 @@
 
 #include "CGraphicShader.h"
 #include "CMesh.h"
+#include "CMeshData.h"
 #include "CMaterial.h"
+#include "CFBXLoader.h"
 
 AssetMgr::AssetMgr()
 	:m_mAssets{}
@@ -23,6 +25,7 @@ void AssetMgr::Awake()
 	CreateDefaultShader();
 	CreateDefaultComputeShader();
 	CreateDefaultMaterial();
+	CreateDefaultMeshData();
 }
 
 void AssetMgr::CreateTexture()
@@ -38,6 +41,10 @@ void AssetMgr::CreateTexture()
 	_pTex = new Texture;
 	_pTex->Load(L"\\Asset\\Resource\\SkyBox\\Sky02.jpg");
 	AddAsset(_pTex, L"SkyBox_01");
+
+	_pTex = new Texture;
+	_pTex->Load(L"\\Asset\\Resource\\FBXmodel\\Haruna_Original_Body.png");
+	AddAsset(_pTex, L"HarunaBody");
 }
 
 void AssetMgr::CreateDefaultMesh()
@@ -345,7 +352,7 @@ void AssetMgr::CreateDefaultMesh()
 			_vVtx.push_back(_vTemp);
 		}
 	}
-	
+
 	// Bottom
 	_vTemp.Position = Vec3(0.f, -fRadius, 0.f);
 	_vTemp.UV = Vec2(0.5f, 1.f);
@@ -398,7 +405,7 @@ void AssetMgr::CreateDefaultMesh()
 
 	_pMesh = new Mesh;
 	_pMesh->Create(_vVtx, (UINT)_vVtx.size(), _vIdx, (UINT)_vIdx.size());
-	AddAsset(_pMesh,L"SphereMesh");
+	AddAsset(_pMesh, L"SphereMesh");
 	_vVtx.clear();
 	_vIdx.clear();
 }
@@ -489,6 +496,14 @@ void AssetMgr::CreateDefaultMaterial()
 	_mat = new Material;
 	_mat->SetGraphicShader(AssetMgr::GetInst()->FindAsset<GraphicShader>(L"SkyBoxShader"));
 	AddAsset<Material>(_mat, L"SkyBoxMat");
+
+	/**********************
+	| Haruna Mat
+	***********************/
+	_mat = new Material;
+	_mat->SetGraphicShader(AssetMgr::GetInst()->FindAsset<GraphicShader>(L"Default3DShader"));
+	_mat->SetTexParam(TEX_0, FindAsset<Texture>(L"HarunaBody"));
+	AddAsset<Material>(_mat, L"HarunaMat");
 }
 
 void AssetMgr::CreateDefaultComputeShader()
@@ -497,4 +512,12 @@ void AssetMgr::CreateDefaultComputeShader()
 
 void AssetMgr::CreateSound()
 {
+}
+
+void AssetMgr::CreateDefaultMeshData()
+{
+	wstring _path = L"\\Asset\\Resource\\FBXmodel\\Haruna_Original_Mesh.fbx";
+
+	Ptr<MeshData> _meshData = nullptr;
+	_meshData = Load<MeshData>(_path, L"HarunaMeshData");
 }

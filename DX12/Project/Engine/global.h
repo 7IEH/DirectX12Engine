@@ -50,6 +50,19 @@ using namespace DirectX;
 #pragma comment(lib,"DirectXTex")
 #endif
 
+#include <fbxsdk.h>
+
+// FBX Loader
+#ifdef _DEBUG
+#pragma comment(lib,"debug\\libfbxsdk-md")
+#pragma comment(lib,"debug\\libxml2-md")
+#pragma comment(lib,"debug\\zlib-md")
+#else
+#pragma comment(lib,"release\\libfbxsdk-md")
+#pragma comment(lib,"release\\libxml2-md")
+#pragma comment(lib,"release\\zlib-md")
+#endif
+
 // SimpleMath
 #include "SimpleMath.h"
 using namespace DirectX::SimpleMath;

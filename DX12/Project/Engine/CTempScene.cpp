@@ -46,19 +46,22 @@ void TempScene::Awake()
 
 	AddObject(_pCube, LAYER_TYPE::PLAYER);
 
-	// Sphere
-	GameObject* _pSphere = new GameObject;
-	_pSphere->SetName(L"Sphere");
-	_pTr = _pSphere->AddComponent<Transform>();
-	_pTr->SetRelativePosition(Vec3(-500.f, 0.f, 0.f));
-	_pTr->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
-	_pTr->SetRelativeScale(Vec3(500.f, 500.f, 500.f));
+	// FBX
+	MeshData* _meshData = AssetMgr::GetInst()->FindAsset<MeshData>(L"HarunaMeshData").Get();
 
-	_pRenderer = _pSphere->AddComponent<MeshRenderer>();
-	_pRenderer->SetMesh(AssetMgr::GetInst()->FindAsset<Mesh>(L"SphereMesh"));
-	_pRenderer->SetMaterial(AssetMgr::GetInst()->FindAsset<Material>(L"Default3DMat"));
+	vector<GameObject*> _vObjs = _meshData->Instantiate();
 
-	AddObject(_pSphere, LAYER_TYPE::PLAYER);
+	for (size_t i = 0;i < 1;i++)
+	{
+		_vObjs[i]->SetName(L"Haruna");
+		Transform* _pTr = _vObjs[i]->GetComponent<Transform>();
+		_pTr->SetRelativePosition(Vec3(-500.f, 0.f, 0.f));
+		_pTr->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
+		_pTr->SetRelativeScale(Vec3(500.f, 500.f, 500.f));
+		MeshRenderer* _pRender= _vObjs[i]->GetComponent<MeshRenderer>();
+		_pRender->SetMaterial(AssetMgr::GetInst()->FindAsset<Material>(L"HarunaMat"));
+		AddObject(_vObjs[i], LAYER_TYPE::PLAYER);
+	}	
 
 	// SkyBox
 	GameObject* _pSkyBox = new GameObject;

@@ -22,9 +22,13 @@ void MeshRenderer::Render()
 {
 	if (!GetMaterial().Get() && !GetMesh().Get())
 		return;
+	UINT test = GetMesh()->GetSubSetCount();
 
-	UpdateData();
-	GetMesh()->Render();
+	for (UINT i = 0;i < test;i++)
+	{
+		UpdateData();
+		GetMesh()->Render(i);
+	}
 }
 
 void MeshRenderer::UpdateData()

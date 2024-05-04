@@ -2,6 +2,7 @@
 
 #include "CTexture.h"
 #include "CMesh.h"
+#include "CMeshData.h"
 #include "CGraphicShader.h"
 #include "CMaterial.h"
 
@@ -31,8 +32,8 @@ public:
     template<typename T>
     Ptr<T> Load(const wstring& _strFilePath, const wstring& _name);
 
-   // Ptr<Texture> CreateResoruceTexture(const wstring& _label, UINT _width, UINT _height, DXGI_FORMAT _format, UINT _flag, D3D11_USAGE _usage = D3D11_USAGE_DEFAULT);
-   // Ptr<Texture> CreateResoruceTexture(const wstring& _label, ComPtr<ID3D11Texture2D> _tex2D);
+    // Ptr<Texture> CreateResoruceTexture(const wstring& _label, UINT _width, UINT _height, DXGI_FORMAT _format, UINT _flag, D3D11_USAGE _usage = D3D11_USAGE_DEFAULT);
+    // Ptr<Texture> CreateResoruceTexture(const wstring& _label, ComPtr<ID3D11Texture2D> _tex2D);
 
 private:
     void CreateTexture();
@@ -40,6 +41,7 @@ private:
     void CreateDefaultShader();
     void CreateDefaultMaterial();
     void CreateDefaultComputeShader();
+    void CreateDefaultMeshData();
 
     void CreateSound();
 
@@ -60,6 +62,8 @@ ASSET_TYPE GetAssetType()
         Type = ASSET_TYPE::GRAPHIC_SHADER;
     if constexpr (std::is_same_v<Material, T>)
         Type = ASSET_TYPE::MATERIAL;
+    if constexpr (std::is_same_v<MeshData, T>)
+        Type = ASSET_TYPE::MESHDATA;
 
     return Type;
 }

@@ -7,6 +7,7 @@
   .\Project\Engine\CDevice.h
   .\Project\Engine\CEngine.h
   .\Project\Engine\CEntity.h
+  .\Project\Engine\CFBXLoader.h
   .\Project\Engine\CGameObject.h
   .\Project\Engine\CGraphicShader.h
   .\Project\Engine\CKeyMgr.h
@@ -15,6 +16,7 @@
   .\Project\Engine\CLight3D.h
   .\Project\Engine\CMaterial.h
   .\Project\Engine\CMesh.h
+  .\Project\Engine\CMeshData.h
   .\Project\Engine\CMeshRenderer.h
   .\Project\Engine\Comp.h
   .\Project\Engine\CPathMgr.h
@@ -40,9 +42,9 @@
   .\Project\Engine\SimpleMath.h
   .\Project\Engine\singleton.h
   .\Project\Engine\struct.h
-  42개 파일이 복사되었습니다.
-  0개 파일이 복사되었습니다.
+  44개 파일이 복사되었습니다.
   파일을 찾을 수 없습니다-*.h
+  0개 파일이 복사되었습니다.
   .\Project\Engine\DefaultPS2D.hlsl
   .\Project\Engine\DefaultPS3D.hlsl
   .\Project\Engine\DefaultVS2D.hlsl
@@ -53,8 +55,5 @@
   .\Project\Engine\func.hlsli
   .\Project\Engine\struct.hlsli
   2개 파일이 복사되었습니다.
-  CMesh.cpp
-  CMeshRenderer.cpp
-  CSkyBox.cpp
-  코드를 생성하고 있습니다...
+  CMeshData.cpp
   Engien.vcxproj -> D:\C++\API\Engine\DirectX12\DX12\External\Library\Engine\Engine_Debug.lib

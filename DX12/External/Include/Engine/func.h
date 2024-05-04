@@ -56,11 +56,11 @@ namespace SceneManager
 
 namespace EH
 {
-	string ConvertString(wstring& _wstr);
+	string ConvertString(const wstring& _wstr);
 
-	wstring ConvertWstring(string& _str);
+	wstring ConvertWstring(const string& _str);
 
-	string ConvertString(const std::filesystem::path::string_type _str);
+	//string ConvertString(const std::filesystem::path::string_type _str);
 
 	void InputVector2(string _line, OUT Vec2& _output);
 

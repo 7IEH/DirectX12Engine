@@ -40,5 +40,5 @@ void SkyBox::UpdateData()
 void SkyBox::Render()
 {
 	UpdateData();
-	GetMesh()->Render();
+	GetMesh()->Render(0);
 }

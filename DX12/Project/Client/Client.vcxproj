@@ -73,13 +73,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)OutPutFile\bin\$(Configuration)\</OutDir>
     <TargetName>$(ProjectName)_Debug</TargetName>
-    <ExternalIncludePath>$(SolutionDir)External\Include\Engine\;$(SolutionDir)External\Include\DirectxTex\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(SolutionDir)External\Library\Engine\;$(SolutionDir)External\Library\DirectxTex\;$(LibraryPath)</LibraryPath>
+    <ExternalIncludePath>$(SolutionDir)External\Include\Engine\;$(SolutionDir)External\Include\DirectxTex\;$(SolutionDir)External\Include\FBX\;$(ExternalIncludePath)</ExternalIncludePath>
+    <LibraryPath>$(SolutionDir)External\Library\Engine\;$(SolutionDir)External\Library\DirectxTex\;$(SolutionDir)External\Library\FBX\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)OutPutFile\bin\$(Configuration)\</OutDir>
-    <ExternalIncludePath>$(SolutionDir)External\Include\Engine\;$(SolutionDir)External\Include\DirectxTex\;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(SolutionDir)External\Library\Engine\;$(SolutionDir)External\Library\DirectxTex\;$(LibraryPath)</LibraryPath>
+    <ExternalIncludePath>$(SolutionDir)External\Include\Engine\;$(SolutionDir)External\Include\DirectxTex\;$(SolutionDir)External\Include\FBX\;$(ExternalIncludePath)</ExternalIncludePath>
+    <LibraryPath>$(SolutionDir)External\Library\Engine\;$(SolutionDir)External\Library\DirectxTex\;$(SolutionDir)External\Library\FBX\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
     <VcpkgEnabled>false</VcpkgEnabled>

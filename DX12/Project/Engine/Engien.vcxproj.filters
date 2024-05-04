@@ -124,6 +124,12 @@
     <Filter Include="07. Component\Renderer\SkyBox">
       <UniqueIdentifier>{9cb24885-80a0-47e6-ba7e-3502e4b89b61}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Module\FBXLoader">
+      <UniqueIdentifier>{10ecc0a2-b4a7-405a-8702-17f43528fc59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="08. Asset\MeshData">
+      <UniqueIdentifier>{7f6aac09-dc18-4f5a-84d8-a29fbcaef5c8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -255,6 +261,12 @@
     <ClInclude Include="CSkyBox.h">
       <Filter>07. Component\Renderer\SkyBox</Filter>
     </ClInclude>
+    <ClInclude Include="CFBXLoader.h">
+      <Filter>Module\FBXLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="CMeshData.h">
+      <Filter>08. Asset\MeshData</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -367,6 +379,12 @@
     </ClCompile>
     <ClCompile Include="CSkyBox.cpp">
       <Filter>07. Component\Renderer\SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="CFBXLoader.cpp">
+      <Filter>Module\FBXLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="CMeshData.cpp">
+      <Filter>08. Asset\MeshData</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

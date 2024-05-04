@@ -6,11 +6,9 @@
 
 Mesh::Mesh()
 	:Asset(ASSET_TYPE::MESH)
-	, m_IndexCount(0)
 	, m_VertexInfo(nullptr)
-	, m_IndexInfo(nullptr)
 	, m_VBView{}
-	, m_IBView{}
+	, m_IBInfo{}
 {
 }
 
@@ -19,36 +17,37 @@ Mesh::~Mesh()
 	if (nullptr != m_VertexInfo)
 		delete m_VertexInfo;
 
-	if (nullptr != m_IndexInfo)
-		delete m_IndexInfo;
+	if (!m_IBInfo.empty())
+	{
+		for (size_t i = 0;i < m_IBInfo.size();i++)
+		{
+			if (nullptr != m_IBInfo[i].IndexInfo)
+				delete m_IBInfo[i].IndexInfo;
+		}
+	}
 }
 
 void Mesh::Create(vector<VertexInfo>& _VBdata, UINT _VertexCount, vector<UINT>& _IBData, UINT _IndexCount)
 {
-	m_IndexCount = _IndexCount;
-
 	CreateBuffer(BUFFER_TYPE::VERTEX, _VertexCount, _VBdata, _IBData);
 	CreateBuffer(BUFFER_TYPE::INDEX, _IndexCount, _VBdata, _IBData);
 
 	// 원본 정점정보 및 인덱스 정보를 동적할당한 곳에다가 저장시켜두고 관리
 	m_VertexInfo = new VertexInfo[_VertexCount];
-	m_IndexInfo = new UINT[_IndexCount];
-
 	memcpy(m_VertexInfo, &_VBdata[0], sizeof(VertexInfo) * _VertexCount);
-	memcpy(m_IndexInfo, &_IBData[0], sizeof(UINT) * _IndexCount);
 }
 
-void Mesh::UpdateData()
+void Mesh::UpdateData(UINT _idx)
 {
-	SetBuffer(BUFFER_TYPE::VERTEX);
-	SetBuffer(BUFFER_TYPE::INDEX);
+	SetBuffer(BUFFER_TYPE::VERTEX, _idx);
+	SetBuffer(BUFFER_TYPE::INDEX, _idx);
 }
 
-void Mesh::Render()
+void Mesh::Render(UINT _idx)
 {
 	Device::GetInst()->CommitTable();
-	UpdateData();
-	DrawIndexed();
+	UpdateData(_idx);
+	DrawIndexed(_idx);
 }
 
 void Mesh::CreateBuffer(BUFFER_TYPE _bufferType, UINT _count, vector<VertexInfo>& _vertexData, vector<UINT>& _indexData)
@@ -81,6 +80,8 @@ void Mesh::CreateBuffer(BUFFER_TYPE _bufferType, UINT _count, vector<VertexInfo>
 	break;
 	case BUFFER_TYPE::INDEX:
 	{
+		IndexBufferInfo _temp;
+
 		D3D12_RESOURCE_DESC _tDesc = CD3DX12_RESOURCE_DESC::Buffer(sizeof(UINT) * _count);
 		DEVICE->CreateCommittedResource(
 			&_heapProperty,
@@ -88,18 +89,24 @@ void Mesh::CreateBuffer(BUFFER_TYPE _bufferType, UINT _count, vector<VertexInfo>
 			&_tDesc,
 			D3D12_RESOURCE_STATE_INDEX_BUFFER,
 			nullptr,
-			IID_PPV_ARGS(&m_IB)
+			IID_PPV_ARGS(&_temp.IB)
 		);
 
 		void* IndexDataBuffer = nullptr;
 		CD3DX12_RANGE readRange(0, 0);
-		m_IB->Map(0, &readRange, &IndexDataBuffer);
+		_temp.IB->Map(0, &readRange, &IndexDataBuffer);
 		::memcpy(IndexDataBuffer, &_indexData[0], sizeof(UINT) * _count);
-		m_IB->Unmap(0, nullptr);
+		_temp.IB->Unmap(0, nullptr);
 
-		m_IBView.BufferLocation = m_IB->GetGPUVirtualAddress();
-		m_IBView.Format = DXGI_FORMAT_R32_UINT;
-		m_IBView.SizeInBytes = sizeof(UINT) * _count;
+		_temp.IBView.BufferLocation = _temp.IB->GetGPUVirtualAddress();
+		_temp.IBView.Format = DXGI_FORMAT_R32_UINT;
+		_temp.IBView.SizeInBytes = sizeof(UINT) * _count;
+
+		_temp.format = _temp.IBView.Format;
+		_temp.count = _count;
+		_temp.IndexInfo = new UINT[_count];
+		memcpy(_temp.IndexInfo, &_indexData[0], sizeof(UINT) * _count);
+		m_IBInfo.push_back(_temp);
 	}
 	break;
 	case BUFFER_TYPE::END:
@@ -109,16 +116,16 @@ void Mesh::CreateBuffer(BUFFER_TYPE _bufferType, UINT _count, vector<VertexInfo>
 	}
 }
 
-void Mesh::DrawIndexed()
+void Mesh::DrawIndexed(UINT _idx)
 {
-	CMDLIST->DrawIndexedInstanced(m_IndexCount, 1, 0, 0, 0);
+	CMDLIST->DrawIndexedInstanced(m_IBInfo[_idx].count, 1, 0, 0, 0);
 }
 
 void Mesh::Render_Instancing(UINT _particleCount)
 {
 }
 
-void Mesh::SetBuffer(BUFFER_TYPE _bufferType)
+void Mesh::SetBuffer(BUFFER_TYPE _bufferType, UINT _idx)
 {
 	switch (_bufferType)
 	{
@@ -129,7 +136,7 @@ void Mesh::SetBuffer(BUFFER_TYPE _bufferType)
 	break;
 	case BUFFER_TYPE::INDEX:
 	{
-		CMDLIST->IASetIndexBuffer(&m_IBView);
+		CMDLIST->IASetIndexBuffer(&m_IBInfo[_idx].IBView);
 	}
 	break;
 	case BUFFER_TYPE::END:
