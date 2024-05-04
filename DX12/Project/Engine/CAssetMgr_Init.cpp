@@ -47,8 +47,16 @@ void AssetMgr::CreateTexture()
 	AddAsset(_pTex, L"HarunaBodyTex");
 
 	_pTex = new Texture;
+	_pTex->Load(L"\\Asset\\Resource\\FBXmodel\\Haruna_Original_Body_Mask.png");
+	AddAsset(_pTex, L"HarunaBodyMaskTex");
+
+	_pTex = new Texture;
 	_pTex->Load(L"\\Asset\\Resource\\FBXmodel\\Haruna_Original_Face.png");
 	AddAsset(_pTex, L"HarunaFaceTex");
+
+	_pTex = new Texture;
+	_pTex->Load(L"\\Asset\\Resource\\FBXmodel\\Haruna_Original_Face_Mask.png");
+	AddAsset(_pTex, L"HarunaFaceMaskTex");
 
 	_pTex = new Texture;
 	_pTex->Load(L"\\Asset\\Resource\\FBXmodel\\Haruna_Original_EyeMouth.png");
@@ -56,7 +64,15 @@ void AssetMgr::CreateTexture()
 
 	_pTex = new Texture;
 	_pTex->Load(L"\\Asset\\Resource\\FBXmodel\\Haruna_Original_Hair.png");
-	AddAsset(_pTex, L"HarunaHariTex");
+	AddAsset(_pTex, L"HarunaHairTex");
+
+	_pTex = new Texture;
+	_pTex->Load(L"\\Asset\\Resource\\FBXmodel\\Haruna_Original_Hair_Mask.png");
+	AddAsset(_pTex, L"HarunaHairMaskTex");
+
+	_pTex = new Texture;
+	_pTex->Load(L"\\Asset\\Resource\\FBXmodel\\Haruna_Original_Hair_Spec.png");
+	AddAsset(_pTex, L"HarunaHairSpecTex");
 }
 
 void AssetMgr::CreateDefaultMesh()
@@ -470,6 +486,23 @@ void AssetMgr::CreateDefaultShader()
 	********************/
 	_pShader = new GraphicShader;
 
+	_vsPath = L"\\shader\\CartoonVS3D.hlsl";
+	_psPath = L"\\shader\\CartoonPS3D.hlsl";
+
+	_vsEntry = "VS_Cartoon3D";
+	_psEntry = "PS_Cartoon3D";
+
+	_pShader->SetCullType(CULL_TYPE::BACK);
+
+	_pShader->Default_Create(_vsPath, _psPath, _vsEntry, _psEntry);
+
+	AddAsset(_pShader, L"CartoonShader");
+
+	/********************
+	| SkyBox Shader
+	********************/
+	_pShader = new GraphicShader;
+
 	_vsPath = L"\\shader\\SkyBoxVS.hlsl";
 	_psPath = L"\\shader\\SkyBoxPS.hlsl";
 
@@ -513,23 +546,27 @@ void AssetMgr::CreateDefaultMaterial()
 	| Haruna Mat
 	***********************/
 	_mat = new Material;
-	_mat->SetGraphicShader(AssetMgr::GetInst()->FindAsset<GraphicShader>(L"Default3DShader"));
+	_mat->SetGraphicShader(AssetMgr::GetInst()->FindAsset<GraphicShader>(L"CartoonShader"));
 	_mat->SetTexParam(TEX_0, FindAsset<Texture>(L"HarunaBodyTex"));
+	_mat->SetTexParam(TEX_1, FindAsset<Texture>(L"HarunaBodyMaskTex"));
 	AddAsset<Material>(_mat, L"HarunaBodyMtrl");
 
 	_mat = new Material;
-	_mat->SetGraphicShader(AssetMgr::GetInst()->FindAsset<GraphicShader>(L"Default3DShader"));
+	_mat->SetGraphicShader(AssetMgr::GetInst()->FindAsset<GraphicShader>(L"CartoonShader"));
 	_mat->SetTexParam(TEX_0, FindAsset<Texture>(L"HarunaFaceTex"));
+	//_mat->SetTexParam(TEX_1, FindAsset<Texture>(L"HarunaFaceMaskTex"));
 	AddAsset<Material>(_mat, L"HarunaFaceMtrl");
 
 	_mat = new Material;
-	_mat->SetGraphicShader(AssetMgr::GetInst()->FindAsset<GraphicShader>(L"Default3DShader"));
+	_mat->SetGraphicShader(AssetMgr::GetInst()->FindAsset<GraphicShader>(L"CartoonShader"));
 	_mat->SetTexParam(TEX_0, FindAsset<Texture>(L"HarunaEyeMouthTex"));
 	AddAsset<Material>(_mat, L"HarunaEyeMouthMtrl");
 
 	_mat = new Material;
-	_mat->SetGraphicShader(AssetMgr::GetInst()->FindAsset<GraphicShader>(L"Default3DShader"));
-	_mat->SetTexParam(TEX_0, FindAsset<Texture>(L"HarunaHariTex"));
+	_mat->SetGraphicShader(AssetMgr::GetInst()->FindAsset<GraphicShader>(L"CartoonShader"));
+	_mat->SetTexParam(TEX_0, FindAsset<Texture>(L"HarunaHairTex"));
+	_mat->SetTexParam(TEX_1, FindAsset<Texture>(L"HarunaHairMaskTex"));
+	_mat->SetTexParam(TEX_2, FindAsset<Texture>(L"HarunaHairSpecTex"));
 	AddAsset<Material>(_mat, L"HarunaHairMtrl");
 }
 

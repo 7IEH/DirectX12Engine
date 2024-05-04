@@ -417,5 +417,11 @@
     <FxCompile Include="SkyBoxVS.hlsl">
       <Filter>ShaderCode\VS</Filter>
     </FxCompile>
+    <FxCompile Include="CartoonVS3D.hlsl">
+      <Filter>ShaderCode\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="CartoonPS3D.hlsl">
+      <Filter>ShaderCode\PS</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

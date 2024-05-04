@@ -45,15 +45,18 @@
   44개 파일이 복사되었습니다.
   파일을 찾을 수 없습니다-*.h
   0개 파일이 복사되었습니다.
+  .\Project\Engine\CartoonPS3D.hlsl
+  .\Project\Engine\CartoonVS3D.hlsl
   .\Project\Engine\DefaultPS2D.hlsl
   .\Project\Engine\DefaultPS3D.hlsl
   .\Project\Engine\DefaultVS2D.hlsl
   .\Project\Engine\DefaultVS3D.hlsl
   .\Project\Engine\SkyBoxPS.hlsl
   .\Project\Engine\SkyBoxVS.hlsl
-  6개 파일이 복사되었습니다.
+  8개 파일이 복사되었습니다.
   .\Project\Engine\func.hlsli
   .\Project\Engine\struct.hlsli
   2개 파일이 복사되었습니다.
-  CTempScene.cpp
+  compilation object save succeeded; see D:\C++\API\Engine\DirectX12\DX12\External\Library\Engine\CartoonPS3D.cso
+  CAssetMgr_Init.cpp
   Engien.vcxproj -> D:\C++\API\Engine\DirectX12\DX12\External\Library\Engine\Engine_Debug.lib

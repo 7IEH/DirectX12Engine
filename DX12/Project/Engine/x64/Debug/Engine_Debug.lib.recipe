@@ -3,6 +3,12 @@
   <ProjectOutputs />
   <ContentFiles>
     <ContentFile>
+      <FullPath>D:\C++\API\Engine\DirectX12\DX12\External\Library\Engine\CartoonPS3D.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\C++\API\Engine\DirectX12\DX12\External\Library\Engine\CartoonVS3D.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>D:\C++\API\Engine\DirectX12\DX12\External\Library\Engine\DefaultPS2D.cso</FullPath>
     </ContentFile>
     <ContentFile>

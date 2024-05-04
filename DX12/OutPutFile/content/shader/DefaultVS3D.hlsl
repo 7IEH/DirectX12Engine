@@ -3,11 +3,6 @@
 
 #include "struct.hlsli"
 
-static float3 g_LightPos = float3(0.f, 0.f, 0.f);
-static float3 g_LightDir = float3(1.f, 0.f, 0.f);
-static float3 g_LightColor = float3(1.f, 1.f, 1.f);
-static float3 g_LightAmbient = float3(0.1f, 0.1f, 0.1f);
-
 struct VS_IN
 {
     float3 vPos : POSITION;
