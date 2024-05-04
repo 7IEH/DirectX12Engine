@@ -55,5 +55,5 @@
   .\Project\Engine\func.hlsli
   .\Project\Engine\struct.hlsli
   2개 파일이 복사되었습니다.
-  CMeshData.cpp
+  CTempScene.cpp
   Engien.vcxproj -> D:\C++\API\Engine\DirectX12\DX12\External\Library\Engine\Engine_Debug.lib

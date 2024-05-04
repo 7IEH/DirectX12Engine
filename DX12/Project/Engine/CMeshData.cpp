@@ -60,10 +60,29 @@ vector<GameObject*> MeshData::Instantiate()
 		_pObj->AddComponent<Transform>();
 		MeshRenderer* _render = _pObj->AddComponent<MeshRenderer>();
 		_render->SetMesh(_info.mesh);
-
-		for (size_t i = 0;i < _info.matrials.size();i++)
+		
+		for (size_t i = 0;i < 5;i++)
 		{
-			_render->SetMaterial(AssetMgr::GetInst()->FindAsset<Material>(L"HarunaMat"));
+			if (i == 0)
+			{
+				_render->SetMaterial(AssetMgr::GetInst()->FindAsset<Material>(L"HarunaBodyMtrl"));
+			}
+			else if (i == 1)
+			{
+				_render->SetMaterial(AssetMgr::GetInst()->FindAsset<Material>(L"HarunaFaceMtrl"));
+			}
+			else if (i == 2)
+			{
+				_render->SetMaterial(AssetMgr::GetInst()->FindAsset<Material>(L"HarunaEyeMouthMtrl"));
+			}
+			else if (i == 3)
+			{
+				_render->SetMaterial(AssetMgr::GetInst()->FindAsset<Material>(L"HarunaHairMtrl"));
+			}
+			else
+			{
+				_render->SetMaterial(AssetMgr::GetInst()->FindAsset<Material>(L"Default3DMat"));
+			}
 		}
 
 		_temp.push_back(_pObj);

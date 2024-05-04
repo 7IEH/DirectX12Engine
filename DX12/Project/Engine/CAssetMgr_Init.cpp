@@ -44,7 +44,19 @@ void AssetMgr::CreateTexture()
 
 	_pTex = new Texture;
 	_pTex->Load(L"\\Asset\\Resource\\FBXmodel\\Haruna_Original_Body.png");
-	AddAsset(_pTex, L"HarunaBody");
+	AddAsset(_pTex, L"HarunaBodyTex");
+
+	_pTex = new Texture;
+	_pTex->Load(L"\\Asset\\Resource\\FBXmodel\\Haruna_Original_Face.png");
+	AddAsset(_pTex, L"HarunaFaceTex");
+
+	_pTex = new Texture;
+	_pTex->Load(L"\\Asset\\Resource\\FBXmodel\\Haruna_Original_EyeMouth.png");
+	AddAsset(_pTex, L"HarunaEyeMouthTex");
+
+	_pTex = new Texture;
+	_pTex->Load(L"\\Asset\\Resource\\FBXmodel\\Haruna_Original_Hair.png");
+	AddAsset(_pTex, L"HarunaHariTex");
 }
 
 void AssetMgr::CreateDefaultMesh()
@@ -502,8 +514,23 @@ void AssetMgr::CreateDefaultMaterial()
 	***********************/
 	_mat = new Material;
 	_mat->SetGraphicShader(AssetMgr::GetInst()->FindAsset<GraphicShader>(L"Default3DShader"));
-	_mat->SetTexParam(TEX_0, FindAsset<Texture>(L"HarunaBody"));
-	AddAsset<Material>(_mat, L"HarunaMat");
+	_mat->SetTexParam(TEX_0, FindAsset<Texture>(L"HarunaBodyTex"));
+	AddAsset<Material>(_mat, L"HarunaBodyMtrl");
+
+	_mat = new Material;
+	_mat->SetGraphicShader(AssetMgr::GetInst()->FindAsset<GraphicShader>(L"Default3DShader"));
+	_mat->SetTexParam(TEX_0, FindAsset<Texture>(L"HarunaFaceTex"));
+	AddAsset<Material>(_mat, L"HarunaFaceMtrl");
+
+	_mat = new Material;
+	_mat->SetGraphicShader(AssetMgr::GetInst()->FindAsset<GraphicShader>(L"Default3DShader"));
+	_mat->SetTexParam(TEX_0, FindAsset<Texture>(L"HarunaEyeMouthTex"));
+	AddAsset<Material>(_mat, L"HarunaEyeMouthMtrl");
+
+	_mat = new Material;
+	_mat->SetGraphicShader(AssetMgr::GetInst()->FindAsset<GraphicShader>(L"Default3DShader"));
+	_mat->SetTexParam(TEX_0, FindAsset<Texture>(L"HarunaHariTex"));
+	AddAsset<Material>(_mat, L"HarunaHairMtrl");
 }
 
 void AssetMgr::CreateDefaultComputeShader()

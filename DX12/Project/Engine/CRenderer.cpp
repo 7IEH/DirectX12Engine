@@ -9,6 +9,7 @@ Renderer::Renderer(RENDERER_TYPE _type)
 	, m_pDynamicMtrl(nullptr)
 	, m_pSharedMtrl(nullptr)
 	, m_bIsRender(FALSE)
+	, m_vMtrls{}
 {
 }
 

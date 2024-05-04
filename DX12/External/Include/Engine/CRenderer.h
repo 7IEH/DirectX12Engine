@@ -7,14 +7,16 @@ class Renderer :
     public Component
 {
 private:
-	RENDERER_TYPE			m_Type;
-	Ptr<Mesh>				m_pMesh;
+	RENDERER_TYPE					m_Type;
+	Ptr<Mesh>						m_pMesh;
 
-	Ptr<Material>			m_pCurMtrl;
-	Ptr<Material>			m_pDynamicMtrl;
-	Ptr<Material>			m_pSharedMtrl;
+	Ptr<Material>					m_pCurMtrl;
+	Ptr<Material>					m_pDynamicMtrl;
+	Ptr<Material>					m_pSharedMtrl;
 
-	bool					m_bIsRender;
+	vector<Ptr<Material>>			m_vMtrls;
+
+	bool							m_bIsRender;
 
 public:
 	RENDERER_TYPE			GetRenderType() { return m_Type; }
@@ -29,10 +31,13 @@ public:
 	void				SetMesh(Ptr<Mesh> _mesh) { m_pMesh = _mesh; }
 	void				SetMaterial(Ptr<Material> _material)
 	{
+		m_vMtrls.push_back(_material);
 		m_pSharedMtrl	=	_material;
 		m_pCurMtrl		=	m_pSharedMtrl;
 		m_pDynamicMtrl	=	nullptr;
 	}
+
+	void				SetMaterial(int _idx) { m_pCurMtrl = m_vMtrls[_idx]; }
 
 public:
 	virtual void Render() = 0;

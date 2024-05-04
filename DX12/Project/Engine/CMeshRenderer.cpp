@@ -26,6 +26,7 @@ void MeshRenderer::Render()
 
 	for (UINT i = 0;i < test;i++)
 	{
+		SetMaterial(i);
 		UpdateData();
 		GetMesh()->Render(i);
 	}

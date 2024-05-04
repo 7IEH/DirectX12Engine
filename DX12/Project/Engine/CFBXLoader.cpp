@@ -136,15 +136,23 @@ void FBXLoader::LoadMesh(FbxMesh* _mesh)
 
 			GetNormal(_mesh, &_meshInfo, _controlPointIndex, _vertexCounter);
 			GetTargent(_mesh, &_meshInfo, _controlPointIndex, _vertexCounter);
-			GetUV(_mesh, &_meshInfo, _controlPointIndex, _mesh->GetTextureUVIndex(i, j));
+
+			if (-1 == _mesh->GetTextureUVIndex(i, j))
+			{
+				GetUV(_mesh, &_meshInfo, _controlPointIndex, _controlPointIndex);
+			}
+			else
+			{
+				GetUV(_mesh, &_meshInfo, _controlPointIndex, _mesh->GetTextureUVIndex(i, j));
+			}
 
 			_vertexCounter++;
 		}
 
 		const  UINT subSetIdx = _geoElementMtrl->GetIndexArray().GetAt(i);
 		_meshInfo.indices[subSetIdx].push_back(_arrIdx[0]);
-		_meshInfo.indices[subSetIdx].push_back(_arrIdx[1]);
 		_meshInfo.indices[subSetIdx].push_back(_arrIdx[2]);
+		_meshInfo.indices[subSetIdx].push_back(_arrIdx[1]);
 	}
 
 
@@ -303,12 +311,6 @@ void FBXLoader::CreateMaterials()
 	{
 		for (size_t j = 0;j < m_vMeshes[i].materials.size();j++)
 		{
-			Material* _pMtrl = new Material;
-			_pMtrl->SetGraphicShader(AssetMgr::GetInst()->FindAsset<GraphicShader>(L"Default3DShader"));
-
-
-
-			//AssetMgr::GetInst()->AddAsset(_pMtrl, L"HarunaMat");
 		}
 	}
 }
