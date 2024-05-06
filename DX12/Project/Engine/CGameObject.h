@@ -81,6 +81,11 @@ public:
 			_pComp = dynamic_cast<T*>(m_pComps[(UINT)COMPONENT_TYPE::TRANSFORM]);
 		}
 
+		if constexpr (std::is_same_v<T, Animator3D>)
+		{
+			_pComp = dynamic_cast<T*>(m_pComps[(UINT)COMPONENT_TYPE::ANIMATOR3D]);
+		}
+
 		return _pComp;
 	}
 

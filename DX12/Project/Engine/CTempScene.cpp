@@ -61,6 +61,22 @@ void TempScene::Awake()
 		AddObject(_vObjs[i], LAYER_TYPE::PLAYER);
 	}	
 
+	_vObjs.clear();
+
+	_meshData = AssetMgr::GetInst()->FindAsset<MeshData>(L"HoshinoMeshData").Get();
+
+	_vObjs = _meshData->Instantiate();
+
+	for (size_t i = 0;i < _vObjs.size();i++)
+	{
+		_vObjs[i]->SetName(L"Hoshino");
+		Transform* _pTr = _vObjs[i]->GetComponent<Transform>();
+		_pTr->SetRelativePosition(Vec3(-1000.f, 0.f, 0.f));
+		_pTr->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
+		_pTr->SetRelativeScale(Vec3(500.f, 500.f, 500.f));
+		AddObject(_vObjs[i], LAYER_TYPE::PLAYER);
+	}
+
 	// SkyBox
 	GameObject* _pSkyBox = new GameObject;
 	_pSkyBox->SetName(L"SkyBox");

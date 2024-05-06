@@ -10,6 +10,30 @@ struct IndexBufferInfo
 	void*								IndexInfo;
 };
 
+struct KeyFrameInfo
+{
+	double	time;
+	int		frame;
+	Vec3	scale;
+	Vec4	rotation;
+	Vec3	translate;
+};
+
+struct BoneInfo
+{
+	wstring		boneName;
+	int			parentIdx;
+	Matrix		matOffset;
+};
+
+struct AnimClipInfo
+{
+	wstring animName;
+	int		frameCount;
+	double	duration;
+	vector<vector<KeyFrameInfo>>	KeyFrame;
+};
+
 class Mesh :
 	public Asset
 {
@@ -19,12 +43,21 @@ private:
 
 	D3D12_VERTEX_BUFFER_VIEW			m_VBView;
 	vector<IndexBufferInfo>				m_IBInfo;
+
+	// Animation
+	vector<AnimClipInfo>				m_vAnimClips;
+	vector<BoneInfo>					m_vBones;
+
+	
+
 public:
 	UINT GetSubSetCount() { return static_cast<UINT>(m_IBInfo.size()); }
 
 public:
 	void Create(vector<VertexInfo>& _VBdata, UINT _VertexCount, vector<UINT>& _IBData, UINT _IndexCount);
 	void UpdateData(UINT _idx);
+	
+	static Ptr<Mesh>		CreateFromFBX(const struct FBXMeshInfo* _meshInfo);
 
 public:
 	void Render(UINT _idx);
@@ -35,6 +68,8 @@ private:
 	void DrawIndexed(UINT _idx);
 	void SetBuffer(BUFFER_TYPE _bufferType, UINT _idx);
 
+	void CreateBonesAndAnimation(class FBXLoader& _loader);
+	Matrix GetMatrix(FbxAMatrix& _matrix);
 
 public:
 	CLONE(Mesh)

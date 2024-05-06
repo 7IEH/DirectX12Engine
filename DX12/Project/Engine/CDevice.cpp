@@ -17,6 +17,9 @@ Device::Device()
 	, m_iCurGroupIdx(0)
 	, m_Sampler{}
 	, m_DSVHandle{}
+	, m_iComputeHandleSize{}
+	, m_iComFenceValue(0)
+	, m_pComFenceEvent(INVALID_HANDLE_VALUE)
 {
 }
 
@@ -47,13 +50,16 @@ int Device::Awake(const WindowInfo& _windowInfo)
 
 	CreateDecriptionHeap();
 
-	CreateBlendState();
-
 	CreateSamplerState();
 
 	if (FAILED(CreateRootSignature()))
 	{
 		HandleError(L"Failed Create RootSignature", 0);
+	}
+
+	if (FAILED(CreateComputeRootSignature()))
+	{
+		HandleError(L"Failed Create ComputeRootSignature", 0);
 	}
 
 	if (FAILED(CreateConstantBuffer()))
@@ -62,6 +68,8 @@ int Device::Awake(const WindowInfo& _windowInfo)
 	}
 
 	CreateTableDescriptorHeap(256);
+
+	CreateComputeTableDescriptorHeap();
 
 	return 0;
 }
@@ -103,6 +111,18 @@ HRESULT Device::CreateCommandQueue()
 
 	_hr = m_pDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_pFence));
 	m_pFenceEvent = ::CreateEvent(nullptr, FALSE, FALSE, nullptr);
+
+	// GPGPU용 CommandList
+	D3D12_COMMAND_QUEUE_DESC _tComDesc = {};
+	_tComDesc.Type = D3D12_COMMAND_LIST_TYPE_COMPUTE;
+	_tComDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+	m_pDevice->CreateCommandQueue(&_tComDesc, IID_PPV_ARGS(&m_pComCmdQueue));
+
+	m_pDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_COMPUTE, IID_PPV_ARGS(&m_pComCmdAlloc));
+	m_pDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_COMPUTE, m_pCmdAlloc.Get(), nullptr, IID_PPV_ARGS(&m_pCmdList));
+
+	m_pDevice->CreateFence(0,D3D12_FENCE_FLAG_NONE,IID_PPV_ARGS(&m_pComFence));
+	m_pComFenceEvent = ::CreateEvent(nullptr, FALSE, FALSE, nullptr);
 
 	return _hr;
 }
@@ -154,7 +174,7 @@ HRESULT Device::CreateRootSignature()
 	{
 		// Descriptor heap의 용도, 몇 개 사용할 지, 시작할 값
 		CD3DX12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_CBV,(UINT)CONSTANT_TYPE::END - 1,1),
-		CD3DX12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_SRV,(UINT)TEX_PARAM::END,0),
+		CD3DX12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_SRV,(UINT)SBV_TYPE::END,0),
 	};
 
 	CD3DX12_ROOT_PARAMETER _param[2] = {};
@@ -172,11 +192,37 @@ HRESULT Device::CreateRootSignature()
 	return _hr;
 }
 
+HRESULT Device::CreateComputeRootSignature()
+{
+	HRESULT _hr = E_FAIL;
+
+	CD3DX12_DESCRIPTOR_RANGE _ranges[] =
+	{
+		// Descriptor heap의 용도, 몇 개 사용할 지, 시작할 값
+		CD3DX12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_CBV,(UINT)CONSTANT_TYPE::END,0),
+		CD3DX12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_SRV,(UINT)SBV_TYPE::END,0),
+		CD3DX12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_UAV,(UINT)UAV_TYPE::END,0),
+	};
+
+	CD3DX12_ROOT_PARAMETER _param[1] = {};
+	_param[0].InitAsDescriptorTable(_countof(_ranges), _ranges);
+
+	D3D12_ROOT_SIGNATURE_DESC _tDesc = CD3DX12_ROOT_SIGNATURE_DESC(_countof(_param), _param);
+	_tDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;	
+
+	ComPtr<ID3DBlob> _blobSignature;
+	ComPtr<ID3DBlob> _blobError;
+	::D3D12SerializeRootSignature(&_tDesc, D3D_ROOT_SIGNATURE_VERSION_1, &_blobSignature, &_blobError);
+	_hr = m_pDevice->CreateRootSignature(0, _blobSignature->GetBufferPointer(), _blobSignature->GetBufferSize(), IID_PPV_ARGS(&m_pComSignature));
+
+	return _hr;
+}
+
 void Device::CreateTableDescriptorHeap(UINT _count)
 {
 	m_iGroupCount = _count;
 
-	UINT64 _iRegisterNum = ((UINT64)(CONSTANT_TYPE::END)-(UINT64)1) + (UINT64)TEX_PARAM::END;
+	UINT64 _iRegisterNum = ((UINT64)(CONSTANT_TYPE::END)-(UINT64)1) + (UINT64)SBV_TYPE::END;
 	D3D12_DESCRIPTOR_HEAP_DESC _tDesc = {};
 	_tDesc.NumDescriptors = _iRegisterNum * m_iGroupCount;
 	_tDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
@@ -186,6 +232,20 @@ void Device::CreateTableDescriptorHeap(UINT _count)
 
 	m_iHandleSize = DEVICE->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	m_iGroupSize = m_iHandleSize * _iRegisterNum;
+}
+
+void Device::CreateComputeTableDescriptorHeap()
+{
+	UINT64 _iRegisterNum = (UINT64)(CONSTANT_TYPE::END) + (UINT64)SBV_TYPE::END + (UINT64)UAV_TYPE::END;
+
+	D3D12_DESCRIPTOR_HEAP_DESC _tDesc = {};
+	_tDesc.NumDescriptors = _iRegisterNum;
+	_tDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	_tDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+
+	DEVICE->CreateDescriptorHeap(&_tDesc, IID_PPV_ARGS(&m_pComputeGPUHeap));
+
+	m_iHandleSize = DEVICE->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 }
 
 void Device::CreateRTView()
@@ -327,6 +387,58 @@ void Device::SetSRV(D3D12_CPU_DESCRIPTOR_HANDLE _srcHandle, TEX_PARAM _type)
 	DEVICE->CopyDescriptors(1, &_destHandle, &_iDestRange, 1, &_srcHandle, &_iSrcRange, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 }
 
+void Device::SetSRV(D3D12_CPU_DESCRIPTOR_HANDLE _srcHandle, UINT _register)
+{
+	D3D12_CPU_DESCRIPTOR_HANDLE _destHandle = m_pGPUHeap->GetCPUDescriptorHandleForHeapStart();
+	_destHandle.ptr += m_iCurGroupIdx * m_iGroupSize;
+	_destHandle.ptr += (((UINT)CONSTANT_TYPE::END - 1) + _register) * m_iHandleSize;
+
+	UINT _iDestRange = 1;
+	UINT _iSrcRange = 1;
+	DEVICE->CopyDescriptors(1, &_destHandle, &_iDestRange, 1, &_srcHandle, &_iSrcRange, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+}
+
+void Device::SetUAV(D3D12_CPU_DESCRIPTOR_HANDLE _srcHandle, UINT _register)
+{
+	D3D12_CPU_DESCRIPTOR_HANDLE _destHandle = m_pGPUHeap->GetCPUDescriptorHandleForHeapStart();
+	_destHandle.ptr += m_iCurGroupIdx * m_iGroupSize;
+	_destHandle.ptr += (((UINT)CONSTANT_TYPE::END - 1) + _register) * m_iHandleSize;
+
+	UINT _iDestRange = 1;
+	UINT _iSrcRange = 1;
+	DEVICE->CopyDescriptors(1, &_destHandle, &_iDestRange, 1, &_srcHandle, &_iSrcRange, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+}
+
+void Device::SetCBV_CS(D3D12_CPU_DESCRIPTOR_HANDLE _srcHandle, CONSTANT_TYPE _type)
+{
+	D3D12_CPU_DESCRIPTOR_HANDLE _destHandle = m_pComputeGPUHeap->GetCPUDescriptorHandleForHeapStart();
+	_destHandle.ptr += (UINT)_type * m_iHandleSize;
+
+	UINT _iDestRange = 1;
+	UINT _iSrcRange = 1;
+	DEVICE->CopyDescriptors(1, &_destHandle, &_iDestRange, 1, &_srcHandle, &_iSrcRange, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+}
+
+void Device::SetSRV_CS(D3D12_CPU_DESCRIPTOR_HANDLE _srcHandle, UINT _register)
+{
+	D3D12_CPU_DESCRIPTOR_HANDLE _destHandle = m_pComputeGPUHeap->GetCPUDescriptorHandleForHeapStart();
+	_destHandle.ptr += (((UINT)CONSTANT_TYPE::END) + _register) * m_iHandleSize;
+
+	UINT _iDestRange = 1;
+	UINT _iSrcRange = 1;
+	DEVICE->CopyDescriptors(1, &_destHandle, &_iDestRange, 1, &_srcHandle, &_iSrcRange, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+}
+
+void Device::SetUAV_CS(D3D12_CPU_DESCRIPTOR_HANDLE _srcHandle, UINT _register)
+{
+	D3D12_CPU_DESCRIPTOR_HANDLE _destHandle = m_pComputeGPUHeap->GetCPUDescriptorHandleForHeapStart();
+	_destHandle.ptr += (((UINT)CONSTANT_TYPE::END) + (UINT)SBV_TYPE::END + _register) * m_iHandleSize;
+
+	UINT _iDestRange = 1;
+	UINT _iSrcRange = 1;
+	DEVICE->CopyDescriptors(1, &_destHandle, &_iDestRange, 1, &_srcHandle, &_iSrcRange, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+}
+
 void Device::CommitTable()
 {
 	D3D12_GPU_DESCRIPTOR_HANDLE	_handle = m_pGPUHeap->GetGPUDescriptorHandleForHeapStart();
@@ -335,6 +447,15 @@ void Device::CommitTable()
 
 	m_iCurGroupIdx++;
 }
+
+//void Device::CommitTable()
+//{
+//	/*ID3D12DescriptorHeap* descHeap = m_pComputeGPUHeap.Get();
+//	COMPUTE_CMD_LIST->SetDescriptorHeaps(1, &descHeap);
+//
+//	D3D12_GPU_DESCRIPTOR_HANDLE handle = descHeap->GetGPUDescriptorHandleForHeapStart();
+//	COMPUTE_CMD_LIST->SetComputeRootDescriptorTable(0, handle);*/
+//}
 
 void Device::WaitSync()
 {
@@ -365,7 +486,7 @@ void Device::RenderBegin()
 	TableClear();
 
 	CMDLIST->SetDescriptorHeaps(1, m_pGPUHeap.GetAddressOf());
-	
+
 	m_pCmdList->ResourceBarrier(1, &_barrier);
 	CreateViewPort(Vec2(0.f, 0.f), m_WindowInfo.Res);
 
@@ -402,11 +523,6 @@ void Device::SwapIndex()
 	m_iBackBufferIndex = (m_iBackBufferIndex + 1) % SWAP_CHAIN_BUFFER_COUNT;
 }
 
-HRESULT Device::CreateBlendState()
-{
-	return S_OK;
-}
-
 HRESULT Device::CreateSamplerState()
 {
 	m_Sampler[(UINT)SAMPLER_TYPE::Default] = CD3DX12_STATIC_SAMPLER_DESC(0);
@@ -433,4 +549,32 @@ void Device::FlushResrouceCommandQueue()
 
 	m_pResCmdAlloc->Reset();
 	m_pResCmdList->Reset(m_pResCmdAlloc.Get(), nullptr);
+}
+
+void Device::ComWaitSync()
+{
+	m_iComFenceValue++;
+
+	m_pComCmdQueue->Signal(m_pComFence.Get(), m_iComFenceValue);
+	if (m_pComFence->GetCompletedValue() < m_iComFenceValue)
+	{
+		m_pComFence->SetEventOnCompletion(m_iComFenceValue, m_pComFenceEvent);
+		::WaitForSingleObject(m_pComFenceEvent, INFINITE);
+	}
+}
+
+void Device::ComFlushResourceCommandQueue()
+{
+	m_pComCmdList->Close();
+
+	ID3D12CommandList* cmdListArr[] = { m_pComCmdList.Get() };
+	auto t = _countof(cmdListArr);
+	m_pComCmdQueue->ExecuteCommandLists(_countof(cmdListArr), cmdListArr);
+
+	WaitSync();
+
+	m_pComCmdAlloc->Reset();
+	m_pComCmdList->Reset(m_pComCmdAlloc.Get(), nullptr);
+
+	m_pComCmdList->SetComputeRootSignature(m_pComSignature.Get());
 }

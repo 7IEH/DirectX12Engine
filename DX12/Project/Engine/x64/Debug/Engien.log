@@ -1,4 +1,6 @@
-﻿  .\Project\Engine\CAsset.h
+﻿  .\Project\Engine\CAnimator2D.h
+  .\Project\Engine\CAnimator3D.h
+  .\Project\Engine\CAsset.h
   .\Project\Engine\CAssetMgr.h
   .\Project\Engine\CCamera.h
   .\Project\Engine\CComponent.h
@@ -42,7 +44,7 @@
   .\Project\Engine\SimpleMath.h
   .\Project\Engine\singleton.h
   .\Project\Engine\struct.h
-  44개 파일이 복사되었습니다.
+  46개 파일이 복사되었습니다.
   파일을 찾을 수 없습니다-*.h
   0개 파일이 복사되었습니다.
   .\Project\Engine\CartoonPS3D.hlsl
@@ -57,6 +59,5 @@
   .\Project\Engine\func.hlsli
   .\Project\Engine\struct.hlsli
   2개 파일이 복사되었습니다.
-  compilation object save succeeded; see D:\C++\API\Engine\DirectX12\DX12\External\Library\Engine\CartoonPS3D.cso
-  CAssetMgr_Init.cpp
+  CCamera.cpp
   Engien.vcxproj -> D:\C++\API\Engine\DirectX12\DX12\External\Library\Engine\Engine_Debug.lib

@@ -173,6 +173,7 @@ enum class COMPONENT_TYPE
 	LIGHT3D,
 	COLLIDER2D,
 	ANIMATOR2D,
+	ANIMATOR3D,
 	RENDERER,
 	CAMERA,
 	RIGIDBODY,
@@ -238,6 +239,37 @@ enum class CONSTANT_TYPE
 	MATERIAL,
 	ANIMATION,
 	END,
+};
+
+// Structured Buffer Type
+enum class SBV_TYPE
+{
+	t0,
+	t1,
+	t2,
+	t3,
+	t4,
+	t5,
+	t6,
+	t7,
+	t8,
+	t9,
+	t10,
+	t11,
+	t12,
+	t13,
+	t14,
+	END
+};
+
+// UnorderedAccess Buffer Type
+enum class UAV_TYPE
+{
+	u0,
+	u1,
+	u2,
+	u3,
+	END
 };
 
 // Layer Type

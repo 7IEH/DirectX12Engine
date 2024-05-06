@@ -58,6 +58,9 @@ private:
 
 	UINT									m_iCurGroupIdx;
 
+	ComPtr<ID3D12DescriptorHeap>			m_pComputeGPUHeap;
+	UINT64									m_iComputeHandleSize;
+
 	// SamplerState
 	D3D12_STATIC_SAMPLER_DESC				m_Sampler[(UINT)SAMPLER_TYPE::END];
 
@@ -93,6 +96,15 @@ public:
 	void							TableClear() { m_iCurGroupIdx = 0; }
 	void							SetCBV(D3D12_CPU_DESCRIPTOR_HANDLE _srcHandle, CONSTANT_TYPE _type);
 	void							SetSRV(D3D12_CPU_DESCRIPTOR_HANDLE _srcHandle, TEX_PARAM _type);
+	void							SetSRV(D3D12_CPU_DESCRIPTOR_HANDLE _srcHandle, UINT _register);
+	void							SetUAV(D3D12_CPU_DESCRIPTOR_HANDLE _srcHandle, UINT _register);
+
+	// ComputeDescriptorHeap
+	void							SetCBV_CS(D3D12_CPU_DESCRIPTOR_HANDLE _srcHandle, CONSTANT_TYPE _type);
+	void							SetSRV_CS(D3D12_CPU_DESCRIPTOR_HANDLE _srcHandle, UINT _register);
+	void							SetUAV_CS(D3D12_CPU_DESCRIPTOR_HANDLE _srcHandle, UINT _register);
+
+
 	void							CommitTable();
 	ID3D12DescriptorHeap*			GetDescHeap() { return m_pGPUHeap.Get(); }
 
@@ -121,16 +133,13 @@ private:
 	void						CreateDecriptionHeap();
 	HRESULT						CreateRootSignature();
 	void						CreateTableDescriptorHeap(UINT _count);
+	void						CreateComputeTableDescriptorHeap();
 
 	void						CreateRTView();
 	void						CreateDSView();
 	HRESULT						CreateConstantBuffer();
 	HRESULT						CreateConstantBufferIndividual(CONSTANT_TYPE _type, UINT _elementSize, UINT _elementCount);
-	//HRESULT						CreateRasterizerState();
-	//HRESULT						CreateDepthStencilState();
-	HRESULT						CreateBlendState();
 	HRESULT						CreateSamplerState();
-	void						SetSamplerState();
 	void						ClearConstantBuffer();
 };
 

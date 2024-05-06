@@ -25,6 +25,8 @@ struct VertexInfo
 	Vec3 Tangent;
 	Vec3 Normal;
 	Vec3 Binormal;
+	Vec4 Weights;
+	Vec4 Indices;
 };
 
 // SRT Struct

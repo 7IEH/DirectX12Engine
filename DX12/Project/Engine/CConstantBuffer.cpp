@@ -111,6 +111,10 @@ void ConstantBuffer::UpdateData_Constant(void* _data, int _size, int _count)
 
 void ConstantBuffer::UpdateData_CS(void* _data, int _size, int _count)
 {
+	SetData(_data, _size, _count);
+
+	Device::GetInst()->SetCBV_CS(CD3DX12_CPU_DESCRIPTOR_HANDLE(m_CpuHandleBegin, m_iHandleIncrementSize * m_iCurrentIdx), m_Type);
+	m_iCurrentIdx++;
 }
 
 void ConstantBuffer::Clear()

@@ -130,6 +130,12 @@
     <Filter Include="08. Asset\MeshData">
       <UniqueIdentifier>{7f6aac09-dc18-4f5a-84d8-a29fbcaef5c8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07. Component\Animator3D">
+      <UniqueIdentifier>{35ab67ae-eb4f-45fb-b3b8-f71c730d4fab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. Component\Animator2D">
+      <UniqueIdentifier>{0c0ecbfb-77a4-4614-a108-b4d328138939}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -267,6 +273,12 @@
     <ClInclude Include="CMeshData.h">
       <Filter>08. Asset\MeshData</Filter>
     </ClInclude>
+    <ClInclude Include="CAnimator3D.h">
+      <Filter>07. Component\Animator3D</Filter>
+    </ClInclude>
+    <ClInclude Include="CAnimator2D.h">
+      <Filter>07. Component\Animator2D</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -385,6 +397,12 @@
     </ClCompile>
     <ClCompile Include="CMeshData.cpp">
       <Filter>08. Asset\MeshData</Filter>
+    </ClCompile>
+    <ClCompile Include="CAnimator3D.cpp">
+      <Filter>07. Component\Animator3D</Filter>
+    </ClCompile>
+    <ClCompile Include="CAnimator2D.cpp">
+      <Filter>07. Component\Animator2D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

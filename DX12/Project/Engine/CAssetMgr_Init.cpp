@@ -73,6 +73,38 @@ void AssetMgr::CreateTexture()
 	_pTex = new Texture;
 	_pTex->Load(L"\\Asset\\Resource\\FBXmodel\\Haruna_Original_Hair_Spec.png");
 	AddAsset(_pTex, L"HarunaHairSpecTex");
+
+	_pTex = new Texture;
+	_pTex->Load(L"\\Asset\\Resource\\FBXmodel\\HoshinoFBX\\Hoshino_Original_Body.png");
+	AddAsset(_pTex, L"HoshinoBodyTex");
+
+	_pTex = new Texture;
+	_pTex->Load(L"\\Asset\\Resource\\FBXmodel\\HoshinoFBX\\Hoshino_Original_Body_Mask.png");
+	AddAsset(_pTex, L"HoshinoBodyMaskTex");
+
+	_pTex = new Texture;
+	_pTex->Load(L"\\Asset\\Resource\\FBXmodel\\HoshinoFBX\\Hoshino_Original_Face.png");
+	AddAsset(_pTex, L"HoshinoFaceTex");
+
+	_pTex = new Texture;
+	_pTex->Load(L"\\Asset\\Resource\\FBXmodel\\HoshinoFBX\\Hoshino_Original_Face_Mask.png");
+	AddAsset(_pTex, L"HoshinoFaceMaskTex");
+
+	_pTex = new Texture;
+	_pTex->Load(L"\\Asset\\Resource\\FBXmodel\\HoshinoFBX\\Hoshino_Original_EyeMouth.png");
+	AddAsset(_pTex, L"HoshinoEyeMouthTex");
+
+	_pTex = new Texture;
+	_pTex->Load(L"\\Asset\\Resource\\FBXmodel\\HoshinoFBX\\Hoshino_Original_Hair.png");
+	AddAsset(_pTex, L"HoshinoHairTex");
+
+	_pTex = new Texture;
+	_pTex->Load(L"\\Asset\\Resource\\FBXmodel\\HoshinoFBX\\Hoshino_Original_Hair_Mask.png");
+	AddAsset(_pTex, L"HoshinoHairMaskTex");
+
+	_pTex = new Texture;
+	_pTex->Load(L"\\Asset\\Resource\\FBXmodel\\HoshinoFBX\\Hoshino_Original_Hair_Spec.png");
+	AddAsset(_pTex, L"HoshinoHairSpecTex");
 }
 
 void AssetMgr::CreateDefaultMesh()
@@ -482,7 +514,7 @@ void AssetMgr::CreateDefaultShader()
 	AddAsset(_pShader, L"Default3DShader");
 
 	/********************
-	| SkyBox Shader
+	| Cartoon Shader
 	********************/
 	_pShader = new GraphicShader;
 
@@ -568,6 +600,33 @@ void AssetMgr::CreateDefaultMaterial()
 	_mat->SetTexParam(TEX_1, FindAsset<Texture>(L"HarunaHairMaskTex"));
 	_mat->SetTexParam(TEX_2, FindAsset<Texture>(L"HarunaHairSpecTex"));
 	AddAsset<Material>(_mat, L"HarunaHairMtrl");
+
+	/**********************
+	| Hoshino Mat
+	***********************/
+	_mat = new Material;
+	_mat->SetGraphicShader(AssetMgr::GetInst()->FindAsset<GraphicShader>(L"CartoonShader"));
+	_mat->SetTexParam(TEX_0, FindAsset<Texture>(L"HoshinoBodyTex"));
+	_mat->SetTexParam(TEX_1, FindAsset<Texture>(L"HoshinoBodyMaskTex"));
+	AddAsset<Material>(_mat, L"HoshinoBodyMtrl");
+
+	_mat = new Material;
+	_mat->SetGraphicShader(AssetMgr::GetInst()->FindAsset<GraphicShader>(L"CartoonShader"));
+	_mat->SetTexParam(TEX_0, FindAsset<Texture>(L"HoshinoFaceTex"));
+	//_mat->SetTexParam(TEX_1, FindAsset<Texture>(L"HoshinoFaceMaskTex"));
+	AddAsset<Material>(_mat, L"HoshinoFaceMtrl");
+
+	_mat = new Material;
+	_mat->SetGraphicShader(AssetMgr::GetInst()->FindAsset<GraphicShader>(L"CartoonShader"));
+	_mat->SetTexParam(TEX_0, FindAsset<Texture>(L"HoshinoEyeMouthTex"));
+	AddAsset<Material>(_mat, L"HoshinoEyeMouthMtrl");
+
+	_mat = new Material;
+	_mat->SetGraphicShader(AssetMgr::GetInst()->FindAsset<GraphicShader>(L"CartoonShader"));
+	_mat->SetTexParam(TEX_0, FindAsset<Texture>(L"HoshinoHairTex"));
+	_mat->SetTexParam(TEX_1, FindAsset<Texture>(L"HoshinoHairMaskTex"));
+	_mat->SetTexParam(TEX_2, FindAsset<Texture>(L"HoshinoHairSpecTex"));
+	AddAsset<Material>(_mat, L"HoshinoHairMtrl");
 }
 
 void AssetMgr::CreateDefaultComputeShader()
@@ -584,4 +643,19 @@ void AssetMgr::CreateDefaultMeshData()
 
 	Ptr<MeshData> _meshData = nullptr;
 	_meshData = Load<MeshData>(_path, L"HarunaMeshData");
+	_meshData->SetMaterial(FindAsset<Material>(L"HarunaBodyMtrl"), 0);
+	_meshData->SetMaterial(FindAsset<Material>(L"HarunaFaceMtrl"), 0);
+	_meshData->SetMaterial(FindAsset<Material>(L"HarunaEyeMouthMtrl"), 0);
+	_meshData->SetMaterial(FindAsset<Material>(L"HarunaHairMtrl"), 0);
+	_meshData->SetMaterial(FindAsset<Material>(L"HarunaHairMtrl"), 0);
+
+
+	_path = L"\\Asset\\Resource\\FBXmodel\\HoshinoFBX\\Hoshino_Original (merge).fbx";
+	
+	_meshData = Load<MeshData>(_path, L"HoshinoMeshData");
+	_meshData->SetMaterial(FindAsset<Material>(L"HoshinoFaceMtrl"), 0);
+	_meshData->SetMaterial(FindAsset<Material>(L"HoshinoHairMtrl"), 0);
+	_meshData->SetMaterial(FindAsset<Material>(L"HoshinoEyeMouthMtrl"), 0);
+	_meshData->SetMaterial(FindAsset<Material>(L"HoshinoBodyMtrl"), 0);
+	_meshData->SetMaterial(FindAsset<Material>(L"HoshinoHairMtrl"), 0);
 }

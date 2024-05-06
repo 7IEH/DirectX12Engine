@@ -4,6 +4,8 @@
 #include "CDevice.h"
 #include "CAssetMgr.h"
 
+#include "CFBXLoader.h"
+
 Mesh::Mesh()
 	:Asset(ASSET_TYPE::MESH)
 	, m_VertexInfo(nullptr)
@@ -41,6 +43,33 @@ void Mesh::UpdateData(UINT _idx)
 {
 	SetBuffer(BUFFER_TYPE::VERTEX, _idx);
 	SetBuffer(BUFFER_TYPE::INDEX, _idx);
+}
+
+Ptr<Mesh> Mesh::CreateFromFBX(const FBXMeshInfo* _meshInfo)
+{
+	Ptr<Mesh> _mesh = new Mesh;
+	vector<VertexInfo> _vertices = _meshInfo->vertices;
+	vector<UINT> _indices;
+	_mesh->CreateBuffer(BUFFER_TYPE::VERTEX, (UINT)_vertices.size(), _vertices, _indices);
+	for (const vector<UINT>& _buffer : _meshInfo->indices)
+	{
+		if (_buffer.empty())
+		{
+			vector<UINT> _defaultBuffer{ 0 };
+			_indices = _defaultBuffer;
+		}
+		else
+		{
+			_indices = _buffer;
+		}
+
+		_mesh->CreateBuffer(BUFFER_TYPE::INDEX, (UINT)_indices.size(), _vertices, _indices);
+	}
+
+	/*if(_meshInfo->hasAnimation)
+		_mesh->CreateBonesAndAnimation(load)
+		*/
+	return _mesh;
 }
 
 void Mesh::Render(UINT _idx)
@@ -144,4 +173,26 @@ void Mesh::SetBuffer(BUFFER_TYPE _bufferType, UINT _idx)
 	default:
 		break;
 	}
+}
+
+
+
+void Mesh::CreateBonesAndAnimation(FBXLoader& _loader)
+{
+
+}
+
+Matrix Mesh::GetMatrix(FbxAMatrix& _matrix)
+{
+	Matrix _mat;
+
+	for (int y = 0;y < 4;y++)
+	{
+		for (int x = 0;x < 4;x++)
+		{
+			_mat.m[y][x] = static_cast<float>(_matrix.Get(y, x));
+		}
+	}
+
+	return _mat;
 }

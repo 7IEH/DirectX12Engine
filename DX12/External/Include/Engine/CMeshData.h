@@ -16,6 +16,8 @@ class MeshData
 {
 private:
 	Ptr<Mesh>				m_pMesh;
+	vector<Ptr<Material>>   m_pMaterials;
+
 	vector<MeshRenderInfo>	m_vMeshRenders;
 
 private:
@@ -23,6 +25,8 @@ private:
 
 public:
 	vector< GameObject*>	Instantiate();
+	void SetMaterial(Ptr<Material> _mtrl, int _idx) { m_vMeshRenders[_idx].matrials.push_back(_mtrl); }
+
 
 public:
 	CLONE(MeshData)

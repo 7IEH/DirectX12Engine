@@ -30,6 +30,9 @@ void FBXLoader::LoadFBX(const wstring& _path)
 {
 	Import(_path);
 
+	//LoadBones(m_pScene->GetRootNode());
+	//LoadAnimationInfo();
+
 	ParseNode(m_pScene->GetRootNode());
 
 	CreateTextures();
@@ -317,38 +320,208 @@ void FBXLoader::CreateMaterials()
 
 void FBXLoader::LoadBones(FbxNode* _node, int _idx, int parentidx)
 {
+	FbxNodeAttribute* _attriBute = _node->GetNodeAttribute();
+
+	if (_attriBute && FbxNodeAttribute::eSkeleton == _attriBute->GetAttributeType())
+	{
+		std::shared_ptr<FBXBoneInfo> _bone = std::make_shared<FBXBoneInfo>();
+		_bone->boneName = EH::ConvertWstring(_node->GetName());
+		_bone->parentIndex = parentidx;
+		m_vBones.push_back(_bone);
+	}
+
+	const int _childCount = _node->GetChildCount();
+	for (int i = 0;i < _childCount;i++)
+		LoadBones(_node->GetChild(i), static_cast<int>(m_vBones.size()), _idx);
 }
 
 void FBXLoader::LoadAnimationInfo()
 {
+	m_pScene->FillAnimStackNameArray(OUT m_AnimNames);
+
+	const int _animCount = m_AnimNames.GetCount();
+	for (int i = 0;i < _animCount;i++)
+	{
+		FbxAnimStack* _animStack = m_pScene->FindMember<FbxAnimStack>(m_AnimNames[i]->Buffer());
+		if (nullptr == _animStack)
+			continue;
+
+		std::shared_ptr<FBXAnimClipInfo> _animClip = std::make_shared<FBXAnimClipInfo>();
+		_animClip->name = EH::ConvertWstring(_animStack->GetName());
+		_animClip->keyFrames.resize(m_vBones.size());
+
+		FbxTakeInfo* _takeInfo = m_pScene->GetTakeInfo(_animStack->GetName());
+		_animClip->startTime = _takeInfo->mLocalTimeSpan.GetStart();
+		_animClip->endTime = _takeInfo->mLocalTimeSpan.GetStop();
+		_animClip->mode = m_pScene->GetGlobalSettings().GetTimeMode();
+
+		m_vAnimClips.push_back(_animClip);
+	}
 }
 
 void FBXLoader::LoadAnimationData(FbxMesh* _mesh, FBXMeshInfo* _meshInfo)
 {
+	const int _skinCount = _mesh->GetDeformerCount(FbxDeformer::eSkin);
+	if (_skinCount <= 0 || m_vAnimClips.empty())
+		return;
+
+	_meshInfo->hasAnimation = true;
+
+	for (int i = 0;i < _skinCount;i++)
+	{
+		FbxSkin* _fbxSkin = static_cast<FbxSkin*>(_mesh->GetDeformer(i, FbxDeformer::eSkin));
+
+		if (_fbxSkin)
+		{
+			FbxSkin::EType _type = _fbxSkin->GetSkinningType();
+			if (FbxSkin::eRigid == _type || FbxSkin::eLinear)
+			{
+				const int _clusterCount = _fbxSkin->GetClusterCount();
+				for (int j = 0; j < _clusterCount; j++)
+				{
+					FbxCluster* _cluster = _fbxSkin->GetCluster(j);
+					if (nullptr == _cluster->GetLink())
+						continue;
+
+					int _boneIdx = FindBoneIndex(_cluster->GetLink()->GetName());
+					assert(_boneIdx >= 0);
+
+					FbxAMatrix _matNodeTransform = GetTransform(_mesh->GetNode());
+					LoadBoneWeight(_cluster, _boneIdx, _meshInfo);
+					LoadOffsetMatrix(_cluster, _matNodeTransform, _boneIdx, _meshInfo);
+
+					const int _animCount = m_AnimNames.Size();
+					for (int k = 0;k < _animCount;k++)
+					{
+						LoadKeyFrame(k, _mesh->GetNode(), _cluster, _matNodeTransform, _boneIdx, _meshInfo);
+					}
+				}
+			}
+		}
+	}
+
+	FillBoneWeight(_mesh, _meshInfo);
 }
 
 void FBXLoader::LoadBoneWeight(FbxCluster* _cluster, int _boneIdx, FBXMeshInfo* _meshInfo)
 {
+	const int _indicesCount = _cluster->GetControlPointIndicesCount();
+	for (int i = 0;i < _indicesCount;i++)
+	{
+		double _weight = _cluster->GetControlPointWeights()[i];
+		int _vtxIdx = _cluster->GetControlPointIndices()[i];
+		_meshInfo->boneWeights[_vtxIdx].AddWeights(_boneIdx, _weight);
+	}
 }
 
 void FBXLoader::LoadOffsetMatrix(FbxCluster* _cluster, const FbxMatrix& _matNodeTransform, int _boneIdx, FBXMeshInfo* _meshInfo)
 {
+	FbxAMatrix _matClusterTrans;
+	FbxAMatrix _matClutserLinkTrans;
+
+	_cluster->GetTransformMatrix(_matClusterTrans);
+	_cluster->GetTransformLinkMatrix(_matClutserLinkTrans);
+
+	FbxVector4 _v0 = { 1, 0, 0, 0 };
+	FbxVector4 _v1 = { 0, 0, 1, 0 };
+	FbxVector4 _v2 = { 0, 1, 0, 0 };
+	FbxVector4 _v3 = { 0, 0, 0, 1 };
+
+	FbxAMatrix _matReflect;
+	_matReflect[0] = _v0;
+	_matReflect[1] = _v1;
+	_matReflect[2] = _v2;
+	_matReflect[3] = _v3;
+
+	FbxAMatrix _matOffset;
+	_matOffset = _matClutserLinkTrans.Inverse() * _matClusterTrans;
+	_matOffset = _matReflect * _matOffset * _matReflect;
+
+	m_vBones[_boneIdx]->matOffset = _matOffset.Transpose();
 }
 
 void FBXLoader::LoadKeyFrame(int _animIndex, FbxNode* _node, FbxCluster* _cluster, const FbxMatrix& _matNodeTransform, int _boneIdx, FBXMeshInfo* _container)
 {
+	if (m_vAnimClips.empty())
+		return;
+
+	FbxVector4 _v1 = { 1, 0, 0, 0 };
+	FbxVector4 _v2 = { 0, 0, 1, 0 };
+	FbxVector4 _v3 = { 0, 1, 0, 0 };
+	FbxVector4 _v4 = { 0, 0, 0, 1 };
+	FbxAMatrix _matReflect;
+	_matReflect.mData[0] = _v1;
+	_matReflect.mData[0] = _v2;
+	_matReflect.mData[0] = _v3;
+	_matReflect.mData[0] = _v4;
+
+	FbxTime::EMode _timeMode = m_pScene->GetGlobalSettings().GetTimeMode();
+
+	FbxAnimStack* _animStack = m_pScene->FindMember<FbxAnimStack>(m_AnimNames[_animIndex]->Buffer());
+	m_pScene->SetCurrentAnimationStack(OUT _animStack);
+	FbxLongLong _startFrame = m_vAnimClips[_animIndex]->startTime.GetFrameCount(_timeMode);
+	FbxLongLong _endFrame = m_vAnimClips[_animIndex]->endTime.GetFrameCount(_timeMode);
+
+	for (FbxLongLong _frame = _startFrame;_frame < _endFrame;_frame++)
+	{
+		FBXKeyFrameInfo _keyFrameInfo = {};
+		FbxTime _fbxTime = 0;
+
+		_fbxTime.SetFrame(_frame, _timeMode);
+
+		FbxAMatrix _matFromNode = _node->EvaluateGlobalTransform(_fbxTime);
+		FbxAMatrix _matTransform = _matFromNode.Inverse() * _cluster->GetLink()->EvaluateGlobalTransform(_fbxTime);
+		_matTransform = _matReflect * _matTransform * _matReflect;
+
+		_keyFrameInfo.time = _fbxTime.GetSecondDouble();
+		_keyFrameInfo.matTransform = _matTransform;
+
+		m_vAnimClips[_animIndex]->keyFrames[_boneIdx].push_back(_keyFrameInfo);
+	}
+
 }
 
 int FBXLoader::FindBoneIndex(string name)
 {
-	return 0;
+	wstring _boneNames = wstring(name.begin(), name.end());
+
+	for (size_t i = 0;i < m_vBones.size();i++)
+	{
+		if (_boneNames == m_vBones[i]->boneName)
+			return i;
+	}
+
+	return -1;
 }
 
-FbxMatrix FBXLoader::GetTransform(FbxNode* _node)
+FbxAMatrix FBXLoader::GetTransform(FbxNode* _node)
 {
-	return FbxMatrix();
+	const FbxVector4 _translation = _node->GetGeometricTranslation(FbxNode::eSourcePivot);
+	const FbxVector4 _rotation = _node->GetGeometricRotation(FbxNode::eSourcePivot);
+	const FbxVector4 _scalling = _node->GetGeometricScaling(FbxNode::eSourcePivot);
+
+	return FbxAMatrix(_translation, _rotation, _scalling);
 }
 
 void FBXLoader::FillBoneWeight(FbxMesh* _mesh, FBXMeshInfo* _meshInfo)
 {
+	const int _size = static_cast<int>(_meshInfo->boneWeights.size());
+	for (int _v = 0;_v < _size;_v++)
+	{
+		BoneWeight& _boneWeight = _meshInfo->boneWeights[_v];
+		_boneWeight.Normalize();
+
+		float _animBoneIndex[4] = {};
+		float _animBoneWeight[4] = {};
+
+		const int _weightCount = static_cast<int>(_boneWeight.boneWeights.size());
+		for (int _w = 0;_w < _weightCount;_w++)
+		{
+			_animBoneIndex[_w] = static_cast<float>(_boneWeight.boneWeights[_w].first);
+			_animBoneWeight[_w] = static_cast<float>(_boneWeight.boneWeights[_w].second);
+		}
+
+		memcpy(&_meshInfo->vertices[_v].Indices, _animBoneIndex, sizeof(Vec4));
+		memcpy(&_meshInfo->vertices[_v].Weights, _animBoneWeight, sizeof(Vec4));
+	}
 }

@@ -107,7 +107,6 @@ private:
 	Vec4 GetMaterialData(FbxSurfaceMaterial* _surface, const char* _materialName, const char* _factorName);
 	wstring GetTextureRelativeName(FbxSurfaceMaterial* _pSurface, const char* _materialProperty);
 
-
 	void CreateTextures();
 	void CreateMaterials();
 
@@ -122,7 +121,7 @@ private:
 	void LoadKeyFrame(int _animIndex, FbxNode* _node, FbxCluster* _cluster, const FbxMatrix& _matNodeTransform, int _boneIdx, FBXMeshInfo* _container);
 
 	int FindBoneIndex(string name);
-	FbxMatrix GetTransform(FbxNode* _node);
+	FbxAMatrix GetTransform(FbxNode* _node);
 
 	void FillBoneWeight(FbxMesh* _mesh, FBXMeshInfo* _meshInfo);
 

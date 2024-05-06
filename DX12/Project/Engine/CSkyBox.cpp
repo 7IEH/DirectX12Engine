@@ -23,7 +23,6 @@ void SkyBox::UpdateData()
 	if (nullptr == _pTr)
 		return;
 	
-
 	if (SkyBoxType::Sphere == m_eType)
 	{
 		SetMesh(AssetMgr::GetInst()->FindAsset<Mesh>(L"SphereMesh"));

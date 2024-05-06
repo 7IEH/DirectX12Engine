@@ -218,6 +218,22 @@ void GraphicShader::CreatePipeLineState()
 	_arrElement[5].InstanceDataStepRate = 0;
 	_arrElement[5].AlignedByteOffset = 60;
 
+	/*_arrElement[6].SemanticName = "BINORMAL";
+	_arrElement[6].SemanticIndex = 0;
+	_arrElement[6].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	_arrElement[6].InputSlot = 0;
+	_arrElement[6].InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
+	_arrElement[6].InstanceDataStepRate = 0;
+	_arrElement[6].AlignedByteOffset = 60;
+
+	_arrElement[7].SemanticName = "BINORMAL";
+	_arrElement[7].SemanticIndex = 0;
+	_arrElement[7].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	_arrElement[7].InputSlot = 0;
+	_arrElement[7].InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
+	_arrElement[7].InstanceDataStepRate = 0;
+	_arrElement[7].AlignedByteOffset = 60;*/
+
 	m_pPLDesc.InputLayout = { _arrElement,_countof(_arrElement) };
 	m_pPLDesc.pRootSignature = Device::GetInst()->GetSignature();
 	

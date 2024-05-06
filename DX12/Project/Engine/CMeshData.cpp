@@ -20,27 +20,10 @@ HRESULT MeshData::Load(const wstring& _strFilePath)
 {
 	FBXLoader _loader;
 	_loader.LoadFBX(_strFilePath);
-
+	
 	for (int i = 0;i < _loader.GetMeshCount();i++)
 	{
-		Mesh* _mesh = new Mesh;
-		vector<VertexInfo> _vertices = _loader.GetMesh(i).vertices;
-		vector<UINT> _indices;
-		_mesh->CreateBuffer(BUFFER_TYPE::VERTEX, (UINT)_vertices.size(), _vertices, _indices);
-		for (const vector<UINT>& _buffer : _loader.GetMesh(i).indices)
-		{
-			if (_buffer.empty())
-			{
-				vector<UINT> _defaultBuffer{ 0 };
-				_indices = _defaultBuffer;
-			}
-			else
-			{
-				_indices = _buffer;
-			}
-
-			_mesh->CreateBuffer(BUFFER_TYPE::INDEX, (UINT)_indices.size(), _vertices, _indices);
-		}
+		Ptr<Mesh> _mesh = Mesh::CreateFromFBX(&_loader.GetMesh(i));
 
 		MeshRenderInfo _info = {};
 		_info.mesh = _mesh;
@@ -61,28 +44,9 @@ vector<GameObject*> MeshData::Instantiate()
 		MeshRenderer* _render = _pObj->AddComponent<MeshRenderer>();
 		_render->SetMesh(_info.mesh);
 		
-		for (size_t i = 0;i < 5;i++)
+		for (size_t i = 0;i < _info.matrials.size();i++)
 		{
-			if (i == 0)
-			{
-				_render->SetMaterial(AssetMgr::GetInst()->FindAsset<Material>(L"HarunaBodyMtrl"));
-			}
-			else if (i == 1)
-			{
-				_render->SetMaterial(AssetMgr::GetInst()->FindAsset<Material>(L"HarunaFaceMtrl"));
-			}
-			else if (i == 2)
-			{
-				_render->SetMaterial(AssetMgr::GetInst()->FindAsset<Material>(L"HarunaEyeMouthMtrl"));
-			}
-			else if (i == 3)
-			{
-				_render->SetMaterial(AssetMgr::GetInst()->FindAsset<Material>(L"HarunaHairMtrl"));
-			}
-			else
-			{
-				_render->SetMaterial(AssetMgr::GetInst()->FindAsset<Material>(L"Default3DMat"));
-			}
+			_render->SetMaterial(_info.matrials[i]);
 		}
 
 		_temp.push_back(_pObj);
