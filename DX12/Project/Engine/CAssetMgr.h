@@ -1,14 +1,9 @@
 #pragma once
 
-#include "CTexture.h"
-#include "CMesh.h"
-#include "CMeshData.h"
-#include "CGraphicShader.h"
-#include "CMaterial.h"
+#include "Asset.h"
 
 #include "CPathMgr.h"
 
-#ifdef DX11
 class AssetMgr
     :public Singleton<AssetMgr>
 {
@@ -60,6 +55,10 @@ ASSET_TYPE GetAssetType()
         Type = ASSET_TYPE::TEXTURE;
     if constexpr (std::is_same_v<GraphicShader, T>)
         Type = ASSET_TYPE::GRAPHIC_SHADER;
+    if constexpr (std::is_same_v<ComputeShader, T>)
+        Type = ASSET_TYPE::COMPUTE_SHADER;
+    if constexpr (std::is_same_v<AnimComputeShader, T>)
+        Type = ASSET_TYPE::COMPUTE_SHADER;
     if constexpr (std::is_same_v<Material, T>)
         Type = ASSET_TYPE::MATERIAL;
     if constexpr (std::is_same_v<MeshData, T>)
@@ -146,7 +145,4 @@ Ptr<T> AssetMgr::Load(const wstring& _strFilePath, const wstring& _name)
 //
 //    m_mapAsset[(UINT)AssetType].erase(iter);
 //}
-#else
-
-#endif 
 

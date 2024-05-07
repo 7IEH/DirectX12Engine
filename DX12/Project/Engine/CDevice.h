@@ -85,6 +85,7 @@ public:
 	ID3D12CommandQueue* GetCmdQueue() { return m_pCmdQueue.Get(); }
 	ID3D12GraphicsCommandList* GetCmdList() { return m_pCmdList.Get(); }
 	ID3D12GraphicsCommandList* GetResCmdList() { return m_pResCmdList.Get(); }
+	ID3D12GraphicsCommandList* GetComCmdList() { return m_pComCmdList.Get(); }
 
 	Vec2							GetRes() { return m_WindowInfo.Res; }
 	HWND							GetHwnd() { return m_WindowInfo.Hwnd; }
@@ -101,6 +102,7 @@ public:
 	D3D12_CPU_DESCRIPTOR_HANDLE		GetBufferView() { return GetRTV(m_iBackBufferIndex); }
 
 	ID3D12RootSignature* GetSignature() { return m_pSignature.Get(); }
+	ID3D12RootSignature* GetComSignature() { return m_pComSignature.Get(); }
 
 	ConstantBuffer* GetConstantBuffer(CONSTANT_TYPE _type) { return m_pConstantBuffer[(UINT)_type]; }
 
@@ -118,6 +120,8 @@ public:
 
 
 	void							CommitTable();
+	void							ComCommitTable();
+
 	ID3D12DescriptorHeap* GetDescHeap() { return m_pGPUHeap.Get(); }
 
 public:
@@ -133,7 +137,7 @@ public:
 
 	// GPGPU CommandQueue Func
 	void							ComWaitSync();
-	void							ComFlushResourceCommandQueue();
+	void							FlushComputeCommandQueue();
 
 public:
 	int							Awake(const WindowInfo& _windowInfo);

@@ -27,6 +27,11 @@ Mesh::~Mesh()
 				delete m_IBInfo[i].IndexInfo;
 		}
 	}
+
+	if (nullptr != m_pOffsetBuffer)
+		delete m_pOffsetBuffer;
+
+	ReleaseVector(m_pFrameBuffer);
 }
 
 void Mesh::Create(vector<VertexInfo>& _VBdata, UINT _VertexCount, vector<UINT>& _IBData, UINT _IndexCount)
@@ -45,7 +50,7 @@ void Mesh::UpdateData(UINT _idx)
 	SetBuffer(BUFFER_TYPE::INDEX, _idx);
 }
 
-Ptr<Mesh> Mesh::CreateFromFBX(const FBXMeshInfo* _meshInfo)
+Ptr<Mesh> Mesh::CreateFromFBX(const FBXMeshInfo* _meshInfo,FBXLoader& _loader)
 {
 	Ptr<Mesh> _mesh = new Mesh;
 	vector<VertexInfo> _vertices = _meshInfo->vertices;
@@ -66,9 +71,10 @@ Ptr<Mesh> Mesh::CreateFromFBX(const FBXMeshInfo* _meshInfo)
 		_mesh->CreateBuffer(BUFFER_TYPE::INDEX, (UINT)_indices.size(), _vertices, _indices);
 	}
 
-	/*if(_meshInfo->hasAnimation)
-		_mesh->CreateBonesAndAnimation(load)
-		*/
+	if (_meshInfo->hasAnimation)
+	{
+		_mesh->CreateBonesAndAnimation(_loader);
+	}
 	return _mesh;
 }
 
@@ -179,7 +185,99 @@ void Mesh::SetBuffer(BUFFER_TYPE _bufferType, UINT _idx)
 
 void Mesh::CreateBonesAndAnimation(FBXLoader& _loader)
 {
+	UINT _iFrameCount = 0;
+	vector<std::shared_ptr<FBXAnimClipInfo>>& _animClips = _loader.GetAnimClip();
+	for (std::shared_ptr<FBXAnimClipInfo>& _ac : _animClips)
+	{
+		AnimClipInfo _info = {};
 
+		_info.animName = _ac->name;
+		_info.duration = _ac->endTime.GetSecondDouble() - _ac->startTime.GetSecondDouble();
+
+		int _startFrame = static_cast<int>(_ac->startTime.GetFrameCount(_ac->mode));
+		int _endFrame = static_cast<int>(_ac->endTime.GetFrameCount(_ac->mode));
+		_info.frameCount = _endFrame - _startFrame;
+
+		_info.KeyFrame.resize(_ac->keyFrames.size());
+
+		const int _boneCount = static_cast<int>(_ac->keyFrames.size());
+		for (int b = 0;b < _boneCount;b++)
+		{
+			auto& _vec = _ac->keyFrames[b];
+
+			const int _size = static_cast<int>(_vec.size());
+			_iFrameCount = max(_iFrameCount, static_cast<UINT>(_size));
+			_info.KeyFrame[b].resize(_size);
+
+			for (int f = 0;f < _size;f++)
+			{
+				FBXKeyFrameInfo& _kf = _vec[f];
+				KeyFrameInfo& _kfInfo = _info.KeyFrame[b][f];
+
+				_kfInfo.time = _kf.time;
+				_kfInfo.frame = static_cast<int>(_size);
+				_kfInfo.scale.x = static_cast<float>(_kf.matTransform.GetS().mData[0]);
+				_kfInfo.scale.y = static_cast<float>(_kf.matTransform.GetS().mData[1]);
+				_kfInfo.scale.z = static_cast<float>(_kf.matTransform.GetS().mData[2]);
+				_kfInfo.rotation.x = static_cast<float>(_kf.matTransform.GetQ().mData[0]);
+				_kfInfo.rotation.y = static_cast<float>(_kf.matTransform.GetQ().mData[1]);
+				_kfInfo.rotation.z = static_cast<float>(_kf.matTransform.GetQ().mData[2]);
+				_kfInfo.rotation.w = static_cast<float>(_kf.matTransform.GetQ().mData[3]);
+				_kfInfo.translate.x = static_cast<float>(_kf.matTransform.GetT().mData[0]);
+				_kfInfo.translate.y = static_cast<float>(_kf.matTransform.GetT().mData[1]);
+				_kfInfo.translate.z = static_cast<float>(_kf.matTransform.GetT().mData[2]);
+			}
+		}
+		m_vAnimClips.push_back(_info);
+	}
+
+	vector<std::shared_ptr<FBXBoneInfo>>& _bones = _loader.GetBones();
+	for (std::shared_ptr<FBXBoneInfo>& _bone : _bones)
+	{
+		BoneInfo _boneInfo = {};
+		_boneInfo.parentIdx = _bone->parentIndex;
+		_boneInfo.matOffset = GetMatrix(_bone->matOffset);
+		_boneInfo.boneName = _bone->boneName;
+		m_vBones.push_back(_boneInfo);
+	}
+
+	if (!m_vAnimClips.empty())
+	{
+		const int _boneCount = static_cast<int>(m_vBones.size());
+		vector<Matrix> _offsetVec(_boneCount);
+		for (size_t b = 0;b < _boneCount;b++)
+			_offsetVec[b] = m_vBones[b].matOffset;
+
+		m_pOffsetBuffer = new StructuredBuffer;
+		m_pOffsetBuffer->Create(sizeof(Matrix), static_cast<UINT>(_offsetVec.size()), SB_TYPE::READ_WRITE,TRUE, _offsetVec.data());
+
+		const int _animCount = static_cast<int>(_animClips.size());
+		for (int i = 0;i < _animCount;i++)
+		{
+			AnimClipInfo& _animClip = m_vAnimClips[i];
+
+			vector<AnimFrameParams> _frameParams;
+			_frameParams.resize(m_vBones.size() + _animClip.frameCount);
+
+			for (int b = 0;b < _boneCount;b++)
+			{
+				const int _KeyFrameCount = static_cast<int>(_animClip.KeyFrame[b].size());
+				for (int f = 0;f < _KeyFrameCount;f++)
+				{
+					int _idx = static_cast<int>(_boneCount * f + b);
+
+					_frameParams[_idx] = AnimFrameParams
+					{
+						Vec4(_animClip.KeyFrame[b][f].scale),
+						_animClip.KeyFrame[b][f].rotation,
+						Vec4(_animClip.KeyFrame[b][f].translate)
+					};
+				}
+			}
+			m_pFrameBuffer.push_back(new StructuredBuffer);
+			m_pFrameBuffer.back()->Create(sizeof(AnimFrameParams), static_cast<UINT>(_frameParams.size()), SB_TYPE::READ_WRITE, TRUE, _frameParams.data());
+		}
+	}
 }
 
 Matrix Mesh::GetMatrix(FbxAMatrix& _matrix)

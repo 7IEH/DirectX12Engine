@@ -61,6 +61,13 @@ struct FKeyData
 	bool		bPressed;
 };
 
+struct AnimFrameParams
+{
+	Vec4	scale;
+	Vec4	rotation; // Quaternion
+	Vec4	translation;
+};
+
 struct LightMateiral
 {
 	Vec4	Ambient;

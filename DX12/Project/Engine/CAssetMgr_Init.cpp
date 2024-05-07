@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CAssetMgr.h"
 
+#include "CAnimComputeShader.h"
 #include "CGraphicShader.h"
 #include "CMesh.h"
 #include "CMeshData.h"
@@ -631,6 +632,15 @@ void AssetMgr::CreateDefaultMaterial()
 
 void AssetMgr::CreateDefaultComputeShader()
 {
+	AnimComputeShader* _pShader = new AnimComputeShader(256, 1, 1);
+	
+	wstring _csPath = L"\\shader\\AnimationCS.hlsl";
+
+	string _csEntry = "CS_Main";
+
+	_pShader->Default_Create(_csPath, _csEntry);
+
+	AddAsset(_pShader, L"AnimComputeShader");
 }
 
 void AssetMgr::CreateSound()

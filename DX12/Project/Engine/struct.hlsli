@@ -246,4 +246,6 @@ cbuffer tGlobalData : register(b0)
     int gLight3DSize;
 }
 
+StructuredBuffer<Matrix> g_mat_bone : register(t10);
+
 #endif

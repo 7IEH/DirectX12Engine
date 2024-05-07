@@ -1,5 +1,6 @@
 #pragma once
 #include "CAsset.h"
+#include "CStructuredBuffer.h"
 
 struct IndexBufferInfo
 {
@@ -48,16 +49,25 @@ private:
 	vector<AnimClipInfo>				m_vAnimClips;
 	vector<BoneInfo>					m_vBones;
 
-	
+	StructuredBuffer*					m_pOffsetBuffer;
+	vector<StructuredBuffer*>			m_pFrameBuffer;
 
 public:
 	UINT GetSubSetCount() { return static_cast<UINT>(m_IBInfo.size()); }
+
+	StructuredBuffer* GetOffsetBuffer() { return m_pOffsetBuffer; }
+	StructuredBuffer* GetFrameBuffer(int _idx) { return m_pFrameBuffer[_idx]; }
+
+	bool			  IsAnimMesh() { return !m_vAnimClips.empty(); }
+
+	const vector<BoneInfo>* GetBones()				{ return &m_vBones; }
+	const vector<AnimClipInfo>* GetAnimClip()		{ return &m_vAnimClips; }
 
 public:
 	void Create(vector<VertexInfo>& _VBdata, UINT _VertexCount, vector<UINT>& _IBData, UINT _IndexCount);
 	void UpdateData(UINT _idx);
 	
-	static Ptr<Mesh>		CreateFromFBX(const struct FBXMeshInfo* _meshInfo);
+	static Ptr<Mesh>		CreateFromFBX(const struct FBXMeshInfo* _meshInfo,class FBXLoader& _loader);
 
 public:
 	void Render(UINT _idx);

@@ -53,7 +53,7 @@ struct FBXMeshInfo
 
 struct FBXKeyFrameInfo
 {
-	FbxMatrix matTransform;
+	FbxAMatrix matTransform;
 	double time;
 };
 

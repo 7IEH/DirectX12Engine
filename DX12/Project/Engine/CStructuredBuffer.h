@@ -29,6 +29,7 @@ public:
     HRESULT Create(UINT _iElementSize, UINT _iElementCount, SB_TYPE _eType, bool _bSysMemMove = FALSE, void* _pSysMem = nullptr);
 
     void UpdateData(UINT _RegisterNum);
+
     int UpdateData_CS_SRV(UINT _RegisterNum);
     int UpdateData_CS_UAV(UINT _RegisterNum);
 

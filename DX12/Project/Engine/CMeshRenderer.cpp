@@ -27,6 +27,14 @@ void MeshRenderer::Render()
 	for (UINT i = 0;i < test;i++)
 	{
 		SetMaterial(i);
+
+		Animator3D* _pAnim3D = GetOwner()->GetComponent<Animator3D>();
+		if (_pAnim3D)
+		{
+			_pAnim3D->Render();
+			GetMaterial()->SetMaterialParam(INT_1, 1);
+		}
+
 		UpdateData();
 		GetMesh()->Render(i);
 	}

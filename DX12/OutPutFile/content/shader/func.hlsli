@@ -1,7 +1,37 @@
-//#ifndef _FUNC
-//#define _FUNC
+#ifndef _FUNC
+#define _FUNC
 
-//#include "struct.hlsli"
+#include "struct.hlsli"
+
+struct SkinningInfo
+{
+    float3 pos;
+    float3 normal;
+    float3 tangent;
+};
+
+void Skinning(inout float3 pos, inout float3 normal, inout float3 tangent,
+    inout float4 weight, inout float4 indices)
+{
+    SkinningInfo _info = (SkinningInfo) 0.f;
+    
+    for (int i = 0; i < 4;i++)
+    {
+        if(weight[i] == 0.f)
+            continue;
+        
+        int _boneIdx = indices[i];
+        matrix matBone = g_mat_bone[_boneIdx];
+        
+        _info.pos += (mul(float4(pos, 1.f), matBone) * weight[i]).xyz;
+        _info.normal += (mul(float4(normal, 0.f), matBone) * weight[i]).xyz;
+        _info.tangent += (mul(float4(tangent, 0.f), matBone) * weight[i]).xyz;
+    }
+
+    pos = _info.pos;
+    normal = normalize(_info.normal);
+    tangent = normalize(_info.tangent);
+}
 
 //// Luna LightExample
 //void ComputeDirectionalLight(LightMaterial mat, DirectionalLight L,
@@ -174,4 +204,4 @@
 //        ComputeSpotLight2D(_surfacePos, _info, lightColor);
 //    }
 //}
-//#endif
+#endif

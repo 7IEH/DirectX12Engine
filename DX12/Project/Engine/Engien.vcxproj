@@ -164,12 +164,15 @@ call Copy.bat</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Asset.h" />
     <ClInclude Include="CAnimator2D.h" />
     <ClInclude Include="CAnimator3D.h" />
+    <ClInclude Include="CAnimComputeShader.h" />
     <ClInclude Include="CAsset.h" />
     <ClInclude Include="CAssetMgr.h" />
     <ClInclude Include="CCamera.h" />
     <ClInclude Include="CComponent.h" />
+    <ClInclude Include="CComputeShader.h" />
     <ClInclude Include="CConstantBuffer.h" />
     <ClInclude Include="CDestroyMgr.h" />
     <ClInclude Include="CDevice.h" />
@@ -215,11 +218,13 @@ call Copy.bat</Command>
   <ItemGroup>
     <ClCompile Include="CAnimator2D.cpp" />
     <ClCompile Include="CAnimator3D.cpp" />
+    <ClCompile Include="CAnimComputeShader.cpp" />
     <ClCompile Include="CAsset.cpp" />
     <ClCompile Include="CAssetMgr.cpp" />
     <ClCompile Include="CAssetMgr_Init.cpp" />
     <ClCompile Include="CCamera.cpp" />
     <ClCompile Include="CComponent.cpp" />
+    <ClCompile Include="CComputeShader.cpp" />
     <ClCompile Include="CConstantBuffer.cpp" />
     <ClCompile Include="CDestroyMgr.cpp" />
     <ClCompile Include="CDevice.cpp" />
@@ -262,10 +267,23 @@ call Copy.bat</Command>
   </ItemGroup>
   <ItemGroup>
     <None Include="func.hlsli" />
+    <None Include="math.hlsli" />
     <None Include="struct.hlsli" />
     <None Include="SimpleMath.inl" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="AnimationCS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CS_Main</EntryPointName>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CS_Main</EntryPointName>
+    </FxCompile>
     <FxCompile Include="CartoonPS3D.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>

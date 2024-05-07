@@ -3,6 +3,9 @@
   <ProjectOutputs />
   <ContentFiles>
     <ContentFile>
+      <FullPath>D:\C++\API\Engine\DirectX12\DX12\External\Library\Engine\AnimationCS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>D:\C++\API\Engine\DirectX12\DX12\External\Library\Engine\CartoonPS3D.cso</FullPath>
     </ContentFile>
     <ContentFile>

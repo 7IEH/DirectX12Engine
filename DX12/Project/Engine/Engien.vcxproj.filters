@@ -136,6 +136,15 @@
     <Filter Include="07. Component\Animator2D">
       <UniqueIdentifier>{0c0ecbfb-77a4-4614-a108-b4d328138939}</UniqueIdentifier>
     </Filter>
+    <Filter Include="08. Asset\Shader\ComputeShader">
+      <UniqueIdentifier>{a3762319-4803-4357-bb42-cd8255a9d70c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="08. Asset\Shader\ComputeShader\ParticleCS">
+      <UniqueIdentifier>{868844ab-52a4-4556-9b26-e4b51a2d9445}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="08. Asset\Shader\ComputeShader\AnimCS">
+      <UniqueIdentifier>{b6a7326a-7eb8-443f-86b3-49d189ca52f0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -279,6 +288,15 @@
     <ClInclude Include="CAnimator2D.h">
       <Filter>07. Component\Animator2D</Filter>
     </ClInclude>
+    <ClInclude Include="CComputeShader.h">
+      <Filter>08. Asset\Shader\ComputeShader</Filter>
+    </ClInclude>
+    <ClInclude Include="CAnimComputeShader.h">
+      <Filter>08. Asset\Shader\ComputeShader\AnimCS</Filter>
+    </ClInclude>
+    <ClInclude Include="Asset.h">
+      <Filter>01. Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -404,6 +422,12 @@
     <ClCompile Include="CAnimator2D.cpp">
       <Filter>07. Component\Animator2D</Filter>
     </ClCompile>
+    <ClCompile Include="CComputeShader.cpp">
+      <Filter>08. Asset\Shader\ComputeShader</Filter>
+    </ClCompile>
+    <ClCompile Include="CAnimComputeShader.cpp">
+      <Filter>08. Asset\Shader\ComputeShader\AnimCS</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
@@ -413,6 +437,9 @@
       <Filter>ShaderCode\Util</Filter>
     </None>
     <None Include="func.hlsli">
+      <Filter>ShaderCode\Util</Filter>
+    </None>
+    <None Include="math.hlsli">
       <Filter>ShaderCode\Util</Filter>
     </None>
   </ItemGroup>
@@ -440,6 +467,9 @@
     </FxCompile>
     <FxCompile Include="CartoonPS3D.hlsl">
       <Filter>ShaderCode\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="AnimationCS.hlsl">
+      <Filter>08. Asset\Shader\ComputeShader\AnimCS</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

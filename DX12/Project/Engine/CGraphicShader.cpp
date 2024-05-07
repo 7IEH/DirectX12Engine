@@ -61,13 +61,6 @@ HRESULT GraphicShader::UpdateData()
 	CMDLIST->SetPipelineState(m_pPLState.Get());
 	CMDLIST->IASetPrimitiveTopology(m_Topology);
 
-	// Rasterizer Stage
-	//CONTEXT->RSSetState(Device::GetInst()->GetRSState(m_CullType).Get());
-
-	// Output-Merger Stage
-	//CONTEXT->OMSetDepthStencilState(Device::GetInst()->GetDSState(m_DSType).Get(), 0);
-	//CONTEXT->OMSetBlendState(Device::GetInst()->GetBSState(m_BlendType).Get(), nullptr, 0xffffffff);
-
 	return S_OK;
 }
 
@@ -168,7 +161,7 @@ void GraphicShader::SetShader(SHADER_TYPE _type)
 
 void GraphicShader::CreatePipeLineState()
 {
-	D3D12_INPUT_ELEMENT_DESC _arrElement[6] = {};
+	D3D12_INPUT_ELEMENT_DESC _arrElement[8] = {};
 
 	_arrElement[0].SemanticName = "POSITION";
 	_arrElement[0].SemanticIndex = 0;
@@ -218,21 +211,21 @@ void GraphicShader::CreatePipeLineState()
 	_arrElement[5].InstanceDataStepRate = 0;
 	_arrElement[5].AlignedByteOffset = 60;
 
-	/*_arrElement[6].SemanticName = "BINORMAL";
+	_arrElement[6].SemanticName = "WEIGHT";
 	_arrElement[6].SemanticIndex = 0;
-	_arrElement[6].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	_arrElement[6].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	_arrElement[6].InputSlot = 0;
 	_arrElement[6].InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
 	_arrElement[6].InstanceDataStepRate = 0;
-	_arrElement[6].AlignedByteOffset = 60;
+	_arrElement[6].AlignedByteOffset = 72;
 
-	_arrElement[7].SemanticName = "BINORMAL";
+	_arrElement[7].SemanticName = "INDICES";
 	_arrElement[7].SemanticIndex = 0;
-	_arrElement[7].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	_arrElement[7].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	_arrElement[7].InputSlot = 0;
 	_arrElement[7].InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
 	_arrElement[7].InstanceDataStepRate = 0;
-	_arrElement[7].AlignedByteOffset = 60;*/
+	_arrElement[7].AlignedByteOffset = 88;
 
 	m_pPLDesc.InputLayout = { _arrElement,_countof(_arrElement) };
 	m_pPLDesc.pRootSignature = Device::GetInst()->GetSignature();

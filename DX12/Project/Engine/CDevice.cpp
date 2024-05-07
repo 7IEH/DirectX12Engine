@@ -119,7 +119,7 @@ HRESULT Device::CreateCommandQueue()
 	m_pDevice->CreateCommandQueue(&_tComDesc, IID_PPV_ARGS(&m_pComCmdQueue));
 
 	m_pDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_COMPUTE, IID_PPV_ARGS(&m_pComCmdAlloc));
-	m_pDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_COMPUTE, m_pCmdAlloc.Get(), nullptr, IID_PPV_ARGS(&m_pCmdList));
+	m_pDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_COMPUTE, m_pComCmdAlloc.Get(), nullptr, IID_PPV_ARGS(&m_pComCmdList));
 
 	m_pDevice->CreateFence(0,D3D12_FENCE_FLAG_NONE,IID_PPV_ARGS(&m_pComFence));
 	m_pComFenceEvent = ::CreateEvent(nullptr, FALSE, FALSE, nullptr);
@@ -448,14 +448,14 @@ void Device::CommitTable()
 	m_iCurGroupIdx++;
 }
 
-//void Device::CommitTable()
-//{
-//	/*ID3D12DescriptorHeap* descHeap = m_pComputeGPUHeap.Get();
-//	COMPUTE_CMD_LIST->SetDescriptorHeaps(1, &descHeap);
-//
-//	D3D12_GPU_DESCRIPTOR_HANDLE handle = descHeap->GetGPUDescriptorHandleForHeapStart();
-//	COMPUTE_CMD_LIST->SetComputeRootDescriptorTable(0, handle);*/
-//}
+void Device::ComCommitTable()
+{
+	ID3D12DescriptorHeap* descHeap = m_pComputeGPUHeap.Get();
+	m_pComCmdList->SetDescriptorHeaps(1, &descHeap);
+
+	D3D12_GPU_DESCRIPTOR_HANDLE handle = descHeap->GetGPUDescriptorHandleForHeapStart();
+	m_pComCmdList->SetComputeRootDescriptorTable(0, handle);
+}
 
 void Device::WaitSync()
 {
@@ -563,7 +563,7 @@ void Device::ComWaitSync()
 	}
 }
 
-void Device::ComFlushResourceCommandQueue()
+void Device::FlushComputeCommandQueue()
 {
 	m_pComCmdList->Close();
 
@@ -571,7 +571,7 @@ void Device::ComFlushResourceCommandQueue()
 	auto t = _countof(cmdListArr);
 	m_pComCmdQueue->ExecuteCommandLists(_countof(cmdListArr), cmdListArr);
 
-	WaitSync();
+	ComWaitSync();
 
 	m_pComCmdAlloc->Reset();
 	m_pComCmdList->Reset(m_pComCmdAlloc.Get(), nullptr);

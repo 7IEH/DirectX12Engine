@@ -1,5 +1,5 @@
-#ifndef _DEFAULTPS3D
-#define _DEFAULTPS3D
+#ifndef _CARTOONPS3D
+#define _CARTOONPS3D
 
 #include "struct.hlsli"
 #include "func.hlsli"
@@ -14,7 +14,6 @@ struct VS_OUT
 {
     float4 vPosition : SV_Position;
     float2 vUV : TEXCOORD;
-    float LightPow : FOG;
     
     float3 vViewPos : POSITION;
     float3 vViewTangent : TANGENT;
