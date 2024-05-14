@@ -17,8 +17,9 @@ Light3D::~Light3D()
 
 void Light3D::LateUpdate()
 {
-	Vec3 _vWorldPos = GetOwner()->GetComponent<Transform>()->GetMatWorld().Translation();
-	m_tLightInfo.Position = _vWorldPos;
+	Transform* _pTr = GetOwner()->GetComponent<Transform>();
+	m_tLightInfo.Position = _pTr->GetMatWorld().Translation();
+	m_tLightInfo.LightDir = _pTr->GetWorldDir(DIRECTION_TYPE::FRONT);
 
 	RenderMgr::GetInst()->RegisterLight3D(GetOwner());
 }

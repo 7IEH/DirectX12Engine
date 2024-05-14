@@ -257,7 +257,7 @@ void Mesh::CreateBonesAndAnimation(FBXLoader& _loader)
 			AnimClipInfo& _animClip = m_vAnimClips[i];
 
 			vector<AnimFrameParams> _frameParams;
-			_frameParams.resize(m_vBones.size() + _animClip.frameCount);
+			_frameParams.resize(m_vBones.size() * _animClip.frameCount);
 
 			for (int b = 0;b < _boneCount;b++)
 			{

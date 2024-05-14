@@ -215,6 +215,8 @@ HRESULT Device::CreateComputeRootSignature()
 	::D3D12SerializeRootSignature(&_tDesc, D3D_ROOT_SIGNATURE_VERSION_1, &_blobSignature, &_blobError);
 	_hr = m_pDevice->CreateRootSignature(0, _blobSignature->GetBufferPointer(), _blobSignature->GetBufferSize(), IID_PPV_ARGS(&m_pComSignature));
 
+	m_pComCmdList->SetComputeRootSignature(m_pComSignature.Get());
+
 	return _hr;
 }
 
@@ -538,7 +540,7 @@ void Device::ClearConstantBuffer()
 	}
 }
 
-void Device::FlushResrouceCommandQueue()
+void Device::FlushResourceCommandQueue()
 {
 	m_pResCmdList->Close();
 

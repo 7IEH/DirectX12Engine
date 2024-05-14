@@ -144,7 +144,7 @@ public:
 	void						OMSetRT();
 	void						CreateViewPort(Vec2 _pos, Vec2 _scale);
 
-	void						FlushResrouceCommandQueue();
+	void						FlushResourceCommandQueue();
 
 private:
 	HRESULT						CreateDevice();

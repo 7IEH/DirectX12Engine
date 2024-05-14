@@ -2,6 +2,7 @@
 #define _DEFAULTVS3D
 
 #include "struct.hlsli"
+#include "func.hlsli"
 
 struct VS_IN
 {
@@ -11,23 +12,27 @@ struct VS_IN
     float3 vTangent : TANGENT;
     float3 vNormal : NORMAL;
     float3 vBinormal : BINORMAL;
+    float4 weight : WEIGHT;
+    float4 indices : INDICES;
 };
 
 struct VS_OUT
 {
     float4 vPosition : SV_Position;
     float2 vUV : TEXCOORD;
-    float LightPow : FOG;
-       
+
     float3 vViewPos : POSITION;
     float3 vViewTangent : TANGENT;
     float3 vViewNormal : NORMAL;
-    float3 vViewBinormal : BINORMAL;
+    float3 vViewBinormal : BINORMAL;    
 };
 
 VS_OUT VS_Default3D(VS_IN _in)
 {
     VS_OUT output = (VS_OUT) 0.f;
+    
+    if (gMatrial._int1 == 1)
+        Skinning(_in.vPos, _in.vNormal, _in.vTangent, _in.weight, _in.indices);
     
     output.vPosition = mul(float4(_in.vPos, 1.f), WVP);
     output.vUV = _in.vUV;

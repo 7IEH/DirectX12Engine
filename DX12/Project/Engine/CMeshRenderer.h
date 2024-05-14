@@ -1,5 +1,7 @@
 #pragma once
 #include "CRenderer.h"
+#include "CStructuredBuffer.h"
+
 class MeshRenderer :
     public Renderer
 {

@@ -37,7 +37,11 @@ public:
 		m_pDynamicMtrl	=	nullptr;
 	}
 
-	void				SetMaterial(int _idx) { m_pCurMtrl = m_vMtrls[_idx]; }
+	void				SetMaterial(int _idx) 
+	{ 
+		if(_idx <= m_vMtrls.size() - 1)
+			m_pCurMtrl = m_vMtrls[_idx]; 
+	}
 
 public:
 	virtual void Render() = 0;

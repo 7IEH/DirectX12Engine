@@ -43,7 +43,7 @@ Animator3D::~Animator3D()
 		delete m_pBoneFrameBuffer;
 
 	if (nullptr != m_pBoneOffsetBuffer)
-		delete m_pBoneFrameBuffer;
+		delete m_pBoneOffsetBuffer;
 }
 
 void Animator3D::Play(UINT _idx)
@@ -75,10 +75,11 @@ void Animator3D::Render()
 	{
 		delete m_pBoneMatBuffer;
 		m_pBoneMatBuffer = nullptr;
+		m_pBoneMatBuffer = new StructuredBuffer;
 		m_pBoneMatBuffer->Create(sizeof(Matrix), _iBoneCount, SB_TYPE::READ_WRITE, TRUE);
 	}
 
-	if (nullptr != m_pAnimComputeShader)
+	if (nullptr == m_pAnimComputeShader)
 		return;
 
 	m_pConst.iArr[0] = _iBoneCount;

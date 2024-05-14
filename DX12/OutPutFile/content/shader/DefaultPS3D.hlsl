@@ -14,8 +14,7 @@ struct VS_OUT
 {
     float4 vPosition : SV_Position;
     float2 vUV : TEXCOORD;
-    float LightPow : FOG;
-    
+
     float3 vViewPos : POSITION;
     float3 vViewTangent : TANGENT;
     float3 vViewNormal : NORMAL;
@@ -24,11 +23,12 @@ struct VS_OUT
 
 float4 PS_Default3D(VS_OUT _in) : SV_Target
 {
-    float4 Color = float4(1.f, 1.f, 1.f, 1.f);
+    float4 Color = (float4) 0.f;
+    float4 TextureColor = float4(1.f, 1.f, 1.f, 1.f);
     
     if (gMatrial.spriteCheck0)
     {
-        Color = ST0.Sample(sampler1, _in.vUV);
+        TextureColor = ST0.Sample(sampler1, _in.vUV);
     }
     
     float3 viewNormal = _in.vViewNormal;
@@ -49,20 +49,25 @@ float4 PS_Default3D(VS_OUT _in) : SV_Target
         viewNormal = normalize(mul(vNormal.xyz, matRot));
     }
     
-    float3 vLightDir = normalize(mul(float4(g_LightDir, 0.f), View).xyz);
-    float fLightPow = saturate(dot(viewNormal, -vLightDir));
+    for (int i = 0; i < gLight3DSize; i++)
+    {
+        Color.rgb += CaculateLight(i, viewNormal, _in.vViewPos, TextureColor);
+    }
     
-    float3 vReflect = vLightDir + 2 * dot(-vLightDir, viewNormal) * viewNormal;
-    vReflect = normalize(vReflect);
+    //float3 vLightDir = normalize(mul(float4(g_LightDir, 0.f), View).xyz);
+    //float fLightPow = saturate(dot(viewNormal, -vLightDir));
     
-    float3 vEye = normalize(_in.vViewPos);
+    //float3 vReflect = vLightDir + 2 * dot(-vLightDir, viewNormal) * viewNormal;
+    //vReflect = normalize(vReflect);
     
-    float vReflectPow = saturate(dot(-vEye, vReflect));
-    vReflectPow = pow(vReflectPow, 20.f);
+    //float3 vEye = normalize(_in.vViewPos);
     
-    Color.rgb = Color.rgb * g_LightColor * fLightPow
-                + Color.rgb * g_LightAmbient
-                + g_LightColor * g_SpecularRatio * vReflectPow;
+    //float vReflectPow = saturate(dot(-vEye, vReflect));
+    //vReflectPow = pow(vReflectPow, 20.f);
+    
+    //Color.rgb = Color.rgb * g_LightColor * fLightPow
+    //            + Color.rgb * g_LightAmbient
+    //            + g_LightColor * g_SpecularRatio * vReflectPow;
 
     
     return Color;

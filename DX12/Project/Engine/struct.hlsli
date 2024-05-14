@@ -35,54 +35,7 @@ Texture2D STARR8 : register(t8);
 Texture2D STARR9 : register(t9);
 
 SamplerState sampler1 : register(s0);
-//SamplerState sampler2 : register(s1);
 
-//// Animation Texture
-//Texture2D atlas_texture : register(t10);
-
-//// Structed Register
-//StructuredBuffer<LightInfo> g_Light : register(t11);
-//StructuredBuffer<LightInfo> g_Light3D : register(t12);
-
-//// PostProcess Register
-//Texture2D g_postprocess : register(t13);
-
-//Texture2D g_NoiseTex : register(t14);
-
-// Luna Light Example
-struct DirectionalLight
-{
-    float4 Ambient;
-    float4 Diffuse;
-    float4 Specular;
-    float3 Direction;
-    float pad;
-};
-
-struct PointLight
-{
-    float4 Ambient;
-    float4 Diffuse;
-    float4 Specular;
-    float3 Position;
-    float Range;
-    float3 Att;
-    float pad;
-};
-
-struct SpotLight
-{
-    float4 Ambient;
-    float4 Diffuse;
-    float4 Specular;
-    float3 Position;
-    float Range;
-    float3 Direction;
-    float Spot;
-    float3 Att;
-    float pad;
-};
-   
 struct LightMaterial
 {
     float4 Ambient;
@@ -247,5 +200,6 @@ cbuffer tGlobalData : register(b0)
 }
 
 StructuredBuffer<Matrix> g_mat_bone : register(t10);
-
+StructuredBuffer<LightInfo> gLightInfo2D : register(t11);
+StructuredBuffer<LightInfo> gLightInfo3D : register(t12);
 #endif

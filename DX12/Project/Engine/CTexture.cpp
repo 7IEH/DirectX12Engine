@@ -70,7 +70,7 @@ HRESULT Texture::Load(const wstring& _strFilePath)
 		_subResource.data());
 
 	m_pTextureUploadHeap = _pTextureUploadHeap;
-	Device::GetInst()->FlushResrouceCommandQueue();
+	Device::GetInst()->FlushResourceCommandQueue();
 
 	CreateView();
 	return _hr;
@@ -78,7 +78,7 @@ HRESULT Texture::Load(const wstring& _strFilePath)
 
 void Texture::UpdateData(int _resgisterNumber)
 {
-	Device::GetInst()->SetSRV(m_SRVHandle, TEX_PARAM(_resgisterNumber));
+	Device::GetInst()->SetSRV(m_SRVHandle, _resgisterNumber);
 }
 
 HRESULT Texture::UpdateData_CS_SRV(int _registerNumber)

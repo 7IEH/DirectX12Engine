@@ -132,7 +132,7 @@ void StructuredBuffer::SetData(void* _SysMem, UINT _ElementCount)
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&readBuffer));
-
+	
 	UINT8* dataBegin = nullptr;
 	D3D12_RANGE readRange{ 0, 0 };
 	readBuffer->Map(0, &readRange, reinterpret_cast<void**>(&dataBegin));
@@ -153,10 +153,11 @@ void StructuredBuffer::SetData(void* _SysMem, UINT _ElementCount)
 	{
 		D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(m_pBuffer.Get(),
 			D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_COMMON);
+
 		Device::GetInst()->GetResCmdList()->ResourceBarrier(1, &barrier);
 	}
 
-	Device::GetInst()->FlushResrouceCommandQueue();
+	Device::GetInst()->FlushResourceCommandQueue();
 }
 
 void StructuredBuffer::GetData(void* _Dest, UINT _ElementCount)

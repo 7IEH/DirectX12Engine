@@ -106,6 +106,15 @@ void AssetMgr::CreateTexture()
 	_pTex = new Texture;
 	_pTex->Load(L"\\Asset\\Resource\\FBXmodel\\HoshinoFBX\\Hoshino_Original_Hair_Spec.png");
 	AddAsset(_pTex, L"HoshinoHairSpecTex");
+
+	// Dragon
+	_pTex = new Texture;
+	_pTex->Load(L"\\Asset\\Resource\\FBXmodel\\Dragon\\Dragon_ground_color.jpg");
+	AddAsset(_pTex, L"DragonTex");
+
+	_pTex = new Texture;
+	_pTex->Load(L"\\Asset\\Resource\\FBXmodel\\Dragon\\Dragon_Bump_Col2.jpg");
+	AddAsset(_pTex, L"DragonTex2");
 }
 
 void AssetMgr::CreateDefaultMesh()
@@ -576,6 +585,13 @@ void AssetMgr::CreateDefaultMaterial()
 	AddAsset<Material>(_mat, L"SkyBoxMat");
 
 	/**********************
+	| Default Shader3D Mat
+	***********************/
+	_mat = new Material;
+	_mat->SetGraphicShader(AssetMgr::GetInst()->FindAsset<GraphicShader>(L"CartoonShader"));
+	AddAsset<Material>(_mat, L"CartoonMat");
+
+	/**********************
 	| Haruna Mat
 	***********************/
 	_mat = new Material;
@@ -628,6 +644,14 @@ void AssetMgr::CreateDefaultMaterial()
 	_mat->SetTexParam(TEX_1, FindAsset<Texture>(L"HoshinoHairMaskTex"));
 	_mat->SetTexParam(TEX_2, FindAsset<Texture>(L"HoshinoHairSpecTex"));
 	AddAsset<Material>(_mat, L"HoshinoHairMtrl");
+
+	/**********************
+	| Dragon Mat
+	***********************/
+	_mat = new Material;
+	_mat->SetGraphicShader(AssetMgr::GetInst()->FindAsset<GraphicShader>(L"Default3DShader"));
+	_mat->SetTexParam(TEX_0, FindAsset<Texture>(L"DragonTex"));
+	AddAsset<Material>(_mat, L"DragonMtrl");
 }
 
 void AssetMgr::CreateDefaultComputeShader()
@@ -651,21 +675,43 @@ void AssetMgr::CreateDefaultMeshData()
 {
 	wstring _path = L"\\Asset\\Resource\\FBXmodel\\Haruna_Original_Mesh.fbx";
 
-	Ptr<MeshData> _meshData = nullptr;
-	_meshData = Load<MeshData>(_path, L"HarunaMeshData");
-	_meshData->SetMaterial(FindAsset<Material>(L"HarunaBodyMtrl"), 0);
-	_meshData->SetMaterial(FindAsset<Material>(L"HarunaFaceMtrl"), 0);
-	_meshData->SetMaterial(FindAsset<Material>(L"HarunaEyeMouthMtrl"), 0);
-	_meshData->SetMaterial(FindAsset<Material>(L"HarunaHairMtrl"), 0);
-	_meshData->SetMaterial(FindAsset<Material>(L"HarunaHairMtrl"), 0);
+	/*********************
+	| Haruna Mesh Data
+	*********************/
+	//Ptr<MeshData> _meshData = nullptr;
+	//_meshData = Load<MeshData>(_path, L"HarunaMeshData");
+	//_meshData->SetMaterial(FindAsset<Material>(L"HarunaBodyMtrl"), 0);
+	//_meshData->SetMaterial(FindAsset<Material>(L"HarunaFaceMtrl"), 0);
+	//_meshData->SetMaterial(FindAsset<Material>(L"HarunaEyeMouthMtrl"), 0);
+	//_meshData->SetMaterial(FindAsset<Material>(L"HarunaHairMtrl"), 0);
+	//_meshData->SetMaterial(FindAsset<Material>(L"HarunaHairMtrl"), 0);
 
+	///*********************
+	//| Hoshino Mesh Data
+	//*********************/
+	//_path = L"\\Asset\\Resource\\FBXmodel\\HoshinoFBX\\Hoshino_Original (merge).fbx";
+	//
+	//_meshData = Load<MeshData>(_path, L"HoshinoMeshData");
+	//_meshData->SetMaterial(FindAsset<Material>(L"HoshinoFaceMtrl"), 0);
+	//_meshData->SetMaterial(FindAsset<Material>(L"HoshinoHairMtrl"), 0);
+	//_meshData->SetMaterial(FindAsset<Material>(L"HoshinoEyeMouthMtrl"), 0);
+	//_meshData->SetMaterial(FindAsset<Material>(L"HoshinoBodyMtrl"), 0);
+	//_meshData->SetMaterial(FindAsset<Material>(L"HoshinoHairMtrl"), 0);
 
-	_path = L"\\Asset\\Resource\\FBXmodel\\HoshinoFBX\\Hoshino_Original (merge).fbx";
-	
-	_meshData = Load<MeshData>(_path, L"HoshinoMeshData");
-	_meshData->SetMaterial(FindAsset<Material>(L"HoshinoFaceMtrl"), 0);
-	_meshData->SetMaterial(FindAsset<Material>(L"HoshinoHairMtrl"), 0);
-	_meshData->SetMaterial(FindAsset<Material>(L"HoshinoEyeMouthMtrl"), 0);
-	_meshData->SetMaterial(FindAsset<Material>(L"HoshinoBodyMtrl"), 0);
-	_meshData->SetMaterial(FindAsset<Material>(L"HoshinoHairMtrl"), 0);
+	/*********************
+	| Shiroko Mesh Data
+	*********************/
+	//_path = L"\\Asset\\Resource\\FBXmodel\\ShirokoFBX\\Shiroko_Original (merge).fbx";
+
+	//_meshData = Load<MeshData>(_path, L"ShirokoMeshData");
+	//_meshData->SetMaterial(FindAsset<Material>(L"HoshinoFaceMtrl"), 0);
+	//_meshData->SetMaterial(FindAsset<Material>(L"HoshinoHairMtrl"), 0);
+	//_meshData->SetMaterial(FindAsset<Material>(L"HoshinoEyeMouthMtrl"), 0);
+	//_meshData->SetMaterial(FindAsset<Material>(L"HoshinoBodyMtrl"), 0);
+	//_meshData->SetMaterial(FindAsset<Material>(L"HoshinoHairMtrl"), 0);
+
+	_path = L"\\Asset\\Resource\\FBXmodel\\Dragon\\Dragon.fbx";
+
+	Ptr<MeshData> _meshData = Load<MeshData>(_path, L"DragonMeshData");
+	_meshData->SetMaterial(FindAsset<Material>(L"DragonMtrl"), 0);
 }

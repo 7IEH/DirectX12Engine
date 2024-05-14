@@ -61,9 +61,7 @@ float4 PS_Cartoon3D(VS_OUT _in) : SV_Target
     float3 vEye = normalize(_in.vViewPos);
     reflect = normalize(reflect);
     float spec = saturate(dot(reflect, -vEye));
-    
-    //spec = pow(spec, 20.f);
-    
+ 
     spec = smoothstep(0.005f, 0.01f, spec);
     
     float4 SpecularColor = (float4) 0.f;

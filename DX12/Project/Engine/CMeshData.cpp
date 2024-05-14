@@ -49,6 +49,14 @@ vector<GameObject*> MeshData::Instantiate()
 			_render->SetMaterial(_info.matrials[i]);
 		}
 
+		if (0 == _info.matrials.size())
+		{
+			for (int i = 0;i < 5;i++)
+			{
+				_render->SetMaterial(AssetMgr::GetInst()->FindAsset<Material>(L"CartoonMat"));
+			}
+		}
+
 		if (_info.mesh->IsAnimMesh())
 		{
 			Animator3D* _anim3D = _pObj->AddComponent<Animator3D>();

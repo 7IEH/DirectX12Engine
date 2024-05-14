@@ -30,8 +30,8 @@ void FBXLoader::LoadFBX(const wstring& _path)
 {
 	Import(_path);
 
-	LoadBones(m_pScene->GetRootNode());
-	LoadAnimationInfo();
+	//LoadBones(m_pScene->GetRootNode());
+	//LoadAnimationInfo();
 
 	ParseNode(m_pScene->GetRootNode());
 
@@ -339,7 +339,13 @@ void FBXLoader::LoadAnimationInfo()
 {
 	m_pScene->FillAnimStackNameArray(OUT m_AnimNames);
 
-	const int _animCount = m_AnimNames.GetCount();
+	int _iCount = 0;
+	if (m_AnimNames.GetCount() >= 1)
+	{
+		_iCount = 3;
+	}
+
+	const int _animCount = _iCount; //m_AnimNames.GetCount();
 	for (int i = 0;i < _animCount;i++)
 	{
 		FbxAnimStack* _animStack = m_pScene->FindMember<FbxAnimStack>(m_AnimNames[i]->Buffer());
@@ -390,7 +396,13 @@ void FBXLoader::LoadAnimationData(FbxMesh* _mesh, FBXMeshInfo* _meshInfo)
 					LoadBoneWeight(_cluster, _boneIdx, _meshInfo);
 					LoadOffsetMatrix(_cluster, _matNodeTransform, _boneIdx, _meshInfo);
 
-					const int _animCount = m_AnimNames.Size();
+					int _iCount = 0;
+					if (m_AnimNames.GetCount() >= 1)
+					{
+						_iCount = 3;
+					}
+
+					const int _animCount = _iCount;//m_AnimNames.Size();
 					for (int k = 0;k < _animCount;k++)
 					{
 						LoadKeyFrame(k, _mesh->GetNode(), _cluster, _matNodeTransform, _boneIdx, _meshInfo);
